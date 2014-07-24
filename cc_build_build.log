@@ -1,0 +1,174 @@
+------------------------------  bur.pjt - build  ------------------------------
+[adt7301.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "adt7301.c"
+"adt7301.c", line 8: fatal error: could not open source file "csl\csl_spi.h"
+1 fatal error detected in the compilation of "adt7301.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[at25xxx.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "at25xxx.c"
+"at25xxx.c", line 1: fatal error: could not open source file "at25xxx.h"
+1 fatal error detected in the compilation of "at25xxx.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[btwt41.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "btwt41.c"
+"btwt41.c", line 1: fatal error: could not open source file "btwt41.h"
+1 fatal error detected in the compilation of "btwt41.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[dac7513.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "dac7513.c"
+"dac7513.c", line 1: fatal error: could not open source file "csl\csl_spi.h"
+1 fatal error detected in the compilation of "dac7513.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[display.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "display.c"
+"display.c", line 1: fatal error: could not open source file "csl\csl_io.h"
+1 fatal error detected in the compilation of "display.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[drv_modbus.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "drv_modbus.c"
+"drv_modbus.c", line 2: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "drv_modbus.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[ds1305.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "ds1305.c"
+"ds1305.c", line 8: fatal error: could not open source file "csl\csl_spi.h"
+1 fatal error detected in the compilation of "ds1305.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[DSP280x_CodeStartBranch.asm] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "DSP280x_CodeStartBranch.asm"
+"DSP280x_CodeStartBranch.asm", ERROR!  : [E1000] Cannot open object file :
+                                                 \tomzel3/elektronika/он/applications/BUR/BUR
+                                                 v1.113 (10.07.14) 8
+                                                 OLED/obj/DSP280x_CodeStartBranch.obj
+
+>> Compilation failure
+
+[DSP280x_DelayUs.asm] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "DSP280x_DelayUs.asm"
+"DSP280x_DelayUs.asm", ERROR!  : [E1000] Cannot open object file :
+                                         \tomzel3/elektronika/он/applications/BUR/BUR
+                                         v1.113 (10.07.14) 8
+                                         OLED/obj/DSP280x_DelayUs.obj
+
+>> Compilation failure
+
+[encoder.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "encoder.c"
+"encoder.c", line 1: fatal error: could not open source file "csl\csl_spi.h"
+1 fatal error detected in the compilation of "encoder.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[im.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "im.c"
+"im.c", line 1: fatal error: could not open source file "im.h"
+1 fatal error detected in the compilation of "im.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[InitHardware.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "InitHardware.c"
+"InitHardware.c", line 6: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "InitHardware.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[interface.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "interface.c"
+"interface.c", line 10: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "interface.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[LogEv.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "LogEv.c"
+"LogEv.c", line 5: fatal error: could not open source file "LogEv.h"
+1 fatal error detected in the compilation of "LogEv.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[main.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "main.c"
+"main.c", line 1: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "main.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[menu2x.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "menu2x.c"
+"menu2x.c", line 1: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "menu2x.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[motor_control.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "motor_control.c"
+"motor_control.c", line 2: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "motor_control.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[protections.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "protections.c"
+"protections.c", line 1: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "protections.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[pult.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "pult.c"
+"pult.c", line 1: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "pult.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[rim_devices.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "rim_devices.c"
+"rim_devices.c", line 7: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "rim_devices.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[rtc.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "rtc.c"
+"rtc.c", line 8: fatal error: could not open source file "rtc.h"
+1 fatal error detected in the compilation of "rtc.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[serial_communication.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "serial_communication.c"
+"serial_communication.c", line 3: fatal error: could not open source file "config.h"
+1 fatal error detected in the compilation of "serial_communication.c".
+Compilation terminated.
+
+>> Compilation failure
+
+[table_tomzel_v1.asm] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "table_tomzel_v1.asm"
+"table_tomzel_v1.asm", ERROR!  : [E1000] Cannot open object file :
+                                         \tomzel3/elektronika/он/applications/BUR/BUR
+                                         v1.113 (10.07.14) 8
+                                         OLED/obj/table_tomzel_v1.obj
+
+>> Compilation failure
+
+[VlvDrvCtrl.c] "C:\CCStudio_v3.3\C2000\cgtools\bin\cl2000" -g -fr"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/obj" -i"\\tomzel3/elektronika/он/applications/BUR/BUR v1.113 (10.07.14) 8 OLED/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28 -@"../build.lkf" "VlvDrvCtrl.c"
+"VlvDrvCtrl.c", line 8: fatal error: could not open source file "VlvDrvCtrl.h"
+1 fatal error detected in the compilation of "VlvDrvCtrl.c".
+Compilation terminated.
+
+>> Compilation failure
+
+Build Complete,
+  24 Errors, 0 Warnings, 0 Remarks.

@@ -1,0 +1,61 @@
+; Code Composer Project File, Version 2.0 (do not modify or remove this line)
+
+[Project Settings]
+ProjectDir="C:\Tomzel\Bur1\BUR v1.113 (24.01.14) 3\"
+ProjectType=Executable
+CPUFamily=TMS320C28XX
+Tool="Compiler"
+Tool="CustomBuilder"
+Tool="DspBiosBuilder"
+Tool="Linker"
+Config="build"
+
+[Source Files]
+Source="lib\ApFilter1_v01.00.l28"
+Source="lib\ApFilter3_v01.00.l28"
+Source="lib\Calibs_v01.02.l28"
+Source="lib\csl_v01.03.l280x"
+Source="lib\Inputs_v01.01.l28"
+Source="lib\iqDMC_v01.02.l28"
+Source="lib\IQmath.l28"
+Source="lib\PrtCalc_v01.00.l28"
+Source="lib\value_conv_v01.02.l28"
+Source="src\adt7301.c"
+Source="src\at25xxx.c"
+Source="src\btwt41.c"
+Source="src\dac7513.c"
+Source="src\display.c"
+Source="src\drv_modbus.c"
+Source="src\ds1305.c"
+Source="src\DSP280x_CodeStartBranch.asm"
+Source="src\DSP280x_DelayUs.asm"
+Source="src\encoder.c"
+Source="src\im.c"
+Source="src\InitHardware.c"
+Source="src\interface.c"
+Source="src\LogEv.c"
+Source="src\main.c"
+Source="src\menu2x.c"
+Source="src\motor_control.c"
+Source="src\protections.c"
+Source="src\pult.c"
+Source="src\rim_devices.c"
+Source="src\rtc.c"
+Source="src\serial_communication.c"
+Source="src\table_tomzel_v1.asm"
+Source="src\VlvDrvCtrl.c"
+Source="cmd\DSP280x_Headers.cmd"
+Source="cmd\F2808.cmd"
+
+["Compiler" Settings: "build"]
+Options=-g -fr"$(Proj_dir)\obj" -i"$(Proj_dir)\include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28
+
+["Linker" Settings: "build"]
+Options=-a -c -m".\build\bur.map" -o".\build\bur.out" -stack0x200 -w -x -l"rts2800_ml.lib"
+
+["cmd\DSP280x_Headers.cmd" Settings: "build"]
+LinkOrder=1
+
+["cmd\F2808.cmd" Settings: "build"]
+LinkOrder=1
+
