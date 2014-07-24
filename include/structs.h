@@ -375,6 +375,12 @@ typedef enum {
   imPercent = 1			  	// В процентах от номинального тока двигателя
 } TIndicMode;
 
+// Тип индикатора
+typedef enum {
+	it_WINSTAR = 0,	// OLED WINSTAR
+	it_FUTABA		// VAC FUTABA
+} TIndicType;
+
 // Состояние светодиодов блока
 typedef union _TLedsReg {	// МОИ
 	Uns all;

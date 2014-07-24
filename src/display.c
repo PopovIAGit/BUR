@@ -2,6 +2,8 @@
 #include "csl\csl_spi.h"
 #include "display.h"
 #include "displhal.h"
+#include "structs.h"
+
 
 //WS0010 !!!
 
@@ -59,17 +61,22 @@ __inline void DisplayOn(TDisplay *);
 __inline void DisplayPutText(TDisplay *);
 static   void SendData(TDisplay *, Byte Data);
 static   void PutData(TDisplay *, Byte Data);
-__inline Char EncodeData(Char Data);
+__inline Char EncodeData(Char *table, Char Data);
 
 
 
 void DISPL_Update(TDisplay *p)
 {
+
+	
 	if (p->CsFunc) SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
 	DisplayRestart(p);
 	if (!p->Restart) DisplayPutText(p);
 	else if (!p->Enable) DisplayOff(p);
 	else DisplayOn(p);
+
+
+
 }
 
 void DISPL_AddSymb(TDisplay *p, Byte Addr, Ptr Data, Byte Count)
@@ -100,8 +107,15 @@ __inline void DisplayOn(TDisplay *p)
 
 	switch (++p->State)
 	{
-		case 1:  PutComm(FUNCTION_SET);	
-					p->PauseTimer = DISPL_PAUSE_TIME;		break;
+		case 1: if ( *p->pIndicatorType == it_WINSTAR )
+				{
+					PutComm(WINSTAR_FUNCTION_SET);
+				}
+				else
+				{
+					PutComm(FUTABA_FUNCTION_SET);	
+				}
+				p->PauseTimer = DISPL_PAUSE_TIME;		break;
 		case 2:  PutComm(DISPLAY_OFF);	p->PauseTimer = DISPL_PAUSE_TIME;		break;
 		case 3:  PutComm(__CLR);		p->PauseTimer = DISPL_PAUSE_TIME;		break;
 		case 4:  PutComm(ENTRY_MODE_SET);	p->PauseTimer = DISPL_PAUSE_TIME;		break;
@@ -140,17 +154,28 @@ __inline void DisplayOn(TDisplay *p)
 	}
 	*/
 }
-
+//--------------------------------------------------------
+void DisplayReset(TDisplay *p, Uns index)
+{
+	if (index == it_WINSTAR)				// Если индикатор OLED WINSTAR
+		p->pSymbolTable = WINSTAR_RusTable;	// таблица символов для этого индикатора
+	else 									// в остальных случаях это VAC FUTABA
+		p->pSymbolTable = FUTABA_RusTable;
+	
+	p->Enable = true;
+	p->Restart = true;
+}
+//--------------------------------------------------------
 __inline void DisplayPutText(TDisplay *p)
 {
 	if (p->Enable) switch(++p->State)
 	{
 		case 1:  PutComm(__FSTR); p->Data = p->HiStr; break;
 		case 18: PutComm(__SSTR); p->Data = p->LoStr; break;
-		default: PutChar(EncodeData(*p->Data++)); if (p->State == 34) p->State = 0;
+		default: PutChar(EncodeData(p->pSymbolTable, *p->Data++)); if (p->State == 34) p->State = 0;
 	}
 }
-
+//--------------------------------------------------------
 static void SendData(TDisplay *p, Byte Data)
 {
 	SetCs(); SPI_send(p->SpiId, Data); ClrCs();
@@ -173,11 +198,12 @@ static void PutData(TDisplay *p, Byte Data)
 
 
 
-__inline Char EncodeData(Char Data)
+__inline Char EncodeData(Char *table, Char Data)
 {
 	Data &= 0xFF;
 	if (Data == 'Ё')  return 0x40;
 	if (Data == 'ё')  return 0x41;
-	if ((Int)Data >= 0xC0) return RusTable[Data - 0xC0];
+	if ((Int)Data >= 0xC0) return table[Data - 0xC0];
 	return Data;
 }
+

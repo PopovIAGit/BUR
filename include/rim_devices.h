@@ -3,6 +3,7 @@
 
 #include "at25xxx.h"
 #include "display.h"
+#include "displhal.h"
 #include "dac7513.h"
 #include "encoder.h"
 #include "adt7301.h"
@@ -143,7 +144,7 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 #define DISPLAY_DEFAULT { \
 	PLIS_SPI, SPI_BRR(4000), \
 	False, False, False, 0, 0, 0, \
-	0, 0, 0, "", "", Null, \
+	0, 0, 0, "", "", Null, WINSTAR_RusTable, &Ram.GroupC.IndicatorType,\
 	IO_INIT(LCD_PORT, LCD_EN), \
 	IO_INIT(LCD_PORT, LCD_RS), \
 	IO_INIT(LCD_PORT, LCD_RW), \

@@ -106,6 +106,9 @@ __inline void DynBrakeMode(void);
 __inline void DmcTest(void);
 
 static  void  ClkThyrControl(Uns State);
+// Логика управления тиристорами для динамического торможения:
+void SifuControlForDynBrake(SIFU *);
+
 
 //---- управление двигателем-----
 void MotorControlInit(void)
@@ -216,10 +219,10 @@ __inline void PulsePhaseControl(void){	//18kHz
 
 	sifu_calc2(&Sifu);	
 	
-	THYR_PORT |= ((LgUns)Sifu.Status & ((LgUns)THYR_MASK));   //
-	THYR_PORT &= ((LgUns)Sifu.Status | (~((LgUns)THYR_MASK)));//
+	THYR_PORT |= ((LgUns)Sifu.Status.all & ((LgUns)THYR_MASK));   //
+	THYR_PORT &= ((LgUns)Sifu.Status.all | (~((LgUns)THYR_MASK)));//
 
-	OUT_SET(ENB_TRN, (Sifu.Status >> SIFU_EN_TRN) & 0x1);
+	OUT_SET(ENB_TRN, (Sifu.Status.all >> SIFU_EN_TRN) & 0x1);
 }
 
 void DmcIndication1(void)
@@ -769,19 +772,28 @@ __inline void DynBrakeMode(void) // режим динамического торможения
 		}
 		else // выбор угла в зависимости от чередования фаз
 		{
-			if (!PhEl.Direction)	// если чередование фаз не определенно
-				Sifu.SetAngle = SIFU_CLOSE_ANG;	// угол задания 180
-			else if (PhEl.Direction > 0)	// прямая последовательность
+			if (!GrC->SelectDynBr)
 			{
-				Sifu.MaxAngle = 140;		// 140
-				Sifu.SetAngle = GrC->BrakeAngle - 30;//угол задания в начале 60 - 30
+				if (!PhEl.Direction)	// если чередование фаз не определенно
+					Sifu.SetAngle = SIFU_CLOSE_ANG;	// угол задания 180
+				else if (PhEl.Direction > 0)	// прямая последовательность
+				{
+					Sifu.MaxAngle = 140;		// 140
+					Sifu.SetAngle = GrC->BrakeAngle - 30;//угол задания в начале 60 - 30
+				}
+				else							// обратная
+				{
+					Sifu.MaxAngle = SIFU_MAX_ANG;// 180
+					Sifu.SetAngle = GrC->BrakeAngle + 30; // угол задания 60 + 30 
+				}
+				Sifu.Direction = SIFU_DYN_BREAK; // выставляем режим сифу динамическое торможение
 			}
-			else							// обратная
+			else
 			{
-				Sifu.MaxAngle = SIFU_MAX_ANG;// 180
-				Sifu.SetAngle = GrC->BrakeAngle + 30; // угол задания 60 + 30 
+				Sifu.MaxAngle = SIFU_MAX_ANG;		// 180
+				Sifu.SetAngle = GrC->BrakeAngle; 	// угол задания динамического торможения
+				Sifu.Direction = SIFU_DYN_BREAK2; 	// выставляем режим сифу динамическое торможение	
 			}
-			Sifu.Direction = SIFU_DYN_BREAK; // выставляем режим сифу динамическое торможение
 		}
 	}
 	else // если время торможения вышло то уходим в стм. стоп
@@ -1352,15 +1364,19 @@ void MonitorUpdate1(void){
 
 void sifu_calc2(SIFU *v)				//функция сифу - изменена - фаза S и R поменялись местами, т.к. 
 {
-	v->Status = 0x3F;				// выставляем в статусе единички на все используемые ножки и разрешение работы	тоесть 0011 1111 - чтобы сбросить разрешение тиристорам на работу при новом вызове функции
+	v->Status.all = 0x3F;				// выставляем в статусе единички на все используемые ножки и разрешение работы	тоесть 0011 1111 - чтобы сбросить разрешение тиристорам на работу при новом вызове функции
 	if (v->Direction == SIFU_NONE)	// если не задано направление работы - тоесть сифу выключенно то
 	{
 		v->AccelTimer = 0;			// обнуляем таймер для последующего использования
 		v->OpenAngle = v->SetAngle; // и держим задание на угол открытия на текущем угле открытия
 	}
+	else if (v->Direction == SIFU_DYN_BREAK2)// Если сейчас режим динамического торможения нового образца
+	{
+		SifuControlForDynBrake(v);			// управляем тиристорами как при динамическом торможении
+	}
 	else							// если сифу включенно и есть задание
 	{
-		v->Status &= ~(1<<SIFU_EN_TRN);	// сбрасываем бит включения чтобы не поехать раньше времени Status = 0001 1111
+		v->Status.all &= ~(1<<SIFU_EN_TRN);	// сбрасываем бит включения чтобы не поехать раньше времени Status = 0001 1111
 
 		if (!v->AccelTime) v->OpenAngle = v->SetAngle;	// если открытие происходит на частоте вызова функции тоесть не задана задержка открытия то задаем угол открытия = углу задания
 		else if (++v->AccelTimer >= v->AccelTime) // если задержка открытия заданна то запускаем таймер  отсчитывания задержки и когда он достчитает
@@ -1371,22 +1387,22 @@ void sifu_calc2(SIFU *v)				//функция сифу - изменена - фаза S и R поменялись ме
 		}
 																			// тут происходит синхронизация сифу с входной сетью
 		if ((*v->UrAngle >= v->OpenAngle) && (*v->UrAngle < v->MaxAngle))	// если угол фазы сети больше угла отктрытия и угол фазы корректен - тоесть не больше 170 градусов
-			 v->Status &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));								// сбрасываем бит статуса отвечающий за ножку управления тиристора фазы UR. сбрасываем т.к. тиристор открывается нулем Status = 0001 1110
+			 v->Status.all &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));								// сбрасываем бит статуса отвечающий за ножку управления тиристора фазы UR. сбрасываем т.к. тиристор открывается нулем Status = 0001 1110
 
 		if ((*v->UsAngle >= v->OpenAngle) && (*v->UsAngle < v->MaxAngle))	// аналогично
-		 	 v->Status &= ~(1<<SIFU_US);									// тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0000 1101
+		 	 v->Status.all &= ~(1<<SIFU_US);									// тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0000 1101
 
 	  	if ((*v->UtAngle >= v->OpenAngle) && (*v->UtAngle < v->MaxAngle))	// аналогично
-			 v->Status &= ~((1<<SIFU_UT)|(1<<SIFU_UT_REV));					// тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0001 0011
+			 v->Status.all &= ~((1<<SIFU_UT)|(1<<SIFU_UT_REV));					// тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0001 0011
 
 		switch(v->Direction)												// в зависимости от выбранного направления выдаем управление на тиристоры через статусный регистр
 		{
-			case SIFU_DOWN: v->Status |= ((1<<SIFU_UR)|(1<<SIFU_UT)); break;// если реверсивное вращение то выставляем 1 для битов фазы R S если они были обнулены
-			case SIFU_UP:   v->Status |= ((1<<SIFU_UR_REV)|(1<<SIFU_UT_REV)); break; // аналогично только единички выставляются для битов реверсивной группы
+			case SIFU_DOWN: v->Status.all |= ((1<<SIFU_UR)|(1<<SIFU_UT)); break;// если реверсивное вращение то выставляем 1 для битов фазы R S если они были обнулены
+			case SIFU_UP:   v->Status.all |= ((1<<SIFU_UR_REV)|(1<<SIFU_UT_REV)); break; // аналогично только единички выставляются для битов реверсивной группы
 			case SIFU_DYN_BREAK:	// если включен сложный режим динамического торможения то (описание динамического  торможения)
-				if (*v->Polarity <= 0) v->Status |= (1<<SIFU_US); 	//  
-				v->Status |=  ((1<<SIFU_UT)|(1<<SIFU_UT_REV));		//  
-				v->Status &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));		// 
+				if (*v->Polarity <= 0) v->Status.all |= (1<<SIFU_US); 	//  
+				v->Status.all |=  ((1<<SIFU_UT)|(1<<SIFU_UT_REV));		//  
+				v->Status.all &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));		// 
 			break;																
 		}
 	}
@@ -1423,3 +1439,57 @@ void PowerCheck(void)			// 200 Hz
 		}					
 }
 
+//----------Логика управления тиристорами для динамического торможения--------------------------- 
+void SifuControlForDynBrake (SIFU *p)
+{
+	p->Status.bit.sifu_ENB = 0;
+
+	if (PhEl.Direction > 0)		// Если чередование фаз прямое RST
+	{
+		if (UR.Input > 15)
+  		{
+  	   		p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
+			p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
+		
+   			if (*p->UrAngle > p->SetAngle)	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
+			{
+				p->Status.bit.sifu_S = 0;
+				p->Status.bit.sifu_R = 0;
+				p->Status.bit.sifu_RT = 0; 
+			}
+			else
+			{
+				p->Status.bit.sifu_S = 1;
+				p->Status.bit.sifu_R = 1;
+				p->Status.bit.sifu_RT = 1; 
+			}
+		} 
+		else	
+			p->Status.all = 0x003F;
+	} 
+	else						// Если чередование фаз обратное SRT
+  	{
+		if (US.Input > 15)
+		{
+  	   		p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
+			p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
+		
+   			if (*p->UsAngle > p->SetAngle)	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
+			{
+				p->Status.bit.sifu_S = 0;
+				p->Status.bit.sifu_R = 0;
+				p->Status.bit.sifu_RT = 0; 
+			}
+			else
+			{
+				p->Status.bit.sifu_S = 1;
+				p->Status.bit.sifu_R = 1;
+				p->Status.bit.sifu_RT = 1;  
+			}
+		} 
+		else	
+			p->Status.all = 0x003F;
+	}
+}
+
+//-----------Конец файла------------------------------ 

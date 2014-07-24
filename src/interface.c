@@ -277,6 +277,15 @@ void PowerOff(void)
 
 Bool InterfaceRefresh(void)
 {
+	static Uns prevIndType = 123;			// Предыдущий тип индикатора
+
+	if (prevIndType != GrC->IndicatorType)	// Если тип индикатора был изменен
+	{
+		prevIndType = GrC->IndicatorType;	// Пересбрасываем дисплей
+		DisplayReset(&Display, (Uns)Ram.GroupC.IndicatorType);
+		WritePar(GetAdr(GroupC.IndicatorType), &Ram.GroupC.IndicatorType, 1);
+	}
+
 	if (!InterfRefrState) return true;
 
 	Calib.GearRatio = GrC->GearRatio;
