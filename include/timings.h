@@ -23,7 +23,7 @@ timings.h
 #define TU_SCALE				(0.100 * PRD2)		// Масштабировка для ТУ (1 = 0.1 с)
 #define TEMP_EN_TOUT			(5.000 * PRD3)		// Задержка включения тена
 #define CONT_TEST_TIME 			(1.500 * PRD3)		// Время темтового замыкания контакторов при проверке БУР М
-#define DRV_TYPE_SHOW_TIME      (20.00 * PRD3)      // Время индикации типа привода при пуске блока
+#define DRV_TYPE_SHOW_TIME      (5.00 * PRD3)      // Время индикации типа привода при пуске блока
 
 
 // interface

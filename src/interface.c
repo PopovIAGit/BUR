@@ -615,7 +615,6 @@ void ShowDriveType(void)
 			ShowDriveTypeTimer++;
 			Menu.State = MS_DRIVE_TYPE;
 			ReadValuesStr(Menu.HiString, 229 + GrC->DriveType);
-			ReadValuesStr(Menu.LoString, 240);
 			DecToStr(GrA->MkuPoVersion, &Menu.LoString[9], 3, 4, True, False);
 		}
 		else
@@ -947,7 +946,7 @@ void LocalControl(void) // изменен и не проверен
 		Mcu.Mpu.PduKey = Pult.Key;								// «аписываем команду в управление приводом, дл€ возможной обработки
 
 		Menu.Key = Pult.Key;
-
+		PduKeyFlag = 1;
 		PultActiveTimer = PULT_LED_TOUT;
 		BlinkTimer = (Uns)BLINK_TOUT;							// мигаем светодиодиком что еслить действие :)
 		Pult.Key = 0;											// сбрасываем ключ с пду
