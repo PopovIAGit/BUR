@@ -24,6 +24,7 @@ PH_ORDER   PhEl 	= PH_EL_DEFAULT;
 TDmControl Dmc  	= DMC_DEFAULT;
 TTorqObs   Torq;
 
+
 Uns  ZazorTimer 	= 0;
 Uns  Iload[3] 		= {0,0,0};	//действующие токи в А (токи нагрузки)
 Uns  Ipr[3]   		= {0,0,0};	//действующие токи в % от номинального
