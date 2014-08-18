@@ -99,7 +99,7 @@ void ProtectionsUpdate(void)// периодическое обновление в защитах
 	ShCProtect();		//проверяем КЗ
 	DefDriveFaults();	//проверяем наличие других ошибок
 
-	GrC->DrvTInput = DRIVE_TEMPER;
+	GrC->DrvTInput = DRIVE_TEMPER - 10000;
 }
 
 void ProtectionsEnable(void)// проверка включения защит ЭД

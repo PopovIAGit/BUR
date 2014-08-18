@@ -1,10 +1,10 @@
 ******************************************************************************
   TMS320C2000 Evaluation Linker PC v5.2.1                      
 ******************************************************************************
->> Linked Mon Aug 18 09:30:52 2014
+>> Linked Mon Aug 18 15:59:16 2014
 
 OUTPUT FILE NAME:   <./build/bur.out>
-ENTRY POINT SYMBOL: "_c_int00"  address: 003eed72
+ENTRY POINT SYMBOL: "_c_int00"  address: 003eebc7
 
 
 MEMORY CONFIGURATION
@@ -14,7 +14,7 @@ MEMORY CONFIGURATION
 PAGE 0:
   M1SARAM               00000480   00000380  0000001f  00000361  RWIX
   OTP                   003d7800   00000400  00000000  00000400  RWIX
-  FLASH                 003e8000   0000ff80  0000c7a9  000037d7  RWIX
+  FLASH                 003e8000   0000ff80  0000c5dc  000039a4  RWIX
   CSM_RSVD              003f7f80   00000076  00000000  00000076  RWIX
   BEGIN                 003f7ff6   00000002  00000002  00000000  RWIX
   CSM_PWL               003f7ff8   00000008  00000000  00000008  RWIX
@@ -81,117 +81,117 @@ section   page    origin      length       input sections
 --------  ----  ----------  ----------   ----------------
 .pinit     0    003e8000    00000000     UNINITIALIZED
 
-.text      0    003e8000    00006f7a     
-                  003e8000    000013f1     motor_control.obj (.text)
-                  003e93f1    00000e2c     menu2x.obj (.text)
-                  003ea21d    00000dd0     interface.obj (.text)
-                  003eafed    00000770     protections.obj (.text)
-                  003eb75d    000006a3     rim_devices.obj (.text)
-                  003ebe00    0000052c     im.obj (.text)
-                  003ec32c    00000490     drv_modbus.obj (.text)
-                  003ec7bc    000003fb     VlvDrvCtrl.obj (.text)
-                  003ecbb7    00000317     Calibs_v01.02.l28 : Calibs.obj (.text)
-                  003ecece    000002ed     btwt41.obj (.text)
-                  003ed1bb    000002b2     InitHardware.obj (.text)
-                  003ed46d    00000258     table_tomzel_v1.obj (.text)
-                  003ed6c5    00000249     value_conv_v01.02.l28 : value_conv.obj (.text)
-                  003ed90e    0000023d     display.obj (.text)
-                  003edb4b    00000206     encoder.obj (.text)
-                  003edd51    000001fc     at25xxx.obj (.text)
-                  003edf4d    000001d2     rtc.obj (.text)
-                  003ee11f    0000015a     LogEv.obj (.text)
-                  003ee279    0000013c     Inputs_v01.01.l28 : Inputs.obj (.text)
-                  003ee3b5    00000127     serial_communication.obj (.text)
-                  003ee4dc    00000119     main.obj (.text)
-                  003ee5f5    00000115     ds1305.obj (.text)
-                  003ee70a    000000e3     csl_v01.03.l280x : DSP280x_Spi.obj (.text)
-                  003ee7ed    000000df     pult.obj (.text)
-                  003ee8cc    000000cf     iqDMC_v01.02.l28 : ileg.obj (.text)
-                  003ee99b    000000b7     csl_v01.03.l280x : csl_rtos.obj (.text)
-                  003eea52    000000b1                      : DSP280x_Sci.obj (.text)
-                  003eeb03    0000008c     dac7513.obj (.text)
-                  003eeb8f    0000006e     PrtCalc_v01.00.l28 : PrtCalc.obj (.text)
-                  003eebfd    00000069     csl_v01.03.l280x : csl_utils.obj (.text)
-                  003eec66    00000065                      : DSP280x_SysCtrl.obj (.text)
-                  003eeccb    00000060     ApFilter3_v01.00.l28 : ApFilter3.obj (.text)
-                  003eed2b    00000047     adt7301.obj (.text)
-                  003eed72    00000044     rts2800_ml.lib : boot.obj (.text)
-                  003eedb6    00000032     csl_v01.03.l280x : DSP280x_PieCtrl.obj (.text)
-                  003eede8    00000031     ApFilter1_v01.00.l28 : ApFilter1.obj (.text)
-                  003eee19    00000022     rts2800_ml.lib : i_div.obj (.text)
-                  003eee3b    00000021                    : memcpy_ff.obj (.text)
-                  003eee5c    0000001d     csl_v01.03.l280x : DSP28xx_pfunc.obj (.text)
-                  003eee79    0000001b     rts2800_ml.lib : args_main.obj (.text)
-                  003eee94    00000019                    : exit.obj (.text)
-                  003eeead    00000017                    : fs_cmp.obj (.text)
-                  003eeec4    00000016     csl_v01.03.l280x : DSP280x_PieVect.obj (.text)
-                  003eeeda    00000013     rts2800_ml.lib : ul_tofs.obj (.text)
-                  003eeeed    00000010     DSP280x_DelayUs.obj (.text)
-                  003eeefd    00000010     csl_v01.03.l280x : DSP280x_MemCopy.obj (.text)
-                  003eef0d    00000010     rts2800_ml.lib : u_tofs.obj (.text)
-                  003eef1d    0000000f     csl_v01.03.l280x : DSP280x_CpuTimers.obj (.text)
-                  003eef2c    0000000b     rts2800_ml.lib : strchr.obj (.text)
-                  003eef37    0000000b                    : u_div.obj (.text)
-                  003eef42    0000000a                    : strcmp.obj (.text)
-                  003eef4c    0000000a                    : strlen.obj (.text)
-                  003eef56    00000009                    : _lock.obj (.text)
-                  003eef5f    00000009                    : strcpy.obj (.text)
-                  003eef68    00000008     DSP280x_CodeStartBranch.obj (.text)
-                  003eef70    00000007     rts2800_ml.lib : memset.obj (.text)
-                  003eef77    00000003     csl_v01.03.l280x : DSP280x_DBGIER.obj (.text)
+.text      0    003e8000    00006dcf     
+                  003e8000    000011e1     motor_control.obj (.text)
+                  003e91e1    00000eee     interface.obj (.text)
+                  003ea0cf    00000e2c     menu2x.obj (.text)
+                  003eaefb    0000073a     protections.obj (.text)
+                  003eb635    00000623     rim_devices.obj (.text)
+                  003ebc58    0000052c     im.obj (.text)
+                  003ec184    00000490     drv_modbus.obj (.text)
+                  003ec614    000003fb     VlvDrvCtrl.obj (.text)
+                  003eca0f    00000317     Calibs_v01.02.l28 : Calibs.obj (.text)
+                  003ecd26    000002ed     btwt41.obj (.text)
+                  003ed013    000002b2     InitHardware.obj (.text)
+                  003ed2c5    00000258     table_tomzel_v1.obj (.text)
+                  003ed51d    00000249     value_conv_v01.02.l28 : value_conv.obj (.text)
+                  003ed766    0000023d     display.obj (.text)
+                  003ed9a3    00000206     encoder.obj (.text)
+                  003edba9    000001fc     at25xxx.obj (.text)
+                  003edda5    000001d2     rtc.obj (.text)
+                  003edf77    0000015a     LogEv.obj (.text)
+                  003ee0d1    0000013c     Inputs_v01.01.l28 : Inputs.obj (.text)
+                  003ee20d    00000127     serial_communication.obj (.text)
+                  003ee334    00000116     main.obj (.text)
+                  003ee44a    00000115     ds1305.obj (.text)
+                  003ee55f    000000e3     csl_v01.03.l280x : DSP280x_Spi.obj (.text)
+                  003ee642    000000df     pult.obj (.text)
+                  003ee721    000000cf     iqDMC_v01.02.l28 : ileg.obj (.text)
+                  003ee7f0    000000b7     csl_v01.03.l280x : csl_rtos.obj (.text)
+                  003ee8a7    000000b1                      : DSP280x_Sci.obj (.text)
+                  003ee958    0000008c     dac7513.obj (.text)
+                  003ee9e4    0000006e     PrtCalc_v01.00.l28 : PrtCalc.obj (.text)
+                  003eea52    00000069     csl_v01.03.l280x : csl_utils.obj (.text)
+                  003eeabb    00000065                      : DSP280x_SysCtrl.obj (.text)
+                  003eeb20    00000060     ApFilter3_v01.00.l28 : ApFilter3.obj (.text)
+                  003eeb80    00000047     adt7301.obj (.text)
+                  003eebc7    00000044     rts2800_ml.lib : boot.obj (.text)
+                  003eec0b    00000032     csl_v01.03.l280x : DSP280x_PieCtrl.obj (.text)
+                  003eec3d    00000031     ApFilter1_v01.00.l28 : ApFilter1.obj (.text)
+                  003eec6e    00000022     rts2800_ml.lib : i_div.obj (.text)
+                  003eec90    00000021                    : memcpy_ff.obj (.text)
+                  003eecb1    0000001d     csl_v01.03.l280x : DSP28xx_pfunc.obj (.text)
+                  003eecce    0000001b     rts2800_ml.lib : args_main.obj (.text)
+                  003eece9    00000019                    : exit.obj (.text)
+                  003eed02    00000017                    : fs_cmp.obj (.text)
+                  003eed19    00000016     csl_v01.03.l280x : DSP280x_PieVect.obj (.text)
+                  003eed2f    00000013     rts2800_ml.lib : ul_tofs.obj (.text)
+                  003eed42    00000010     DSP280x_DelayUs.obj (.text)
+                  003eed52    00000010     csl_v01.03.l280x : DSP280x_MemCopy.obj (.text)
+                  003eed62    00000010     rts2800_ml.lib : u_tofs.obj (.text)
+                  003eed72    0000000f     csl_v01.03.l280x : DSP280x_CpuTimers.obj (.text)
+                  003eed81    0000000b     rts2800_ml.lib : strchr.obj (.text)
+                  003eed8c    0000000b                    : u_div.obj (.text)
+                  003eed97    0000000a                    : strcmp.obj (.text)
+                  003eeda1    0000000a                    : strlen.obj (.text)
+                  003eedab    00000009                    : _lock.obj (.text)
+                  003eedb4    00000009                    : strcpy.obj (.text)
+                  003eedbd    00000008     DSP280x_CodeStartBranch.obj (.text)
+                  003eedc5    00000007     rts2800_ml.lib : memset.obj (.text)
+                  003eedcc    00000003     csl_v01.03.l280x : DSP280x_DBGIER.obj (.text)
 
-.econst    0    003eef7a    0000455b     
-                  003eef7a    00002880     interface.obj (.econst:_params)
-                  003f17fa    00000f40     interface.obj (.econst:_values)
-                  003f273a    000009ee     main.obj (.econst:_ElemNames)
-                  003f3128    00000200     interface.obj (.econst:_AddStr)
-                  003f3328    000000aa     interface.obj (.econst:_groups)
-                  003f33d2    0000007d     btwt41.obj (.econst:.string)
-                  003f344f    00000001     --HOLE-- [fill = 0]
-                  003f3450    0000007d     rim_devices.obj (.econst:.string)
-                  003f34cd    00000001     --HOLE-- [fill = 0]
-                  003f34ce    00000007     serial_communication.obj (.econst:.string)
+.econst    0    003eedd0    0000455b     
+                  003eedd0    00002880     interface.obj (.econst:_params)
+                  003f1650    00000f40     interface.obj (.econst:_values)
+                  003f2590    000009ee     main.obj (.econst:_ElemNames)
+                  003f2f7e    00000200     interface.obj (.econst:_AddStr)
+                  003f317e    000000aa     interface.obj (.econst:_groups)
+                  003f3228    0000007d     btwt41.obj (.econst:.string)
+                  003f32a5    00000001     --HOLE-- [fill = 0]
+                  003f32a6    0000007d     rim_devices.obj (.econst:.string)
+                  003f3323    00000001     --HOLE-- [fill = 0]
+                  003f3324    00000007     serial_communication.obj (.econst:.string)
 
-.cinit     0    003f34d5    00001037     
-                  003f34d5    000005fc     main.obj (.cinit)
-                  003f3ad1    000002ee     interface.obj (.cinit)
-                  003f3dbf    00000220     protections.obj (.cinit)
-                  003f3fdf    000001e3     rim_devices.obj (.cinit)
-                  003f41c2    00000168     motor_control.obj (.cinit)
-                  003f432a    000000fd     display.obj (.cinit)
-                  003f4427    0000003e     im.obj (.cinit)
-                  003f4465    00000035     serial_communication.obj (.cinit)
-                  003f449a    00000016     csl_v01.03.l280x : DSP280x_Spi.obj (.cinit)
-                  003f44b0    00000014     btwt41.obj (.cinit)
-                  003f44c4    00000010     value_conv_v01.02.l28 : value_conv.obj (.cinit)
-                  003f44d4    0000000e     drv_modbus.obj (.cinit)
-                  003f44e2    0000000a     rts2800_ml.lib : _lock.obj (.cinit)
-                  003f44ec    0000000a                    : exit.obj (.cinit)
-                  003f44f6    00000007     csl_v01.03.l280x : DSP280x_Sci.obj (.cinit)
-                  003f44fd    00000005     VlvDrvCtrl.obj (.cinit)
-                  003f4502    00000004     at25xxx.obj (.cinit)
-                  003f4506    00000004     menu2x.obj (.cinit)
-                  003f450a    00000002     --HOLE-- [fill = 0]
+.cinit     0    003f332b    00001015     
+                  003f332b    000005ee     main.obj (.cinit)
+                  003f3919    000002ee     interface.obj (.cinit)
+                  003f3c07    00000220     protections.obj (.cinit)
+                  003f3e27    000001e3     rim_devices.obj (.cinit)
+                  003f400a    00000154     motor_control.obj (.cinit)
+                  003f415e    000000fd     display.obj (.cinit)
+                  003f425b    0000003e     im.obj (.cinit)
+                  003f4299    00000035     serial_communication.obj (.cinit)
+                  003f42ce    00000016     csl_v01.03.l280x : DSP280x_Spi.obj (.cinit)
+                  003f42e4    00000014     btwt41.obj (.cinit)
+                  003f42f8    00000010     value_conv_v01.02.l28 : value_conv.obj (.cinit)
+                  003f4308    0000000e     drv_modbus.obj (.cinit)
+                  003f4316    0000000a     rts2800_ml.lib : _lock.obj (.cinit)
+                  003f4320    0000000a                    : exit.obj (.cinit)
+                  003f432a    00000007     csl_v01.03.l280x : DSP280x_Sci.obj (.cinit)
+                  003f4331    00000005     VlvDrvCtrl.obj (.cinit)
+                  003f4336    00000004     at25xxx.obj (.cinit)
+                  003f433a    00000004     menu2x.obj (.cinit)
+                  003f433e    00000002     --HOLE-- [fill = 0]
 
 secureRamFuncs 
-*          0    003f450c    0000001f     RUN ADDR = 00000480
-                  003f450c    0000001f     csl_v01.03.l280x : DSP280x_SysCtrl.obj (secureRamFuncs)
+*          0    003f4340    0000001f     RUN ADDR = 00000480
+                  003f4340    0000001f     csl_v01.03.l280x : DSP280x_SysCtrl.obj (secureRamFuncs)
 
-IQmath     0    003f452b    000001da     
-                  003f452b    00000047     IQmath.l28 : IQ1div.obj (IQmath)
-                  003f4572    00000047                : IQ22div.obj (IQmath)
-                  003f45b9    00000047                : IQ24div.obj (IQmath)
-                  003f4600    00000047                : IQ25div.obj (IQmath)
-                  003f4647    00000047                : IQ7div.obj (IQmath)
-                  003f468e    00000042                : IQ24sqrt.obj (IQmath)
-                  003f46d0    0000000e                : IQ5rmpy.obj (IQmath)
-                  003f46de    0000000d                : IQ22rmpy.obj (IQmath)
-                  003f46eb    0000000d                : IQ24rmpy.obj (IQmath)
-                  003f46f8    0000000d                : IQ25rmpy.obj (IQmath)
+IQmath     0    003f435f    000001da     
+                  003f435f    00000047     IQmath.l28 : IQ1div.obj (IQmath)
+                  003f43a6    00000047                : IQ22div.obj (IQmath)
+                  003f43ed    00000047                : IQ24div.obj (IQmath)
+                  003f4434    00000047                : IQ25div.obj (IQmath)
+                  003f447b    00000047                : IQ7div.obj (IQmath)
+                  003f44c2    00000042                : IQ24sqrt.obj (IQmath)
+                  003f4504    0000000e                : IQ5rmpy.obj (IQmath)
+                  003f4512    0000000d                : IQ22rmpy.obj (IQmath)
+                  003f451f    0000000d                : IQ24rmpy.obj (IQmath)
+                  003f452c    0000000d                : IQ25rmpy.obj (IQmath)
 
-.switch    0    003f4706    000000a4     
-                  003f4706    0000008c     menu2x.obj (.switch)
-                  003f4792    00000018     im.obj (.switch)
+.switch    0    003f453a    000000a4     
+                  003f453a    0000008c     menu2x.obj (.switch)
+                  003f45c6    00000018     im.obj (.switch)
 
 codestart 
 *          0    003f7ff6    00000002     
@@ -417,98 +417,97 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 address    name
 --------   ----
 003e8000   .text
-003eee94   C$$EXIT
-003eeead   FS$$CMP
-003eee19   I$$DIV
-003eee2a   I$$MOD
-003eef37   U$$DIV
-003eef3c   U$$MOD
-003eef0d   U$$TOFS
-003eeeda   UL$$TOFS
-003eed2b   _ADT7301_Update
-003edd51   _AT25XXX_Init
-003eded9   _AT25XXX_ReadByte
-003ede9d   _AT25XXX_ReadStatus
-003edd6d   _AT25XXX_Update
-003eded0   _AT25XXX_WaitBusy
-003edeff   _AT25XXX_WriteByte
-003edf3a   _AT25XXX_WriteDisable
-003edf27   _AT25XXX_WriteEnable
-003edeb7   _AT25XXX_WriteStatus
-00008dd7   _AbsSpeed
+003eece9   C$$EXIT
+003eed02   FS$$CMP
+003eec6e   I$$DIV
+003eec7f   I$$MOD
+003eed8c   U$$DIV
+003eed91   U$$MOD
+003eed62   U$$TOFS
+003eed2f   UL$$TOFS
+003eeb80   _ADT7301_Update
+003edba9   _AT25XXX_Init
+003edd31   _AT25XXX_ReadByte
+003edcf5   _AT25XXX_ReadStatus
+003edbc5   _AT25XXX_Update
+003edd28   _AT25XXX_WaitBusy
+003edd57   _AT25XXX_WriteByte
+003edd92   _AT25XXX_WriteDisable
+003edd7f   _AT25XXX_WriteEnable
+003edd0f   _AT25XXX_WriteStatus
+00008de1   _AbsSpeed
 00000b00   _AdcMirror
 00007100   _AdcRegs
-003eaaab   _AddControl
-003f3128   _AddStr
-003eadd7   _AlgControl
+003e9a85   _AddControl
+003f2f7e   _AddStr
+003e9eb9   _AlgControl
 0000874f   _AnUIArray
-00008dcb   _Ang
-00008dc5   _AngleUI
-003eee06   _ApFilter1Calc
-003eedec   _ApFilter1Init
-003eede8   _ApFilter1Reset
-003eecf2   _ApFilter3Calc
-003eecd6   _ApFilter3Init
-003eeccb   _ApFilter3Reset
-003edc87   _AtMegaAvagoEncoderCalc
-003edc17   _AvagoEncoderCalc
-003ee3a0   _Average2PhaseIntegral
-003ee391   _AverageCalc
-003ee37e   _AverageDigCalc
-003ee36a   _AverageDigInt
-003ee350   _AverageIntIntegral
-003ee339   _AverageUnsIntegral
-003ed8eb   _BinToStr
-003ed8cf   _BinToStr4s
-0000872b   _BlinkTimer
-003eac49   _BlkSignalization
-0000928d   _BlockTemper
+00008dc6   _Ang
+00008ddc   _AngleUI
+003eec5b   _ApFilter1Calc
+003eec41   _ApFilter1Init
+003eec3d   _ApFilter1Reset
+003eeb47   _ApFilter3Calc
+003eeb2b   _ApFilter3Init
+003eeb20   _ApFilter3Reset
+003edadf   _AtMegaAvagoEncoderCalc
+003eda6f   _AvagoEncoderCalc
+003ee1f8   _Average2PhaseIntegral
+003ee1e9   _AverageCalc
+003ee1d6   _AverageDigCalc
+003ee1c2   _AverageDigInt
+003ee1a8   _AverageIntIntegral
+003ee191   _AverageUnsIntegral
+003ed743   _BinToStr
+003ed727   _BinToStr4s
+0000871b   _BlinkTimer
+003e9d07   _BlkSignalization
+00009280   _BlockTemper
 00009a40   _Bluetooth
-003ed0c3   _BluetoothRxHandler
-003ed0d6   _BluetoothTxHandler
-00008dce   _BreakFlag
-003ee3f9   _BtHardwareSetup
-003ed0dc   _BtTimer
-003ecf65   _BtWTInit
-003ecf72   _BtWTUpdate
-00009300   _BtnClose
-00009288   _BtnLevel
-0000872e   _BtnOldStatus
-00009350   _BtnOpen
-00009285   _BtnStatus
-000092de   _BtnStop_DU
-00009310   _BtnStop_MU
-00009284   _BtnTout
+003ecf1b   _BluetoothRxHandler
+003ecf2e   _BluetoothTxHandler
+00008dc7   _BreakFlag
+003ee251   _BtHardwareSetup
+003ecf34   _BtTimer
+003ecdbd   _BtWTInit
+003ecdca   _BtWTUpdate
+00009310   _BtnClose
+00009284   _BtnLevel
+0000871c   _BtnOldStatus
+00009300   _BtnOpen
+00009286   _BtnStatus
+000092ee   _BtnStop_DU
+000092de   _BtnStop_MU
+00009285   _BtnTout
 0000980c   _BvR
 00009800   _BvS
 00009818   _BvT
-003ece38   _CalcClbAbsRev
-003ece76   _CalcClbCycle
-003ece33   _CalcClbGearInv
-003ece4c   _CalcClbGearRev
-003ece66   _CalcClbPercentToAbs
+003ecc90   _CalcClbAbsRev
+003eccce   _CalcClbCycle
+003ecc8b   _CalcClbGearInv
+003ecca4   _CalcClbGearRev
+003eccbe   _CalcClbPercentToAbs
 00008800   _Calib
-003e8ca9   _CalibStop
-003ecbb7   _Calibration
+003e8a9f   _CalibStop
+003eca0f   _Calibration
 0000870a   _CancelTimer
-003eec4e   _CheckRange
-003ee409   _CheckSciCommErr
-003ed0e5   _CheckString
-003eae1e   _ClbControl
-00008719   _ClearLogFlag
-0000871e   _ClearLogSource
-003ed03a   _ClearValues
-003eef1d   _ConfigCpuTimer
-00009283   _ContStopErrTimer
-00009287   _ContTest
-00009280   _ContTestTimer
-003e8ae9   _ContactorControl
-003e8c4e   _ControlMode
-00008003   _CpuTime
-00008001   _CpuTime1
-00008002   _CpuTime2
-00008000   _CpuTimeMax
-003ee557   _CpuTimer0IsrHandler
+003eeaa3   _CheckRange
+003ee261   _CheckSciCommErr
+003ecf3d   _CheckString
+003e9f00   _ClbControl
+00008710   _ClearLogFlag
+0000870d   _ClearLogSource
+003ece92   _ClearValues
+003eed72   _ConfigCpuTimer
+0000928f   _ContStopErrTimer
+0000928e   _ContTest
+00009290   _ContTestTimer
+003e8a4b   _ControlMode
+00008002   _CpuTime
+00008003   _CpuTime1
+00008000   _CpuTime2
+00008001   _CpuTimeMax
+003ee3ac   _CpuTimer0IsrHandler
 00000c00   _CpuTimer0Regs
 00000c08   _CpuTimer1Regs
 00000c10   _CpuTimer2Regs
@@ -516,62 +515,62 @@ address    name
 00009a00   _CsAtBusy
 003f7ff8   _CsmPwl
 00000ae0   _CsmRegs
-003e900e   _CubCalc
-003e8f74   _CubInit
-003e8fe2   _CubRefresh
+003e8dfe   _CubCalc
+003e8d64   _CubInit
+003e8dd2   _CubRefresh
 00008754   _CurrArray
 00009487   _CurrentLogCnt
 00009486   _CurrentLogRec
-003eeb03   _DAC7513_Update
-003edad5   _DISPL_AddSymb
-003edaad   _DISPL_Update
-003ee61e   _DS1305_Init
-003ee634   _DS1305_Read
-003ee64b   _DS1305_Update
-003ee63f   _DS1305_Write
+003ee958   _DAC7513_Update
+003ed92d   _DISPL_AddSymb
+003ed905   _DISPL_Update
+003ee473   _DS1305_Init
+003ee489   _DS1305_Read
+003ee4a0   _DS1305_Update
+003ee494   _DS1305_Write
 000092c0   _Dac
-003ea4c1   _DataBufferPre
+003e947a   _DataBufferPre
 00008715   _DataError
-003ea3ef   _DataSetting
+003e93ad   _DataSetting
 00009879   _DateSeparator
-003ed897   _DateToStr
-003ed85e   _DateToStr4s
+003ed6ef   _DateToStr
+003ed6b6   _DateToStr4s
 00009a01   _DbgDiscrIn
-00008de3   _DbgEncoder
-0000870f   _DbgLog
-00008de9   _DbgStop
-00008dca   _DebugStartDelayCnt
-003ed808   _DecToStr
-003ed7de   _DecToStr4s
+00008dd9   _DbgEncoder
+00008714   _DbgLog
+00008de0   _DbgStop
+00008dc4   _DebugStartDelayCnt
+003ed660   _DecToStr
+003ed636   _DecToStr4s
 0000870c   _DefAddr
 00008718   _DefCode
 00008717   _DefFlag
 000096d6   _Defects
-003ecd0a   _DefineCalibParams
-003e88ad   _DefineCtrlParams
-003eeeed   _DelayUs
+003ecb62   _DefineCalibParams
+003e88cd   _DefineCtrlParams
+003eed42   _DelayUs
 00000880   _DevEmuRegs
-003ee311   _DiffInputCalc
-003eec70   _DisableDog
-003eb9f0   _DiscrInOutTestObserver
-0000928f   _DisplTesNum
+003ee169   _DiffInputCalc
+003eeac5   _DisableDog
+003eb8fc   _DiscrInOutTestObserver
+0000928a   _DisplTesNum
 00009440   _Display
-003edae9   _DisplayReset
-0000871b   _DisplayRestartFlag
-0000871a   _DisplayRestartTimer
-003ea385   _DisplayStart
-00008727   _DisplayTimer
-00008dfa   _Dmc
-003e8eca   _DmcControlRefresh
-003e871f   _DmcIndication1
-003e87e5   _DmcIndication2
-00008dd4   _DmcRefrState
-003ec213   _DownloadFunc
+003ed941   _DisplayReset
+0000870f   _DisplayRestartFlag
+00008709   _DisplayRestartTimer
+003e9343   _DisplayStart
+0000870b   _DisplayTimer
+00008df4   _Dmc
+003e8cba   _DmcControlRefresh
+003e8714   _DmcIndication1
+003e87da   _DmcIndication2
+00008dd7   _DmcRefrState
+003ec06b   _DownloadFunc
 00009730   _DrvT
 000096c0   _DrvTTout
 000092aa   _Ds1305
 00008ddb   _DynBrakeEnable
-00008dd0   _DynModeTimer
+00008dd3   _DynModeTimer
 00006040   _ECanaLAMRegs
 000060c0   _ECanaMOTORegs
 00006080   _ECanaMOTSRegs
@@ -586,8 +585,8 @@ address    name
 00006a20   _ECap2Regs
 00006a40   _ECap3Regs
 00006a60   _ECap4Regs
-003eb8c9   _EEPROM_Func
-003eb8c2   _EEPROM_Update
+003eb7d5   _EEPROM_Func
+003eb7ce   _EEPROM_Update
 00006800   _EPwm1Regs
 00006840   _EPwm2Regs
 00006880   _EPwm3Regs
@@ -596,30 +595,30 @@ address    name
 00006940   _EPwm6Regs
 00006b00   _EQep1Regs
 00006b40   _EQep2Regs
-00009380   _Eeprom1
-00009360   _Eeprom2
-003edb8b   _EleSyEncoderCalc
-003f273a   _ElemNames
-003ee419   _EnableBtRx
-003ee420   _EnableBtTx
-003ea8b7   _EnableEdit
-003eedd5   _EnableInterrupts
+00009360   _Eeprom1
+00009380   _Eeprom2
+003ed9e3   _EleSyEncoderCalc
+003f2590   _ElemNames
+003ee271   _EnableBtRx
+003ee278   _EnableBtTx
+003e988d   _EnableEdit
+003eec2a   _EnableInterrupts
 00009392   _Encoder
-003eb6ce   _EngPhOrdPrt
+003eb5a7   _EngPhOrdPrt
 000096c6   _EngPhOrdValue
 0000987e   _ExpNextStateRdy
-00009281   _ExtReg
-003eb3a4   _FaultIndication
+00009288   _ExtReg
+003eb294   _FaultIndication
 000096c1   _Fault_Delay
 000096d2   _Faults
 00000a80   _FlashRegs
 0000987b   _FloatPositive
 0000987a   _FloatSeparator
-003edb4b   _FrabaEncoderCalc
-00008df4   _GearRatioDef
-003ea65a   _GetCurrentCmd
-003ea974   _GetExpressState
-003ea928   _GetExpressText
+003ed9a3   _FrabaEncoderCalc
+00008dee   _GearRatioDef
+003e9630   _GetCurrentCmd
+003e994a   _GetExpressState
+003e98fe   _GetExpressText
 00006f80   _GpioCtrlRegs
 00006fc0   _GpioDataRegs
 00006fe0   _GpioIntRegs
@@ -628,10 +627,10 @@ address    name
 00008730   _GrC
 00008734   _GrD
 00008738   _GrE
-00008736   _GrG
-0000873c   _GrH
-003ed7b7   _HexToStr
-003ed787   _HexToStr4s
+0000873c   _GrG
+00008736   _GrH
+003ed60f   _HexToStr
+003ed5df   _HexToStr4s
 000096c4   _HighTemper
 00007900   _I2caRegs
 000096e6   _I2tMax
@@ -694,105 +693,102 @@ address    name
 00008e20   _IW
 00008f00   _IWfltr
 00008794   _Icons
-00008dee   _Iload
+00008de8   _Iload
 00008b00   _Im
-003eaf31   _ImBufferReader
+003ea013   _ImBufferReader
 0000948d   _ImCmdLogAddrsTable
 00009492   _ImEvLogBufAddrsTable
 0000949e   _ImEvLogMainAddrsTable
 00009488   _ImParamLogAddrsTable
 00008940   _ImReadBuf
-003ec2bb   _ImReceiveData
-003ec154   _ImReset
-003ec313   _ImTimer
-003ec130   _ImUpdate
+003ec113   _ImReceiveData
+003ebfac   _ImReset
+003ec16b   _ImTimer
+003ebf88   _ImUpdate
 00008ec0   _Imfltr
-00008dc7   _Imid
-00008dc8   _Imidpr
+00008dcc   _Imid
+00008dc9   _Imidpr
 00000480   _InitFlash
-003ed403   _InitHardware
-003eecb8   _InitPeripheralClocks
-003eedb6   _InitPieCtrl
-003eeec9   _InitPieVectTable
-003eec78   _InitPll
-003eeaed   _InitSciaGpio
-003eead7   _InitScibGpio
-003ee7cf   _InitSpiaGpio
-003ee7b7   _InitSpibGpio
-003ee796   _InitSpicGpio
-003ee777   _InitSpidGpio
-003eecc4   _InitSysCtrl
-00008dc6   _Inom
+003ed25b   _InitHardware
+003eeb0d   _InitPeripheralClocks
+003eec0b   _InitPieCtrl
+003eed1e   _InitPieVectTable
+003eeacd   _InitPll
+003ee942   _InitSciaGpio
+003ee92c   _InitScibGpio
+003ee624   _InitSpiaGpio
+003ee60c   _InitSpibGpio
+003ee5eb   _InitSpicGpio
+003ee5cc   _InitSpidGpio
+003eeb19   _InitSysCtrl
+00008dde   _Inom
 00008e54   _InomDef
-003ea3a5   _InterfIndication
+003e9363   _InterfIndication
 00008716   _InterfRefrState
-003ea295   _InterfaceInit
-003ea46c   _InterfaceRefresh
-00008df1   _Ipr
-00008721   _IrImpCount
-003eb463   _IsDefectExist
+003e9259   _InterfaceInit
+003e9425   _InterfaceRefresh
+00008deb   _Ipr
+00008728   _IrImpCount
+003eb353   _IsDefectExist
 0000870e   _IsDriveTypeShow
-003eb57a   _IsFaultExist
+003eb46a   _IsFaultExist
 000096c3   _IsShcReset
-00008ddc   _KickCounter
-00008de0   _KickModeEnable
-00008dd9   _KickModeTimer
-00008dd6   _KickSetAngle
-003eec40   _LIntersection
-0000872c   _LcdEnable
+00008de3   _KickCounter
+00008dce   _KickModeEnable
+00008de5   _KickModeTimer
+00008dd8   _KickSetAngle
+003eea95   _LIntersection
+00008727   _LcdEnable
 00008100   _List0
 00008180   _List1
 00008540   _List2
 00008240   _List3
 000083c0   _List4
 00008080   _ListM
-003eab4d   _LocalControl
+003e9b27   _LocalControl
 00008780   _LogCmd
-003ea6e4   _LogCmdControl
-003ee214   _LogCmdUpdate
+003e96ba   _LogCmdControl
+003ee06c   _LogCmdUpdate
 000088c0   _LogEv
-00008714   _LogEvBufCurIndex
-00008712   _LogEvBufIndex
-00008713   _LogEvBufSeconds
+00008722   _LogEvBufCurIndex
+00008700   _LogEvBufIndex
+0000872c   _LogEvBufSeconds
 00008880   _LogEvBuffer
-003ea563   _LogEvControl
-00008711   _LogEvMainDataFlag
-00008702   _LogEvSecondsRead
-003ee11f   _LogEvUpdate
-003ee279   _LogInputCalc
+003e951c   _LogEvControl
+00008724   _LogEvMainDataFlag
+0000872b   _LogEvSecondsRead
+003edf77   _LogEvUpdate
+003ee0d1   _LogInputCalc
 000087c0   _LogParam
-003ea797   _LogParamControl
-003ea76a   _LogParamMbExec
-003ee24d   _LogParamUpdate
-003e8e16   _LowPowerControl
-00008dd1   _LowPowerReset
-00008dd8   _LowPowerTimer
-003e9e3b   _MENU_Display
-003e9e90   _MENU_ReadDcr
-003e9e00   _MENU_Update
-003eec37   _Max3IntValue
-003eec2b   _Max3UnsValue
+003e976d   _LogParamControl
+003e9740   _LogParamMbExec
+003ee0a5   _LogParamUpdate
+003e8c0c   _LowPowerControl
+00008dd6   _LowPowerReset
+00008dd5   _LowPowerTimer
+003eab19   _MENU_Display
+003eab6e   _MENU_ReadDcr
+003eaade   _MENU_Update
+003eea8c   _Max3IntValue
+003eea80   _Max3UnsValue
 00009500   _Mb
 000094c0   _MbConnect
 000094c8   _MbTmpData
 00008840   _Mcu
-003eeefd   _MemCopy
+003eed52   _MemCopy
 000094b7   _MemDbg
 00008a00   _Menu
-003eec1f   _Mid3IntValue
-003eec13   _Mid3UnsValue
-003eec0a   _Min3IntValue
-003eebfd   _Min3UnsValue
-003ec51a   _ModBusControl
+003eea74   _Mid3IntValue
+003eea68   _Mid3UnsValue
+003eea5f   _Min3IntValue
+003eea52   _Min3UnsValue
+003ec372   _ModBusControl
 00008e30   _MomMaxDef
-003e9181   _MonitorUpdate1
-003e869b   _MotorControlInit
-003e86fa   _MotorControlUpdate
+003e8f71   _MonitorUpdate1
+003e869d   _MotorControlInit
+003e86fc   _MotorControlUpdate
 00009864   _Muf
 000096cb   _MuffFlag
-003e898c   _NetMomitor
-00008dc1   _NetMonitorFlag
-00008dc0   _Net_Mon_Timer
 000096c8   _OtTime
 00009798   _OvR
 00009830   _OvR_Def
@@ -804,180 +800,177 @@ address    name
 0000984c   _OvT_Def
 000097f0   _OvT_max
 000096c9   _OverWayFlag
-003eee5c   _PFUNC_blkRead
-003eee61   _PFUNC_blkWrite
-003eee66   _PFUNC_strRead
-003eee6c   _PFUNC_strWrite
-003eee72   _PFUNC_wordRead
-003eee76   _PFUNC_wordWrite
-003eeec4   _PHANTOM_ISR
-00008dcf   _PauseModeTimer
-00008710   _PduKeyFlag
+003eecb1   _PFUNC_blkRead
+003eecb6   _PFUNC_blkWrite
+003eecbb   _PFUNC_strRead
+003eecc1   _PFUNC_strWrite
+003eecc7   _PFUNC_wordRead
+003eeccb   _PFUNC_wordWrite
+003eed19   _PHANTOM_ISR
+00008dd0   _PauseModeTimer
+00008711   _PduKeyFlag
 00008e4a   _PhEl
 000096c2   _PhOrdTimer
 00008e6c   _Phifltr
 00009718   _PhlU
 00009700   _PhlV
 0000970c   _PhlW
-003ee4ca   _PiCalcCRC
+003ee322   _PiCalcCRC
 00009a0f   _PiData
-003ee433   _PiUpdate
+003ee28b   _PiUpdate
 00000ce0   _PieCtrlRegs
 00000d00   _PieVectTable
-003e9341   _PowerCheck
-00008728   _PowerEnable
-00008dc2   _PowerLostTimer
-00008dcc   _PowerLostTimer2
-003ea44c   _PowerOff
-0000870b   _PowerOffCnt
-003ea421   _PowerOn
-00008701   _PowerOnCnt
-00008ddd   _PowerSupplyCnt
-00008dcd   _PowerSupplyEnable
+003e9131   _PowerCheck
+0000871f   _PowerEnable
+003e940a   _PowerOff
+00008701   _PowerOffCnt
+003e93df   _PowerOn
+00008706   _PowerOnCnt
+00008dc5   _PowerSupplyCnt
+00008dc2   _PowerSupplyEnable
 00008024   _Prd0
-00008010   _Prd1
-00008054   _Prd2
-00008040   _Prd3
-00008068   _Prd4
-003eea3d   _PrdCreate
-003ee99b   _PrdElemExecute
-003ee9fc   _PrdExecute
-003ee9d4   _PrdInsert
-0000872d   _PrevCycle
+00008040   _Prd1
+00008010   _Prd2
+00008068   _Prd3
+00008054   _Prd4
+003ee892   _PrdCreate
+003ee7f0   _PrdElemExecute
+003ee851   _PrdExecute
+003ee829   _PrdInsert
+0000871a   _PrevCycle
 00008743   _PrevLogAddr
 00008740   _PrevLogCount
-00008dd2   _PreventModeTimer
-003eb2cf   _ProtectionsClear
-003eb30d   _ProtectionsControl
-003eb115   _ProtectionsEnable
-003eb0e3   _ProtectionsInit
-003eb2f6   _ProtectionsReset
-003eb108   _ProtectionsUpdate
-003eeb8f   _PrtCalc
+00008dd1   _PreventModeTimer
+003eb1e7   _ProtectionsClear
+003eb221   _ProtectionsControl
+003eb03c   _ProtectionsEnable
+003eaff1   _ProtectionsInit
+003eb20e   _ProtectionsReset
+003eb016   _ProtectionsUpdate
+003ee9e4   _PrtCalc
 00009291   _Pult
-00008723   _PultActiveTimer
-003ee804   _PultImpulseCapture
-003ee869   _PultKeyExecute
-003ee852   _PultTimer
-003edfd9   _RTC_DefMaxDay
-003ee019   _RTC_GetDate
-003ee001   _RTC_GetTime
-003ee087   _RTC_SetDate
-003ee03a   _RTC_SetTime
-003edfb9   _RTC_Tick
-003ee0e0   _RTC_TimeCorr
-003edf4d   _RTC_Update
+0000872d   _PultActiveTimer
+003ee659   _PultImpulseCapture
+003ee6be   _PultKeyExecute
+003ee6a7   _PultTimer
+003ede31   _RTC_DefMaxDay
+003ede71   _RTC_GetDate
+003ede59   _RTC_GetTime
+003ededf   _RTC_SetDate
+003ede92   _RTC_SetTime
+003ede11   _RTC_Tick
+003edf38   _RTC_TimeCorr
+003edda5   _RTC_Update
 00008c00   _Ram
 000087d8   _RamTek
-00009290   _RamUpdFlag
-0000928e   _ReadFlag
-00008708   _ReadLogFlag
-003eb8ac   _ReadParams
-003ee427   _ReceiveBtByte
-003ec15d   _ReceiveFunc
-003ea3cc   _RefreshData
-003eac26   _RemoteControl
-003eb841   _RimDevicesInit
-003eb86c   _RimDevicesRefresh
-003eb91f   _RimIndication
-00009286   _RimRefrState
+00009282   _RamUpdFlag
+00009281   _ReadFlag
+0000872e   _ReadLogFlag
+003eb7b8   _ReadParams
+003ee27f   _ReceiveBtByte
+003ebfb5   _ReceiveFunc
+003e938a   _RefreshData
+003e9c0b   _RemoteControl
+003eb719   _RimDevicesInit
+003eb744   _RimDevicesRefresh
+003eb82b   _RimIndication
+0000928c   _RimRefrState
 00009298   _Rtc
-003eb96e   _RtcControl
-00009282   _RtcStart
+003eb87a   _RtcControl
+00009287   _RtcStart
 00008004   _Rtos
-003ee9b8   _RtosExecute
-00008dd5   _RunStatus
+003ee80d   _RtosExecute
+00008dd2   _RunStatus
 000094b2   _RxState
-003eeace   _SCI_getstatus
-003eeaa2   _SCI_init
-003eea99   _SCI_recieve
-003eea8d   _SCI_reset
-003eea81   _SCI_rx_disable
-003eea75   _SCI_rx_enable
-003eea6a   _SCI_transmit
-003eea5e   _SCI_tx_disable
-003eea52   _SCI_tx_enable
+003ee923   _SCI_getstatus
+003ee8f7   _SCI_init
+003ee8ee   _SCI_recieve
+003ee8e2   _SCI_reset
+003ee8d6   _SCI_rx_disable
+003ee8ca   _SCI_rx_enable
+003ee8bf   _SCI_transmit
+003ee8b3   _SCI_tx_disable
+003ee8a7   _SCI_tx_enable
 00008db0   _SPI_Idents
-003ee74a   _SPI_init
-003ee73f   _SPI_ready
-003ee736   _SPI_recieve
-003ee71c   _SPI_send
-003ee70a   _SPI_transmit
-00008ddf   _SaveContactorDirection
-00008dd3   _SaveDirection
+003ee59f   _SPI_init
+003ee594   _SPI_ready
+003ee58b   _SPI_recieve
+003ee571   _SPI_send
+003ee55f   _SPI_transmit
+00008dcd   _SaveContactorDirection
+00008dcf   _SaveDirection
 000094b8   _SciRegs
 00007050   _SciaRegs
-003ee5c1   _SciaRxIsrHandler
-003ee5db   _SciaTxIsrHandler
+003ee416   _SciaRxIsrHandler
+003ee430   _SciaTxIsrHandler
 00007750   _ScibRegs
-003ee58d   _ScibRxIsrHandler
-003ee5a7   _ScibTxIsrHandler
-003ed045   _SendCommandOne
-003ed083   _SendCommandTwo
-003ec2d5   _SendData
-003ed125   _SendOneString
-003ed148   _SendTwoString
-003ec510   _SerialCommInit
-003ec5fb   _SerialCommRefresh
-003ec56d   _SerialCommRxHandler
-003ec5cd   _SerialCommTimings
-003ec5a2   _SerialCommTxHandler
-003ec528   _SerialCommUpdate
-003ee3c1   _SerialCommunicationInit
-003eec66   _ServiceDog
-003eef77   _SetDBGIER
-003eb9c5   _SetPlisAddr
-003eb8f4   _SetPlisData
+003ee3e2   _ScibRxIsrHandler
+003ee3fc   _ScibTxIsrHandler
+003ece9d   _SendCommandOne
+003ecedb   _SendCommandTwo
+003ec12d   _SendData
+003ecf7d   _SendOneString
+003ecfa0   _SendTwoString
+003ec368   _SerialCommInit
+003ec453   _SerialCommRefresh
+003ec3c5   _SerialCommRxHandler
+003ec425   _SerialCommTimings
+003ec3fa   _SerialCommTxHandler
+003ec380   _SerialCommUpdate
+003ee219   _SerialCommunicationInit
+003eeabb   _ServiceDog
+003eedcc   _SetDBGIER
+003eb8d1   _SetPlisAddr
+003eb800   _SetPlisData
 000096ca   _ShCLevel
-003ea81d   _ShowDriveType
-0000870d   _ShowDriveTypeTimer
+003e97f3   _ShowDriveType
+00008712   _ShowDriveTypeTimer
 00008e80   _Sifu
-003e9376   _SifuControlForDynBrake
-003e8dd2   _SpeedCalc
+003e9166   _SifuControlForDynBrake
+003e8bc8   _SpeedCalc
 00008db8   _SpiRegs
 00007040   _SpiaRegs
 00007740   _SpibRegs
 00007760   _SpicRegs
 00007780   _SpidRegs
-003ea87e   _StartDispl
-003e8b85   _StartPowerControl
-003e8950   _StopPowerControl
-00008dc3   _StopSetTimer
+003e9854   _StartDispl
+003e899f   _StartPowerControl
+003e8970   _StopPowerControl
 00009a02   _StrDev
-003ed77e   _StrToBin
-003ed761   _StrToDate
-003ed737   _StrToDec
-003ed720   _StrToHex
-003ed70c   _StrToTime
+003ed5d6   _StrToBin
+003ed5b9   _StrToDate
+003ed58f   _StrToDec
+003ed578   _StrToHex
+003ed564   _StrToTime
 00007010   _SysCtrlRegs
-003eba36   _TekModbusParamsUpdate
-00008709   _TempMuDu
+003eb942   _TekModbusParamsUpdate
+00008713   _TempMuDu
 000092a0   _TempSens
-0000928c   _TemperTimer
-0000928b   _TenEnable
-00008dda   _TestModeTimer
+00009283   _TemperTimer
+0000928d   _TenEnable
+00008de4   _TestModeTimer
 00009758   _Th
 00009740   _Th_Err
 00009878   _TimeSeparator
-003ed6e6   _TimeToStr
-003ed6c5   _TimeToStr4s
+003ed53e   _TimeToStr
+003ed51d   _TimeToStr4s
 00009724   _Tl
 00008f80   _Torq
 0000874a   _TorqArray
-003e8cfa   _TorqueCalc
-00008dde   _TorqueMax
-00008de1   _TorqueUser
+003e8af0   _TorqueCalc
+00008dc3   _TorqueMax
+00008dc8   _TorqueUser
 0000876a   _TqAngSf
 0000875a   _TqAngUI
 00008762   _TqCurr
 00008e40   _TransCurrDef
-003ee42b   _TransmitBtByte
+003ee283   _TransmitBtByte
 00008ed6   _Trqfltr
-003ead33   _TsSignalization
-00009340   _TuClose
+003e9df1   _TsSignalization
+00009350   _TuClose
 00009330   _TuDu
 000092ce   _TuMu
-000092ee   _TuOpen
+00009340   _TuOpen
 00009320   _TuStop
 00008e10   _UR
 00008ea6   _URfltr
@@ -986,7 +979,7 @@ address    name
 00008e00   _UT
 00008f56   _UTfltr
 00008e5e   _Umfltr
-00008dc4   _Umid
+00008dc0   _Umid
 00008de2   _UporModeTimer
 000096c7   _UtTime
 000097b0   _UvR
@@ -995,93 +988,93 @@ address    name
 00009780   _UvS_Def
 000097c0   _UvT
 00009770   _UvT_Def
-003ecb33   _ValveDriveMove
-003ecaeb   _ValveDriveStop
-003ecad2   _ValveDriveUpdate
+003ec98b   _ValveDriveMove
+003ec943   _ValveDriveStop
+003ec92a   _ValveDriveUpdate
 00008746   _VoltArray
 000097e4   _Vsk
 000096c5   _VskTimer
-003ea8d3   _WriteValue
+003e98a9   _WriteValue
 00007070   _XIntruptRegs
-00008dc9   _ZazorTimer
-003f452b   __IQ1div
-003f4572   __IQ22div
-003f46de   __IQ22rmpy
-003f45b9   __IQ24div
-003f46eb   __IQ24rmpy
-003f468e   __IQ24sqrt
-003f4600   __IQ25div
-003f46f8   __IQ25rmpy
-003f46d0   __IQ5rmpy
-003f4647   __IQ7div
+00008dca   _ZazorTimer
+003f435f   __IQ1div
+003f43a6   __IQ22div
+003f4512   __IQ22rmpy
+003f43ed   __IQ24div
+003f451f   __IQ24rmpy
+003f44c2   __IQ24sqrt
+003f4434   __IQ25div
+003f452c   __IQ25rmpy
+003f4504   __IQ5rmpy
+003f447b   __IQ7div
 00000200   __STACK_END
 00000200   __STACK_SIZE
 00000001   __TI_args_main
 ffffffff   ___binit__
 ffffffff   ___c_args__
-003f34d5   ___cinit__
-003eef7a   ___etext__
-003eee3b   ___memcpy_ff
+003f332b   ___cinit__
+003eedcf   ___etext__
+003eec90   ___memcpy_ff
 ffffffff   ___pinit__
 003e8000   ___text__
-003eee79   __args_main
+003eecce   __args_main
 00009874   __cleanup_ptr
 00009876   __dtors_ptr
 000094be   __lock
-003eef5e   __nop
-003eef5a   __register_lock
-003eef56   __register_unlock
+003eedb3   __nop
+003eedaf   __register_lock
+003eedab   __register_unlock
 00000000   __stack
 000094bc   __unlock
-003eee94   _abort
+003eece9   _abort
 00009180   _buffer1
 00009080   _buffer2
-003eed72   _c_int00
-00008de5   _dot
-00008de4   _dot_max
-003ed46d   _drive1
-003ed689   _drive10
-003ed6c5   _drive11
-003ed6c5   _drive12
-003ed6c5   _drive13
-003ed6c5   _drive14
-003ed6c5   _drive15
-003ed6c5   _drive16
-003ed6c5   _drive17
-003ed6c5   _drive18
-003ed6c5   _drive19
-003ed4a9   _drive2
-003ed6c5   _drive20
-003ed4e5   _drive3
-003ed521   _drive4
-003ed55d   _drive5
-003ed599   _drive6
-003ed5d5   _drive7
-003ed611   _drive8
-003ed64d   _drive9
-003eee96   _exit
-003f3328   _groups
-003ee937   _ileg_fq_calc
-003ee8f8   _ileg_trn_calc
-003ee529   _main
-003eef70   _memset
-00008de8   _mon_index
-003eef7a   _params
-003ee8cc   _ph_order_trn
-00008dea   _program
-003f452b   _secureRamFuncs_loadend
-003f450c   _secureRamFuncs_loadstart
+003eebc7   _c_int00
+00008ddd   _dot
+00008dda   _dot_max
+003ed2c5   _drive1
+003ed4e1   _drive10
+003ed51d   _drive11
+003ed51d   _drive12
+003ed51d   _drive13
+003ed51d   _drive14
+003ed51d   _drive15
+003ed51d   _drive16
+003ed51d   _drive17
+003ed51d   _drive18
+003ed51d   _drive19
+003ed301   _drive2
+003ed51d   _drive20
+003ed33d   _drive3
+003ed379   _drive4
+003ed3b5   _drive5
+003ed3f1   _drive6
+003ed42d   _drive7
+003ed469   _drive8
+003ed4a5   _drive9
+003eeceb   _exit
+003f317e   _groups
+003ee78c   _ileg_fq_calc
+003ee74d   _ileg_trn_calc
+003ee381   _main
+003eedc5   _memset
+00008dcb   _mon_index
+003eedd0   _params
+003ee721   _ph_order_trn
+00008dc1   _program
+003f435f   _secureRamFuncs_loadend
+003f4340   _secureRamFuncs_loadstart
 00000480   _secureRamFuncs_runstart
-003e9288   _sifu_calc2
-003eef2c   _strchr
-003eef42   _strcmp
-003eef5f   _strcpy
-003eef4c   _strlen
-003f17fa   _values
+003e9078   _sifu_calc2
+003eed81   _strchr
+003eed97   _strcmp
+003eedb4   _strcpy
+003eeda1   _strlen
+003f1650   _values
 ffffffff   binit
-003f34d5   cinit
+003f332b   cinit
 003f7ff6   code_start
-003eef7a   etext
+003eedcf   etext
 ffffffff   pinit
 
 
@@ -1139,60 +1132,60 @@ address    name
 00007760   _SpicRegs
 00007780   _SpidRegs
 00007900   _I2caRegs
-00008000   _CpuTimeMax
-00008001   _CpuTime1
-00008002   _CpuTime2
-00008003   _CpuTime
+00008000   _CpuTime2
+00008001   _CpuTimeMax
+00008002   _CpuTime
+00008003   _CpuTime1
 00008004   _Rtos
-00008010   _Prd1
+00008010   _Prd2
 00008024   _Prd0
-00008040   _Prd3
-00008054   _Prd2
-00008068   _Prd4
+00008040   _Prd1
+00008054   _Prd4
+00008068   _Prd3
 00008080   _ListM
 00008100   _List0
 00008180   _List1
 00008240   _List3
 000083c0   _List4
 00008540   _List2
-00008701   _PowerOnCnt
-00008702   _LogEvSecondsRead
-00008708   _ReadLogFlag
-00008709   _TempMuDu
+00008700   _LogEvBufIndex
+00008701   _PowerOffCnt
+00008706   _PowerOnCnt
+00008709   _DisplayRestartTimer
 0000870a   _CancelTimer
-0000870b   _PowerOffCnt
+0000870b   _DisplayTimer
 0000870c   _DefAddr
-0000870d   _ShowDriveTypeTimer
+0000870d   _ClearLogSource
 0000870e   _IsDriveTypeShow
-0000870f   _DbgLog
-00008710   _PduKeyFlag
-00008711   _LogEvMainDataFlag
-00008712   _LogEvBufIndex
-00008713   _LogEvBufSeconds
-00008714   _LogEvBufCurIndex
+0000870f   _DisplayRestartFlag
+00008710   _ClearLogFlag
+00008711   _PduKeyFlag
+00008712   _ShowDriveTypeTimer
+00008713   _TempMuDu
+00008714   _DbgLog
 00008715   _DataError
 00008716   _InterfRefrState
 00008717   _DefFlag
 00008718   _DefCode
-00008719   _ClearLogFlag
-0000871a   _DisplayRestartTimer
-0000871b   _DisplayRestartFlag
-0000871e   _ClearLogSource
-00008721   _IrImpCount
-00008723   _PultActiveTimer
-00008727   _DisplayTimer
-00008728   _PowerEnable
-0000872b   _BlinkTimer
-0000872c   _LcdEnable
-0000872d   _PrevCycle
-0000872e   _BtnOldStatus
+0000871a   _PrevCycle
+0000871b   _BlinkTimer
+0000871c   _BtnOldStatus
+0000871f   _PowerEnable
+00008722   _LogEvBufCurIndex
+00008724   _LogEvMainDataFlag
+00008727   _LcdEnable
+00008728   _IrImpCount
+0000872b   _LogEvSecondsRead
+0000872c   _LogEvBufSeconds
+0000872d   _PultActiveTimer
+0000872e   _ReadLogFlag
 00008730   _GrC
 00008732   _GrB
 00008734   _GrD
-00008736   _GrG
+00008736   _GrH
 00008738   _GrE
 0000873a   _GrA
-0000873c   _GrH
+0000873c   _GrG
 00008740   _PrevLogCount
 00008743   _PrevLogAddr
 00008746   _VoltArray
@@ -1216,51 +1209,46 @@ address    name
 00008c00   _Ram
 00008db0   _SPI_Idents
 00008db8   _SpiRegs
-00008dc0   _Net_Mon_Timer
-00008dc1   _NetMonitorFlag
-00008dc2   _PowerLostTimer
-00008dc3   _StopSetTimer
-00008dc4   _Umid
-00008dc5   _AngleUI
-00008dc6   _Inom
-00008dc7   _Imid
-00008dc8   _Imidpr
-00008dc9   _ZazorTimer
-00008dca   _DebugStartDelayCnt
-00008dcb   _Ang
-00008dcc   _PowerLostTimer2
-00008dcd   _PowerSupplyEnable
-00008dce   _BreakFlag
-00008dcf   _PauseModeTimer
-00008dd0   _DynModeTimer
-00008dd1   _LowPowerReset
-00008dd2   _PreventModeTimer
-00008dd3   _SaveDirection
-00008dd4   _DmcRefrState
-00008dd5   _RunStatus
-00008dd6   _KickSetAngle
-00008dd7   _AbsSpeed
-00008dd8   _LowPowerTimer
-00008dd9   _KickModeTimer
-00008dda   _TestModeTimer
+00008dc0   _Umid
+00008dc1   _program
+00008dc2   _PowerSupplyEnable
+00008dc3   _TorqueMax
+00008dc4   _DebugStartDelayCnt
+00008dc5   _PowerSupplyCnt
+00008dc6   _Ang
+00008dc7   _BreakFlag
+00008dc8   _TorqueUser
+00008dc9   _Imidpr
+00008dca   _ZazorTimer
+00008dcb   _mon_index
+00008dcc   _Imid
+00008dcd   _SaveContactorDirection
+00008dce   _KickModeEnable
+00008dcf   _SaveDirection
+00008dd0   _PauseModeTimer
+00008dd1   _PreventModeTimer
+00008dd2   _RunStatus
+00008dd3   _DynModeTimer
+00008dd5   _LowPowerTimer
+00008dd6   _LowPowerReset
+00008dd7   _DmcRefrState
+00008dd8   _KickSetAngle
+00008dd9   _DbgEncoder
+00008dda   _dot_max
 00008ddb   _DynBrakeEnable
-00008ddc   _KickCounter
-00008ddd   _PowerSupplyCnt
-00008dde   _TorqueMax
-00008ddf   _SaveContactorDirection
-00008de0   _KickModeEnable
-00008de1   _TorqueUser
+00008ddc   _AngleUI
+00008ddd   _dot
+00008dde   _Inom
+00008de0   _DbgStop
+00008de1   _AbsSpeed
 00008de2   _UporModeTimer
-00008de3   _DbgEncoder
-00008de4   _dot_max
-00008de5   _dot
-00008de8   _mon_index
-00008de9   _DbgStop
-00008dea   _program
-00008dee   _Iload
-00008df1   _Ipr
-00008df4   _GearRatioDef
-00008dfa   _Dmc
+00008de3   _KickCounter
+00008de4   _TestModeTimer
+00008de5   _KickModeTimer
+00008de8   _Iload
+00008deb   _Ipr
+00008dee   _GearRatioDef
+00008df4   _Dmc
 00008e00   _UT
 00008e08   _IU
 00008e10   _UR
@@ -1285,37 +1273,37 @@ address    name
 00008f80   _Torq
 00009080   _buffer2
 00009180   _buffer1
-00009280   _ContTestTimer
-00009281   _ExtReg
-00009282   _RtcStart
-00009283   _ContStopErrTimer
-00009284   _BtnTout
-00009285   _BtnStatus
-00009286   _RimRefrState
-00009287   _ContTest
-00009288   _BtnLevel
-0000928b   _TenEnable
-0000928c   _TemperTimer
-0000928d   _BlockTemper
-0000928e   _ReadFlag
-0000928f   _DisplTesNum
-00009290   _RamUpdFlag
+00009280   _BlockTemper
+00009281   _ReadFlag
+00009282   _RamUpdFlag
+00009283   _TemperTimer
+00009284   _BtnLevel
+00009285   _BtnTout
+00009286   _BtnStatus
+00009287   _RtcStart
+00009288   _ExtReg
+0000928a   _DisplTesNum
+0000928c   _RimRefrState
+0000928d   _TenEnable
+0000928e   _ContTest
+0000928f   _ContStopErrTimer
+00009290   _ContTestTimer
 00009291   _Pult
 00009298   _Rtc
 000092a0   _TempSens
 000092aa   _Ds1305
 000092c0   _Dac
 000092ce   _TuMu
-000092de   _BtnStop_DU
-000092ee   _TuOpen
-00009300   _BtnClose
-00009310   _BtnStop_MU
+000092de   _BtnStop_MU
+000092ee   _BtnStop_DU
+00009300   _BtnOpen
+00009310   _BtnClose
 00009320   _TuStop
 00009330   _TuDu
-00009340   _TuClose
-00009350   _BtnOpen
-00009360   _Eeprom2
-00009380   _Eeprom1
+00009340   _TuOpen
+00009350   _TuClose
+00009360   _Eeprom1
+00009380   _Eeprom2
 00009392   _Encoder
 00009440   _Display
 00009486   _CurrentLogRec
@@ -1393,314 +1381,312 @@ address    name
 00009a40   _Bluetooth
 003e8000   .text
 003e8000   ___text__
-003e869b   _MotorControlInit
-003e86fa   _MotorControlUpdate
-003e871f   _DmcIndication1
-003e87e5   _DmcIndication2
-003e88ad   _DefineCtrlParams
-003e8950   _StopPowerControl
-003e898c   _NetMomitor
-003e8ae9   _ContactorControl
-003e8b85   _StartPowerControl
-003e8c4e   _ControlMode
-003e8ca9   _CalibStop
-003e8cfa   _TorqueCalc
-003e8dd2   _SpeedCalc
-003e8e16   _LowPowerControl
-003e8eca   _DmcControlRefresh
-003e8f74   _CubInit
-003e8fe2   _CubRefresh
-003e900e   _CubCalc
-003e9181   _MonitorUpdate1
-003e9288   _sifu_calc2
-003e9341   _PowerCheck
-003e9376   _SifuControlForDynBrake
-003e9e00   _MENU_Update
-003e9e3b   _MENU_Display
-003e9e90   _MENU_ReadDcr
-003ea295   _InterfaceInit
-003ea385   _DisplayStart
-003ea3a5   _InterfIndication
-003ea3cc   _RefreshData
-003ea3ef   _DataSetting
-003ea421   _PowerOn
-003ea44c   _PowerOff
-003ea46c   _InterfaceRefresh
-003ea4c1   _DataBufferPre
-003ea563   _LogEvControl
-003ea65a   _GetCurrentCmd
-003ea6e4   _LogCmdControl
-003ea76a   _LogParamMbExec
-003ea797   _LogParamControl
-003ea81d   _ShowDriveType
-003ea87e   _StartDispl
-003ea8b7   _EnableEdit
-003ea8d3   _WriteValue
-003ea928   _GetExpressText
-003ea974   _GetExpressState
-003eaaab   _AddControl
-003eab4d   _LocalControl
-003eac26   _RemoteControl
-003eac49   _BlkSignalization
-003ead33   _TsSignalization
-003eadd7   _AlgControl
-003eae1e   _ClbControl
-003eaf31   _ImBufferReader
-003eb0e3   _ProtectionsInit
-003eb108   _ProtectionsUpdate
-003eb115   _ProtectionsEnable
-003eb2cf   _ProtectionsClear
-003eb2f6   _ProtectionsReset
-003eb30d   _ProtectionsControl
-003eb3a4   _FaultIndication
-003eb463   _IsDefectExist
-003eb57a   _IsFaultExist
-003eb6ce   _EngPhOrdPrt
-003eb841   _RimDevicesInit
-003eb86c   _RimDevicesRefresh
-003eb8ac   _ReadParams
-003eb8c2   _EEPROM_Update
-003eb8c9   _EEPROM_Func
-003eb8f4   _SetPlisData
-003eb91f   _RimIndication
-003eb96e   _RtcControl
-003eb9c5   _SetPlisAddr
-003eb9f0   _DiscrInOutTestObserver
-003eba36   _TekModbusParamsUpdate
-003ec130   _ImUpdate
-003ec154   _ImReset
-003ec15d   _ReceiveFunc
-003ec213   _DownloadFunc
-003ec2bb   _ImReceiveData
-003ec2d5   _SendData
-003ec313   _ImTimer
-003ec510   _SerialCommInit
-003ec51a   _ModBusControl
-003ec528   _SerialCommUpdate
-003ec56d   _SerialCommRxHandler
-003ec5a2   _SerialCommTxHandler
-003ec5cd   _SerialCommTimings
-003ec5fb   _SerialCommRefresh
-003ecad2   _ValveDriveUpdate
-003ecaeb   _ValveDriveStop
-003ecb33   _ValveDriveMove
-003ecbb7   _Calibration
-003ecd0a   _DefineCalibParams
-003ece33   _CalcClbGearInv
-003ece38   _CalcClbAbsRev
-003ece4c   _CalcClbGearRev
-003ece66   _CalcClbPercentToAbs
-003ece76   _CalcClbCycle
-003ecf65   _BtWTInit
-003ecf72   _BtWTUpdate
-003ed03a   _ClearValues
-003ed045   _SendCommandOne
-003ed083   _SendCommandTwo
-003ed0c3   _BluetoothRxHandler
-003ed0d6   _BluetoothTxHandler
-003ed0dc   _BtTimer
-003ed0e5   _CheckString
-003ed125   _SendOneString
-003ed148   _SendTwoString
-003ed403   _InitHardware
-003ed46d   _drive1
-003ed4a9   _drive2
-003ed4e5   _drive3
-003ed521   _drive4
-003ed55d   _drive5
-003ed599   _drive6
-003ed5d5   _drive7
-003ed611   _drive8
-003ed64d   _drive9
-003ed689   _drive10
-003ed6c5   _TimeToStr4s
-003ed6c5   _drive11
-003ed6c5   _drive12
-003ed6c5   _drive13
-003ed6c5   _drive14
-003ed6c5   _drive15
-003ed6c5   _drive16
-003ed6c5   _drive17
-003ed6c5   _drive18
-003ed6c5   _drive19
-003ed6c5   _drive20
-003ed6e6   _TimeToStr
-003ed70c   _StrToTime
-003ed720   _StrToHex
-003ed737   _StrToDec
-003ed761   _StrToDate
-003ed77e   _StrToBin
-003ed787   _HexToStr4s
-003ed7b7   _HexToStr
-003ed7de   _DecToStr4s
-003ed808   _DecToStr
-003ed85e   _DateToStr4s
-003ed897   _DateToStr
-003ed8cf   _BinToStr4s
-003ed8eb   _BinToStr
-003edaad   _DISPL_Update
-003edad5   _DISPL_AddSymb
-003edae9   _DisplayReset
-003edb4b   _FrabaEncoderCalc
-003edb8b   _EleSyEncoderCalc
-003edc17   _AvagoEncoderCalc
-003edc87   _AtMegaAvagoEncoderCalc
-003edd51   _AT25XXX_Init
-003edd6d   _AT25XXX_Update
-003ede9d   _AT25XXX_ReadStatus
-003edeb7   _AT25XXX_WriteStatus
-003eded0   _AT25XXX_WaitBusy
-003eded9   _AT25XXX_ReadByte
-003edeff   _AT25XXX_WriteByte
-003edf27   _AT25XXX_WriteEnable
-003edf3a   _AT25XXX_WriteDisable
-003edf4d   _RTC_Update
-003edfb9   _RTC_Tick
-003edfd9   _RTC_DefMaxDay
-003ee001   _RTC_GetTime
-003ee019   _RTC_GetDate
-003ee03a   _RTC_SetTime
-003ee087   _RTC_SetDate
-003ee0e0   _RTC_TimeCorr
-003ee11f   _LogEvUpdate
-003ee214   _LogCmdUpdate
-003ee24d   _LogParamUpdate
-003ee279   _LogInputCalc
-003ee311   _DiffInputCalc
-003ee339   _AverageUnsIntegral
-003ee350   _AverageIntIntegral
-003ee36a   _AverageDigInt
-003ee37e   _AverageDigCalc
-003ee391   _AverageCalc
-003ee3a0   _Average2PhaseIntegral
-003ee3c1   _SerialCommunicationInit
-003ee3f9   _BtHardwareSetup
-003ee409   _CheckSciCommErr
-003ee419   _EnableBtRx
-003ee420   _EnableBtTx
-003ee427   _ReceiveBtByte
-003ee42b   _TransmitBtByte
-003ee433   _PiUpdate
-003ee4ca   _PiCalcCRC
-003ee529   _main
-003ee557   _CpuTimer0IsrHandler
-003ee58d   _ScibRxIsrHandler
-003ee5a7   _ScibTxIsrHandler
-003ee5c1   _SciaRxIsrHandler
-003ee5db   _SciaTxIsrHandler
-003ee61e   _DS1305_Init
-003ee634   _DS1305_Read
-003ee63f   _DS1305_Write
-003ee64b   _DS1305_Update
-003ee70a   _SPI_transmit
-003ee71c   _SPI_send
-003ee736   _SPI_recieve
-003ee73f   _SPI_ready
-003ee74a   _SPI_init
-003ee777   _InitSpidGpio
-003ee796   _InitSpicGpio
-003ee7b7   _InitSpibGpio
-003ee7cf   _InitSpiaGpio
-003ee804   _PultImpulseCapture
-003ee852   _PultTimer
-003ee869   _PultKeyExecute
-003ee8cc   _ph_order_trn
-003ee8f8   _ileg_trn_calc
-003ee937   _ileg_fq_calc
-003ee99b   _PrdElemExecute
-003ee9b8   _RtosExecute
-003ee9d4   _PrdInsert
-003ee9fc   _PrdExecute
-003eea3d   _PrdCreate
-003eea52   _SCI_tx_enable
-003eea5e   _SCI_tx_disable
-003eea6a   _SCI_transmit
-003eea75   _SCI_rx_enable
-003eea81   _SCI_rx_disable
-003eea8d   _SCI_reset
-003eea99   _SCI_recieve
-003eeaa2   _SCI_init
-003eeace   _SCI_getstatus
-003eead7   _InitScibGpio
-003eeaed   _InitSciaGpio
-003eeb03   _DAC7513_Update
-003eeb8f   _PrtCalc
-003eebfd   _Min3UnsValue
-003eec0a   _Min3IntValue
-003eec13   _Mid3UnsValue
-003eec1f   _Mid3IntValue
-003eec2b   _Max3UnsValue
-003eec37   _Max3IntValue
-003eec40   _LIntersection
-003eec4e   _CheckRange
-003eec66   _ServiceDog
-003eec70   _DisableDog
-003eec78   _InitPll
-003eecb8   _InitPeripheralClocks
-003eecc4   _InitSysCtrl
-003eeccb   _ApFilter3Reset
-003eecd6   _ApFilter3Init
-003eecf2   _ApFilter3Calc
-003eed2b   _ADT7301_Update
-003eed72   _c_int00
-003eedb6   _InitPieCtrl
-003eedd5   _EnableInterrupts
-003eede8   _ApFilter1Reset
-003eedec   _ApFilter1Init
-003eee06   _ApFilter1Calc
-003eee19   I$$DIV
-003eee2a   I$$MOD
-003eee3b   ___memcpy_ff
-003eee5c   _PFUNC_blkRead
-003eee61   _PFUNC_blkWrite
-003eee66   _PFUNC_strRead
-003eee6c   _PFUNC_strWrite
-003eee72   _PFUNC_wordRead
-003eee76   _PFUNC_wordWrite
-003eee79   __args_main
-003eee94   C$$EXIT
-003eee94   _abort
-003eee96   _exit
-003eeead   FS$$CMP
-003eeec4   _PHANTOM_ISR
-003eeec9   _InitPieVectTable
-003eeeda   UL$$TOFS
-003eeeed   _DelayUs
-003eeefd   _MemCopy
-003eef0d   U$$TOFS
-003eef1d   _ConfigCpuTimer
-003eef2c   _strchr
-003eef37   U$$DIV
-003eef3c   U$$MOD
-003eef42   _strcmp
-003eef4c   _strlen
-003eef56   __register_unlock
-003eef5a   __register_lock
-003eef5e   __nop
-003eef5f   _strcpy
-003eef70   _memset
-003eef77   _SetDBGIER
-003eef7a   ___etext__
-003eef7a   _params
-003eef7a   etext
-003f17fa   _values
-003f273a   _ElemNames
-003f3128   _AddStr
-003f3328   _groups
-003f34d5   ___cinit__
-003f34d5   cinit
-003f450c   _secureRamFuncs_loadstart
-003f452b   __IQ1div
-003f452b   _secureRamFuncs_loadend
-003f4572   __IQ22div
-003f45b9   __IQ24div
-003f4600   __IQ25div
-003f4647   __IQ7div
-003f468e   __IQ24sqrt
-003f46d0   __IQ5rmpy
-003f46de   __IQ22rmpy
-003f46eb   __IQ24rmpy
-003f46f8   __IQ25rmpy
+003e869d   _MotorControlInit
+003e86fc   _MotorControlUpdate
+003e8714   _DmcIndication1
+003e87da   _DmcIndication2
+003e88cd   _DefineCtrlParams
+003e8970   _StopPowerControl
+003e899f   _StartPowerControl
+003e8a4b   _ControlMode
+003e8a9f   _CalibStop
+003e8af0   _TorqueCalc
+003e8bc8   _SpeedCalc
+003e8c0c   _LowPowerControl
+003e8cba   _DmcControlRefresh
+003e8d64   _CubInit
+003e8dd2   _CubRefresh
+003e8dfe   _CubCalc
+003e8f71   _MonitorUpdate1
+003e9078   _sifu_calc2
+003e9131   _PowerCheck
+003e9166   _SifuControlForDynBrake
+003e9259   _InterfaceInit
+003e9343   _DisplayStart
+003e9363   _InterfIndication
+003e938a   _RefreshData
+003e93ad   _DataSetting
+003e93df   _PowerOn
+003e940a   _PowerOff
+003e9425   _InterfaceRefresh
+003e947a   _DataBufferPre
+003e951c   _LogEvControl
+003e9630   _GetCurrentCmd
+003e96ba   _LogCmdControl
+003e9740   _LogParamMbExec
+003e976d   _LogParamControl
+003e97f3   _ShowDriveType
+003e9854   _StartDispl
+003e988d   _EnableEdit
+003e98a9   _WriteValue
+003e98fe   _GetExpressText
+003e994a   _GetExpressState
+003e9a85   _AddControl
+003e9b27   _LocalControl
+003e9c0b   _RemoteControl
+003e9d07   _BlkSignalization
+003e9df1   _TsSignalization
+003e9eb9   _AlgControl
+003e9f00   _ClbControl
+003ea013   _ImBufferReader
+003eaade   _MENU_Update
+003eab19   _MENU_Display
+003eab6e   _MENU_ReadDcr
+003eaff1   _ProtectionsInit
+003eb016   _ProtectionsUpdate
+003eb03c   _ProtectionsEnable
+003eb1e7   _ProtectionsClear
+003eb20e   _ProtectionsReset
+003eb221   _ProtectionsControl
+003eb294   _FaultIndication
+003eb353   _IsDefectExist
+003eb46a   _IsFaultExist
+003eb5a7   _EngPhOrdPrt
+003eb719   _RimDevicesInit
+003eb744   _RimDevicesRefresh
+003eb7b8   _ReadParams
+003eb7ce   _EEPROM_Update
+003eb7d5   _EEPROM_Func
+003eb800   _SetPlisData
+003eb82b   _RimIndication
+003eb87a   _RtcControl
+003eb8d1   _SetPlisAddr
+003eb8fc   _DiscrInOutTestObserver
+003eb942   _TekModbusParamsUpdate
+003ebf88   _ImUpdate
+003ebfac   _ImReset
+003ebfb5   _ReceiveFunc
+003ec06b   _DownloadFunc
+003ec113   _ImReceiveData
+003ec12d   _SendData
+003ec16b   _ImTimer
+003ec368   _SerialCommInit
+003ec372   _ModBusControl
+003ec380   _SerialCommUpdate
+003ec3c5   _SerialCommRxHandler
+003ec3fa   _SerialCommTxHandler
+003ec425   _SerialCommTimings
+003ec453   _SerialCommRefresh
+003ec92a   _ValveDriveUpdate
+003ec943   _ValveDriveStop
+003ec98b   _ValveDriveMove
+003eca0f   _Calibration
+003ecb62   _DefineCalibParams
+003ecc8b   _CalcClbGearInv
+003ecc90   _CalcClbAbsRev
+003ecca4   _CalcClbGearRev
+003eccbe   _CalcClbPercentToAbs
+003eccce   _CalcClbCycle
+003ecdbd   _BtWTInit
+003ecdca   _BtWTUpdate
+003ece92   _ClearValues
+003ece9d   _SendCommandOne
+003ecedb   _SendCommandTwo
+003ecf1b   _BluetoothRxHandler
+003ecf2e   _BluetoothTxHandler
+003ecf34   _BtTimer
+003ecf3d   _CheckString
+003ecf7d   _SendOneString
+003ecfa0   _SendTwoString
+003ed25b   _InitHardware
+003ed2c5   _drive1
+003ed301   _drive2
+003ed33d   _drive3
+003ed379   _drive4
+003ed3b5   _drive5
+003ed3f1   _drive6
+003ed42d   _drive7
+003ed469   _drive8
+003ed4a5   _drive9
+003ed4e1   _drive10
+003ed51d   _TimeToStr4s
+003ed51d   _drive11
+003ed51d   _drive12
+003ed51d   _drive13
+003ed51d   _drive14
+003ed51d   _drive15
+003ed51d   _drive16
+003ed51d   _drive17
+003ed51d   _drive18
+003ed51d   _drive19
+003ed51d   _drive20
+003ed53e   _TimeToStr
+003ed564   _StrToTime
+003ed578   _StrToHex
+003ed58f   _StrToDec
+003ed5b9   _StrToDate
+003ed5d6   _StrToBin
+003ed5df   _HexToStr4s
+003ed60f   _HexToStr
+003ed636   _DecToStr4s
+003ed660   _DecToStr
+003ed6b6   _DateToStr4s
+003ed6ef   _DateToStr
+003ed727   _BinToStr4s
+003ed743   _BinToStr
+003ed905   _DISPL_Update
+003ed92d   _DISPL_AddSymb
+003ed941   _DisplayReset
+003ed9a3   _FrabaEncoderCalc
+003ed9e3   _EleSyEncoderCalc
+003eda6f   _AvagoEncoderCalc
+003edadf   _AtMegaAvagoEncoderCalc
+003edba9   _AT25XXX_Init
+003edbc5   _AT25XXX_Update
+003edcf5   _AT25XXX_ReadStatus
+003edd0f   _AT25XXX_WriteStatus
+003edd28   _AT25XXX_WaitBusy
+003edd31   _AT25XXX_ReadByte
+003edd57   _AT25XXX_WriteByte
+003edd7f   _AT25XXX_WriteEnable
+003edd92   _AT25XXX_WriteDisable
+003edda5   _RTC_Update
+003ede11   _RTC_Tick
+003ede31   _RTC_DefMaxDay
+003ede59   _RTC_GetTime
+003ede71   _RTC_GetDate
+003ede92   _RTC_SetTime
+003ededf   _RTC_SetDate
+003edf38   _RTC_TimeCorr
+003edf77   _LogEvUpdate
+003ee06c   _LogCmdUpdate
+003ee0a5   _LogParamUpdate
+003ee0d1   _LogInputCalc
+003ee169   _DiffInputCalc
+003ee191   _AverageUnsIntegral
+003ee1a8   _AverageIntIntegral
+003ee1c2   _AverageDigInt
+003ee1d6   _AverageDigCalc
+003ee1e9   _AverageCalc
+003ee1f8   _Average2PhaseIntegral
+003ee219   _SerialCommunicationInit
+003ee251   _BtHardwareSetup
+003ee261   _CheckSciCommErr
+003ee271   _EnableBtRx
+003ee278   _EnableBtTx
+003ee27f   _ReceiveBtByte
+003ee283   _TransmitBtByte
+003ee28b   _PiUpdate
+003ee322   _PiCalcCRC
+003ee381   _main
+003ee3ac   _CpuTimer0IsrHandler
+003ee3e2   _ScibRxIsrHandler
+003ee3fc   _ScibTxIsrHandler
+003ee416   _SciaRxIsrHandler
+003ee430   _SciaTxIsrHandler
+003ee473   _DS1305_Init
+003ee489   _DS1305_Read
+003ee494   _DS1305_Write
+003ee4a0   _DS1305_Update
+003ee55f   _SPI_transmit
+003ee571   _SPI_send
+003ee58b   _SPI_recieve
+003ee594   _SPI_ready
+003ee59f   _SPI_init
+003ee5cc   _InitSpidGpio
+003ee5eb   _InitSpicGpio
+003ee60c   _InitSpibGpio
+003ee624   _InitSpiaGpio
+003ee659   _PultImpulseCapture
+003ee6a7   _PultTimer
+003ee6be   _PultKeyExecute
+003ee721   _ph_order_trn
+003ee74d   _ileg_trn_calc
+003ee78c   _ileg_fq_calc
+003ee7f0   _PrdElemExecute
+003ee80d   _RtosExecute
+003ee829   _PrdInsert
+003ee851   _PrdExecute
+003ee892   _PrdCreate
+003ee8a7   _SCI_tx_enable
+003ee8b3   _SCI_tx_disable
+003ee8bf   _SCI_transmit
+003ee8ca   _SCI_rx_enable
+003ee8d6   _SCI_rx_disable
+003ee8e2   _SCI_reset
+003ee8ee   _SCI_recieve
+003ee8f7   _SCI_init
+003ee923   _SCI_getstatus
+003ee92c   _InitScibGpio
+003ee942   _InitSciaGpio
+003ee958   _DAC7513_Update
+003ee9e4   _PrtCalc
+003eea52   _Min3UnsValue
+003eea5f   _Min3IntValue
+003eea68   _Mid3UnsValue
+003eea74   _Mid3IntValue
+003eea80   _Max3UnsValue
+003eea8c   _Max3IntValue
+003eea95   _LIntersection
+003eeaa3   _CheckRange
+003eeabb   _ServiceDog
+003eeac5   _DisableDog
+003eeacd   _InitPll
+003eeb0d   _InitPeripheralClocks
+003eeb19   _InitSysCtrl
+003eeb20   _ApFilter3Reset
+003eeb2b   _ApFilter3Init
+003eeb47   _ApFilter3Calc
+003eeb80   _ADT7301_Update
+003eebc7   _c_int00
+003eec0b   _InitPieCtrl
+003eec2a   _EnableInterrupts
+003eec3d   _ApFilter1Reset
+003eec41   _ApFilter1Init
+003eec5b   _ApFilter1Calc
+003eec6e   I$$DIV
+003eec7f   I$$MOD
+003eec90   ___memcpy_ff
+003eecb1   _PFUNC_blkRead
+003eecb6   _PFUNC_blkWrite
+003eecbb   _PFUNC_strRead
+003eecc1   _PFUNC_strWrite
+003eecc7   _PFUNC_wordRead
+003eeccb   _PFUNC_wordWrite
+003eecce   __args_main
+003eece9   C$$EXIT
+003eece9   _abort
+003eeceb   _exit
+003eed02   FS$$CMP
+003eed19   _PHANTOM_ISR
+003eed1e   _InitPieVectTable
+003eed2f   UL$$TOFS
+003eed42   _DelayUs
+003eed52   _MemCopy
+003eed62   U$$TOFS
+003eed72   _ConfigCpuTimer
+003eed81   _strchr
+003eed8c   U$$DIV
+003eed91   U$$MOD
+003eed97   _strcmp
+003eeda1   _strlen
+003eedab   __register_unlock
+003eedaf   __register_lock
+003eedb3   __nop
+003eedb4   _strcpy
+003eedc5   _memset
+003eedcc   _SetDBGIER
+003eedcf   ___etext__
+003eedcf   etext
+003eedd0   _params
+003f1650   _values
+003f2590   _ElemNames
+003f2f7e   _AddStr
+003f317e   _groups
+003f332b   ___cinit__
+003f332b   cinit
+003f4340   _secureRamFuncs_loadstart
+003f435f   __IQ1div
+003f435f   _secureRamFuncs_loadend
+003f43a6   __IQ22div
+003f43ed   __IQ24div
+003f4434   __IQ25div
+003f447b   __IQ7div
+003f44c2   __IQ24sqrt
+003f4504   __IQ5rmpy
+003f4512   __IQ22rmpy
+003f451f   __IQ24rmpy
+003f452c   __IQ25rmpy
 003f7ff6   code_start
 003f7ff8   _CsmPwl
 003ff000   _IQsinTable
@@ -1757,4 +1743,4 @@ ffffffff   ___pinit__
 ffffffff   binit
 ffffffff   pinit
 
-[667 symbols]
+[660 symbols]
