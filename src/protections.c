@@ -57,7 +57,7 @@ Int   EngPhOrdValue  = 0; 		// показывает чередование фаз для направления вращен
 Uns   OverWayFlag 	 = 0; 		// флаг недостигнутости уплотнения 
 Uns   OtTime         = 0;
 Uns   UtTime         = 0;
-Uns   DrvTLevel 	 = 16000;// Уровень срабатывания Защиты по перегреву (1000)
+
 Uns   DrvTTout   	 = (Uns)BTN_TIME;
 Uns   Fault_Delay 	 = (Uns)FLT_DEF_DELAY;
 Int   HighTemper	= 110;
@@ -99,7 +99,7 @@ void ProtectionsUpdate(void)// периодическое обновление в защитах
 	ShCProtect();		//проверяем КЗ
 	DefDriveFaults();	//проверяем наличие других ошибок
 
-	GrC->DrvTInput = DRIVE_TEMPER-10000;
+	GrC->DrvTInput = DRIVE_TEMPER;
 }
 
 void ProtectionsEnable(void)// проверка включения защит ЭД

@@ -615,6 +615,9 @@ void ShowDriveType(void)
 			ShowDriveTypeTimer++;
 			Menu.State = MS_DRIVE_TYPE;
 			ReadValuesStr(Menu.HiString, 229 + GrC->DriveType);
+			Menu.LoString[11]=' ';
+			if (BUR_M) Menu.LoString[10]='M';
+			else Menu.LoString[10]='T';
 			DecToStr(GrA->MkuPoVersion, &Menu.LoString[9], 3, 4, True, False);
 		}
 		else
