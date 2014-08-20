@@ -394,8 +394,8 @@ void NetMomitor(void)
 
 			switch(PhEl.Direction)
 			{
-				case  -1:GrD->ControlWord = vcwClose;  break;
-				case  1 :GrD->ControlWord = vcwOpen;   break;	
+			case  -1:GrD->ControlWord = GrG->TestCamera ? vcwTestClose : vcwClose; break;
+				case  1 :GrD->ControlWord = GrG->TestCamera ? vcwTestOpen  : vcwOpen;  break;
 			}	
 		}
 	}
@@ -443,6 +443,7 @@ void NetMomitor(void)
 
 void ContactorControl(TContactorGroup i) // если 0 то 
 {
+	if(IsTestMode() || GrG->TestCamera) return; // SVS
    switch(i)
    {
 		case cgStop: 	

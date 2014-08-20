@@ -186,7 +186,7 @@ void ProtectionsEnable(void)// проверка включения защит ЭД
 				Th_Err.Cfg.bit.Enable = Enable;
 				Tl.Cfg.bit.Enable = Enable;
 
-				Enable = (GrC->DriveTemper != pmOff);
+				Enable = (GrC->DriveTemper != pmOff) && !GrG->TestCamera;
 				DrvT.Cfg.bit.Enable = Enable;
 				State = 0;		// вернулись к истокам
 		break;
