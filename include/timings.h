@@ -56,7 +56,7 @@ timings.h
 #define DEBUG_START_TIME		(5.000 * PRD1)      // таймер для повторного включения ПП без источника
 
 #define NET_MON_START_TIME		(1.000 * PRD2)		// Задержка перед пуском по наличию напряжения
-#define NET_MON_STOP_TIME2 		(1.000 * PRD2)		// Задержка перед перед стопом при пропаже напряжения
+#define NET_MON_STOP_TIME2 		(0.700 * PRD2)		// Задержка перед перед стопом при пропаже напряжения
 #define NET_MON_STOP_TIME 		(1.000 * PRD2)		// Задержка перед перед стопом при пропаже напряжения
 #define CONECTOR_TIME			(0.700 * PRD2)		// Время выдачи сигнала на конекторы
 #define CONECTOR_STOP_TIME		(1.000 * PRD2)		// Время выдачи сигнала на конекторы
