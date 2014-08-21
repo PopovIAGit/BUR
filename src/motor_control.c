@@ -63,6 +63,7 @@ Uns Ang 			= 2;
 Uns BreakFlag 		= 0;
 Uns PowerSupplyEnable 	= 0; 	// Наличие питания источника 
 Uns PowerSupplyCnt 		= 0;	// Задержка на выключение питания
+Uns ReqDirection 	= 0;
 
 Uns DebugStartDelayCnt = 0;
 																			// Порядок двигателей смотри в table_tomzel.asm
@@ -577,10 +578,10 @@ register Uns Tmp;
 
 	// определения открываемой группы тиристоров
 	#if BUR_M
-	Sifu.Direction = SIFU_UP;
+	ReqDirection = SIFU_UP;
 	#else
-	if (Dmc.RequestDir != PhEl.Direction) Sifu.Direction = SIFU_DOWN;	// если необходимое чередование фаз не соответсвует данному то меняем задание на сифу
-	else Sifu.Direction = SIFU_UP;
+	if (Dmc.RequestDir != PhEl.Direction) ReqDirection = SIFU_DOWN;//Sifu.Direction = SIFU_DOWN;	// если необходимое чередование фаз не соответсвует данному то меняем задание на сифу
+	else ReqDirection = SIFU_UP;//Sifu.Direction = SIFU_UP; 
 	#endif
 
 	// сигнализация о движении и установка параметров
@@ -649,6 +650,7 @@ __inline void TestPhMode(void)		// стм. тест фаз
 	#if BUR_M	
 	if (!PhEl.Direction)	return;
 	#endif	 
+	Sifu.Direction  = ReqDirection;
 	Sifu.SetAngle   = 115;			// 
 	Sifu.AccelTime  = 100;
 	GrH->Torque = 0;			// момент не показываем
@@ -752,6 +754,7 @@ __inline void SpeedTestMode(void)	// стм. тест
 	if (!PhEl.Direction)	return;
 	#endif	
 	
+	Sifu.Direction  = ReqDirection;
 	Sifu.SetAngle   = GrG->ThyrOpenAngle; // 0
 	Sifu.AccelTime  = GrC->VoltAcc;     // 100
 	GrH->Torque = Torq.Indication; // как есть

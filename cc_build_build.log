@@ -2,8 +2,6 @@
 [drv_modbus.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "drv_modbus.c"
 "drv_modbus.c", line 457: warning: function "ReadAckRegs" was declared but never referenced
 
-[encoder.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "encoder.c"
-
 [im.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "im.c"
 "im.c", line 391: warning: variable "DbgCellCnt" was set but never used
 
