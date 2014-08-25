@@ -1,7 +1,7 @@
 ******************************************************************************
   TMS320C2000 Evaluation Linker PC v5.2.1                      
 ******************************************************************************
->> Linked Mon Aug 25 09:38:15 2014
+>> Linked Mon Aug 25 12:32:13 2014
 
 OUTPUT FILE NAME:   <./build/bur.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 003eedea

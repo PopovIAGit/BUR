@@ -215,7 +215,7 @@
 	&Ram.GroupA.Faults.Proc.all, \
 	ToPtr(&Ram.GroupC.DrvTLevel), \
 	&DrvTTout, \
-	TB_SCALE, 0 \
+	PRT_SCALE, 0 \
 }
 
 /*
