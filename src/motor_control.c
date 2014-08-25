@@ -66,6 +66,8 @@ Uns PowerSupplyCnt 		= 0;	// Задержка на выключение питания
 Uns ReqDirection 	= 0;
 
 Uns DebugStartDelayCnt = 0;
+Uns DebugStartDelayCnt2 = 10;
+Uns BreakVoltFlag = 0;
 																			// Порядок двигателей смотри в table_tomzel.asm
 Int InomDef[10]  	 = {13,11,18,52,52,47,56,110,85,148};						// default значения для Inom для разных приводов
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
@@ -270,7 +272,12 @@ void DmcIndication2(void)
 		GrA->Status.bit.Power = 1;
 		#else
 		if (IsPowerOn())
-			GrA->Status.bit.Power = 0;
+		{	if(DebugStartDelayCnt2)DebugStartDelayCnt2--;
+			else {
+				GrA->Status.bit.Power = 0;
+				DebugStartDelayCnt2 = 0;
+			}
+		}	
 		else {memset(&GrH->Ur, 1, 3); 
 			}
 		#endif
@@ -278,7 +285,7 @@ void DmcIndication2(void)
 			
 	if (!PhEl.Direction) GrH->PhOrdValue = 0;					// чередование фаз сети
 	else if (PhEl.Direction > 0) GrH->PhOrdValue = 2;
-	else GrH->PhOrdValue = 1;
+	else GrH->PhOrdValue = 1; 
 	
 	// копии в диагностику
 	GrA->Torque  = GrH->Torque;
@@ -366,6 +373,7 @@ void StopPowerControl(void) // упровление при стопе
 	#endif
 	// задержка перед следующим пуском
 	Mcu.StartDelay = (Uns)START_DELAY_TIME;	
+	BreakVoltFlag = 0;
 }
 
 
@@ -418,17 +426,17 @@ void NetMomitor(void)
 	}
 	if ((PhEl.Direction == 0)&&(IsPowerOn()))  //  если есть хоть одно напряжение, а чсередование фаз не определено
 	{
-		if(PowerLostTimer < NET_MON_STOP_TIME)// (Uns)(GrC->BURM_Timer1 * PRD2) NET_MON_STOP_TIME
-		{		
-			PowerLostTimer++;
-		}
-		else
-		{
-			GrD->ControlWord = vcwStop;	
-			PowerLostTimer   = 0;
-			GrH->FaultsNet.bit.VSk = 1; 
+		 BreakVoltFlag = 1;
 
-		}
+		 if (GrH->FaultsNet.bit.BvR ||GrH->FaultsNet.bit.BvS ||GrH->FaultsNet.bit.BvT)
+		 {
+		 	GrD->ControlWord = vcwStop;
+			BreakVoltFlag = 0;
+		 }
+	}
+	else 
+	{
+		BreakVoltFlag = 0;
 	}
 	
 	if (Mcu.IgnorComFlag != 0) GrD->ControlWord = vcwStop;
@@ -1411,7 +1419,7 @@ void sifu_calc2(SIFU *v)				//функция сифу - изменена - фаза S и R поменялись ме
 		}
 	}
 }
-
+/*
 void PowerCheck(void)			// 200 Hz 
 {
 	if(POWER_CONTROL)			// если питание отключено
@@ -1440,6 +1448,20 @@ void PowerCheck(void)			// 200 Hz
 			PowerSupplyEnable = 1;
 			PowerSupplyCnt = 0;
 			DebugStartDelayCnt = 0;
+		}					
+}*/
+
+void PowerCheck(void)			// 200 Hz 
+{
+	if(POWER_CONTROL)			// если питание отключено
+		{
+			PowerSupplyCnt++;			// задержка на выключение
+			if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
+		}
+	else 						// если питание включено
+		{
+			PowerSupplyEnable = 1;
+			PowerSupplyCnt = 0;
 		}					
 }
 

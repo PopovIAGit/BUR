@@ -214,7 +214,7 @@
 	ToPtr(Input), \
 	&Ram.GroupA.Faults.Proc.all, \
 	ToPtr(&Ram.GroupC.DrvTLevel), \
-	&OtTime, \
+	&DrvTTout, \
 	TB_SCALE, 0 \
 }
 

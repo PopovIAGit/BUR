@@ -58,10 +58,11 @@ Uns   OverWayFlag 	 = 0; 		// флаг недостигнутости уплотнения
 Uns   OtTime         = 0;
 Uns   UtTime         = 0;
 
-Uns   DrvTTout   	 = (Uns)BTN_TIME;
+Uns   DrvTTout   	 = (Uns)DRV_TEMPER_TOUT;
 Uns   Fault_Delay 	 = (Uns)FLT_DEF_DELAY;
 Int   HighTemper	= 110;
 Uns VskTimer = 0;
+ Uns  FlagEngPhOrd = 0;
 
 Uns PhOrdTimer = 0;
 
@@ -78,7 +79,8 @@ void ProtectionsInit(void)	// начальная инициализация для защит
 	//!!!
 	memset(&GrH->FaultsLoad, 0,		sizeof(TLoadReg));// Выставили все структуры с ошибками в 0 (нет ошибок)
 	memset(&GrH->FaultsNet, 0,		sizeof(TNetReg));// Выставили все структуры с ошибками в 0 (нет ошибок)
-
+ 	PhOrdTimer = 0;
+	EngPhOrdValue  = 0;
 }
 
 void ProtectionsUpdate(void)// периодическое обновление в защитах
@@ -100,6 +102,8 @@ void ProtectionsUpdate(void)// периодическое обновление в защитах
 	DefDriveFaults();	//проверяем наличие других ошибок
 
 	GrC->DrvTInput = DRIVE_TEMPER - 10000;
+	if(GrG->TestCamera && GrA->Faults.Proc.bit.Drv_T) GrA->Faults.Proc.bit.Drv_T = 0;
+	if(GrG->TestCamera && GrA->Faults.Proc.bit.MuDuDef) GrA->Faults.Proc.bit.MuDuDef = 0;
 }
 
 void ProtectionsEnable(void)// проверка включения защит ЭД
@@ -120,7 +124,7 @@ void ProtectionsEnable(void)// проверка включения защит ЭД
 				Enable =!IsStopped() && (GrC->Uv != pmOff) && !GrG->TestCamera;;
 		//	else Enable = 0;
 			#else
-				Enable = (GrC->Uv != pmOff) &&  !GrG->TestCamera;
+				Enable = (GrC->Uv != pmOff) && ((GrG->TestCamera && GrA->Status.bit.Power) == 0);
 			#endif
 				UvR.Cfg.bit.Enable = Enable;
 				UvS.Cfg.bit.Enable = Enable;
@@ -154,19 +158,33 @@ void ProtectionsEnable(void)// проверка включения защит ЭД
 			#endif
 	
 			#if BUR_M
-	
-				Enable =!IsStopped() && (GrC->Bv != pmOff);
-			//	else Enable = 0;
+				if(GrG->TestCamera)
+				{
+					Enable = 0;
+				}
+				else
+				{
+					if (BreakVoltFlag) Enable = (GrC->Bv != pmOff);
+					else Enable = !IsStopped() && (GrC->Bv != pmOff);
+				}
 			#else
-				Enable = (GrC->Bv != pmOff)&&  !GrG->TestCamera;
+				Enable = (GrC->Bv != pmOff)&& ((GrG->TestCamera && GrA->Status.bit.Power) == 0);
 			#endif
 				BvR.Cfg.bit.Enable = Enable;
 				BvS.Cfg.bit.Enable = Enable;
 				BvT.Cfg.bit.Enable = Enable;
 		break;
 		case 3: 				// включение по току
-				
-				Enable = !IsStopped() && (GrC->Phl != pmOff)&& !(GrG->TestCamera && (Sifu.SetAngle == SIFU_MAX_ANG));
+				#if BUR_M
+
+				if(GrG->TestCamera) Enable = 0;
+				else
+				{
+					Enable = !IsStopped() && (GrC->Phl != pmOff);
+				}
+				#else
+				Enable = !IsStopped() && (GrC->Phl != pmOff)&& !(GrG->TestCamera && (IsTestMode()));
+				#endif
 				PhlU.Cfg.bit.Enable = Enable;
 				PhlV.Cfg.bit.Enable = Enable;
 				PhlW.Cfg.bit.Enable = Enable;
@@ -517,38 +535,36 @@ __inline void ShCProtect(void)			// проверка на КЗ
 			
 void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВАНИЕ ФАЗ ДВИГАТЕЛЯ)
 {
-	static Bool  Flag = False;          // флаг для единичной проверки правельности чередования фазы
+	          // флаг для единичной проверки правельности чередования фазы
 	static LgUns StartPos;
 	static Uns   Timer = 0;
-	LgInt  Delta;
+	LgInt  Delta = 0;
 
-	if(Fault_Delay>0) return;
+//	if(Fault_Delay>0) return;
 
  	 #if BUR_M
 	GrC->PhOrd = pmSignStop;
 	if (IsStopped())	// если стоим то выходим, всегда включена
 	{
-		Flag = False;					// сбросили флаг если выключали останавливали или откалибравали на данное чередование
+		FlagEngPhOrd = False;					// сбросили флаг если выключали останавливали или откалибравали на данное чередование
 		StartPos = Encoder.Revolution;	// стартовое положение это текущее положение с энкодера
 		Timer = 0;						// сбросили таймер
 		PhOrdTimer = 0;
 		return;							// вышли
 	}
+
 	 #else 
 	if ((GrC->PhOrd == pmOff) || IsStopped())	// если защита от нерпав. черед. фаз выключина или все остановленно или откалеброванно 
 	{
-		Flag = False;					// сбросили флаг если выключали останавливали или откалибравали на данное чередование
+		FlagEngPhOrd = False;					// сбросили флаг если выключали останавливали или откалибравали на данное чередование
 		StartPos = Encoder.Revolution;	// стартовое положение это текущее положение с энкодера
 		Timer = 0;						// сбросили таймер
 		return;							// вышли
 	}
 	 #endif
-	
-//	DbgM4 = Flag;	
-
 
 	if (Timer < (GrC->PhOrdTime * (Uns)PRT_SCALE)) Timer++;	// привели таймаут к 0.1 с и если таймер меньше инкрементировали	
-	else if (!Flag && !ZazorTimer)								// если не флаг и таймер зазора = 0 то
+	else if (!FlagEngPhOrd && !ZazorTimer)								// если не флаг и таймер зазора = 0 то
 	{												// где REV_MAX максимальное численное значение энкодера
 		Delta = Encoder.Revolution - StartPos;				// посчитали дельту смещения как текущее положение минус запомненое начальное положение
 
@@ -556,6 +572,7 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 		if (Delta < -((REV_MAX+1)/2)) Delta += (REV_MAX+1);		// если дельта меньше -2000 то инкрементируем дельту на 4000
 
 		EngPhOrdValue = 0;	// сбрасываем чередование фаз, останется нулем если вращения небыло
+	
 		if (Delta >=  ((LgInt)GrC->PhOrdZone)) EngPhOrdValue =  1; // если дельта больше расстояния чередования фаз то чередование фаз на прямое направление вращения
 		if (Delta <= -((LgInt)GrC->PhOrdZone)) EngPhOrdValue = -1; // если дельта меньше расстояния чередования фаз то чередование фаз на инверсное направление вращения
 		
@@ -566,17 +583,17 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 
 		#if BUR_M
 
-		if ((++PhOrdTimer >= 50) || (EngPhOrdValue != 0))
+		if ((++PhOrdTimer >= 200) || (EngPhOrdValue != 0))
 		{
 			PhOrdTimer = 0;
-			Flag = true;
+			FlagEngPhOrd = 1;
 		}
 
 		#else
-		if ((++PhOrdTimer >= 50) || (EngPhOrdValue != 0))
+		if ((++PhOrdTimer >= 200) || (EngPhOrdValue != 0))
 		{
 			PhOrdTimer = 0;
-			Flag = true;
+			FlagEngPhOrd = 1;
 		}			
 	//	Flag = True;	// выставляем флаг проверки защиты в тру, показываем про проверка проводилась вне зависимости от результата
 		#endif

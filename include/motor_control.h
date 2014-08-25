@@ -87,6 +87,7 @@ extern Uns  TqImidPr;
 extern Uns  TqAnUI;
 extern Bool KickModeEnable;
 extern Uns BreakFlag;
+extern Uns BreakVoltFlag;
 
 void MotorControlInit(void);
 void MotorControlUpdate(void);

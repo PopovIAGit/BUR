@@ -3,7 +3,7 @@
 
 // Глобальные настройки
 #define VERSION					1113	// Версия проекта
-#define SUBVERSION				11		// Подверсия проекта
+#define SUBVERSION				12		// Подверсия проекта
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)
 #define BT_AUTH_CODE_STRING		"5124"	// Строка с кодом авторизации Bluetooth

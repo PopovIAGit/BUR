@@ -1011,7 +1011,7 @@ void RemoteControl(void) //24 - 220 + маски,
 		case mdMuOnly:	GrA->Faults.Proc.bit.MuDuDef = 0;			break;
 		case mdDuOnly:	GrA->Faults.Proc.bit.MuDuDef = 0;			break;
 		case mdSelect:		
-					if(IsStopped()) 
+					if(IsStopped() && !GrG->TestCamera) 
 					{
 						if(!GrH->Inputs.bit.Mu      && !GrH->Inputs.bit.Du)
 						{	 	
