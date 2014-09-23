@@ -129,7 +129,7 @@ void InterfaceInit(void)
 	RefreshData();
 
 	// Выводим момент
-	Ram.GroupH.StartIndic = 8;
+	Ram.GroupH.StartIndic =REG_TORQUE_ADDR; //8;
 
 	// Включаем экспресс настройку
 	if (IsNoCalib()) Menu.Express.Enable = TRUE;
@@ -138,7 +138,7 @@ void InterfaceInit(void)
 	GrB->DuSource = mdsSerial;
 	#endif
 
-	memset(&RamTek, 0, sizeof(TTEKDriveData));
+	//memset(&RamTek, 0, sizeof(TTEKDriveData));
 
 	// Подключаем функции Bluetooth к информационному модулю
 	Im.EnableReceive = Bluetooth.EnableRx;

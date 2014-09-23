@@ -273,7 +273,7 @@ void DiscrInOutTestObserver(void)
 			GrG->Mode = 1;
 			// обнуляем регистр ТС/ТУ перед тестом
 			GrH->Outputs.all = 0;
-			RamTek.MainGroup.TsTu.all = 0;
+			GrT->TsTu.all = 0;
 		}
 	}
 	else
@@ -290,81 +290,81 @@ void DiscrInOutTestObserver(void)
 
 void TekModbusParamsUpdate(void)
 {
-	TTEK_MB_GROUP *tek = &RamTek.MainGroup;
+	//TGroupT *tek = &Ram. Tek.MainGroup;
 	
 	// Заполняем технологический регистр
-	tek->TechReg.bit.Opened  = GrA->Status.bit.Opened;
-	tek->TechReg.bit.Closed  = GrA->Status.bit.Closed;
-	tek->TechReg.bit.Mufta1  = GrA->Status.bit.Mufta;
-	tek->TechReg.bit.Mufta2  = GrA->Status.bit.Mufta;
-	tek->TechReg.bit.MuDu    = !GrA->Status.bit.MuDu;
-	tek->TechReg.bit.Opening = GrA->Status.bit.Opening;
-	tek->TechReg.bit.Closing = GrA->Status.bit.Closing;
-	tek->TechReg.bit.Stop    = GrA->Status.bit.Stop;
-	tek->TechReg.bit.Ten     = GrA->Status.bit.Ten;
+	GrT->TechReg.bit.Opened  = GrA->Status.bit.Opened;
+	GrT->TechReg.bit.Closed  = GrA->Status.bit.Closed;
+	GrT->TechReg.bit.Mufta1  = GrA->Status.bit.Mufta;
+	GrT->TechReg.bit.Mufta2  = GrA->Status.bit.Mufta;
+	GrT->TechReg.bit.MuDu    = !GrA->Status.bit.MuDu;
+	GrT->TechReg.bit.Opening = GrA->Status.bit.Opening;
+	GrT->TechReg.bit.Closing = GrA->Status.bit.Closing;
+	GrT->TechReg.bit.Stop    = GrA->Status.bit.Stop;
+	GrT->TechReg.bit.Ten     = GrA->Status.bit.Ten;
 	
 	// Заполняем регистр дефектов
-	tek->DefReg.bit.I2t = GrA->Faults.Load.bit.I2t;
-	tek->DefReg.bit.ShC = (GrA->Faults.Load.bit.ShCU || GrA->Faults.Load.bit.ShCV || GrA->Faults.Load.bit.ShCW); 
-	tek->DefReg.bit.Drv_T = GrA->Faults.Proc.bit.Drv_T;
-	tek->DefReg.bit.Uv = (GrA->Faults.Net.bit.UvR || GrA->Faults.Net.bit.UvS || GrA->Faults.Net.bit.UvT);
-	tek->DefReg.bit.Phl = (GrA->Faults.Load.bit.PhlU || GrA->Faults.Load.bit.PhlV || GrA->Faults.Load.bit.PhlW);
-	tek->DefReg.bit.NoMove = GrA->Faults.Proc.bit.NoMove;
-	tek->DefReg.bit.Ov = (GrA->Faults.Net.bit.OvR || GrA->Faults.Net.bit.OvS || GrA->Faults.Net.bit.OvT);
-	tek->DefReg.bit.Bv = (GrA->Faults.Net.bit.BvR || GrA->Faults.Net.bit.BvS || GrA->Faults.Net.bit.BvT);
-	tek->DefReg.bit.Th = GrA->Faults.Dev.bit.Th;
-	tek->DefReg.bit.Tl = GrA->Faults.Dev.bit.Tl;
-	tek->DefReg.bit.PhOrdU = GrA->Faults.Net.bit.PhOrd;
-	tek->DefReg.bit.PhOrdDrv = GrA->Faults.Proc.bit.PhOrd;
-	tek->DefReg.bit.DevDef 	 = ((GrA->Faults.Dev.all & TEK_DEVICE_FAULT_MASK) != 0);
+	GrT->DefReg.bit.I2t = GrA->Faults.Load.bit.I2t;
+	GrT->DefReg.bit.ShC = (GrA->Faults.Load.bit.ShCU || GrA->Faults.Load.bit.ShCV || GrA->Faults.Load.bit.ShCW); 
+	GrT->DefReg.bit.Drv_T = GrA->Faults.Proc.bit.Drv_T;
+	GrT->DefReg.bit.Uv = (GrA->Faults.Net.bit.UvR || GrA->Faults.Net.bit.UvS || GrA->Faults.Net.bit.UvT);
+	GrT->DefReg.bit.Phl = (GrA->Faults.Load.bit.PhlU || GrA->Faults.Load.bit.PhlV || GrA->Faults.Load.bit.PhlW);
+	GrT->DefReg.bit.NoMove = GrA->Faults.Proc.bit.NoMove;
+	GrT->DefReg.bit.Ov = (GrA->Faults.Net.bit.OvR || GrA->Faults.Net.bit.OvS || GrA->Faults.Net.bit.OvT);
+	GrT->DefReg.bit.Bv = (GrA->Faults.Net.bit.BvR || GrA->Faults.Net.bit.BvS || GrA->Faults.Net.bit.BvT);
+	GrT->DefReg.bit.Th = GrA->Faults.Dev.bit.Th;
+	GrT->DefReg.bit.Tl = GrA->Faults.Dev.bit.Tl;
+	GrT->DefReg.bit.PhOrdU = GrA->Faults.Net.bit.PhOrd;
+	GrT->DefReg.bit.PhOrdDrv = GrA->Faults.Proc.bit.PhOrd;
+	GrT->DefReg.bit.DevDef 	 = ((GrA->Faults.Dev.all & TEK_DEVICE_FAULT_MASK) != 0);
 
 	// Регистр команд
 	// При срабатывании одной команды, сбрасываем все
 	if (Mcu.ActiveControls & CMD_SRC_SERIAL)
 	{
-		if(tek->ComReg.bit.Stop)
+		if(GrT->ComReg.bit.Stop)
 		{
 			GrD->ControlWord = vcwStop;
 
-			tek->ComReg.bit.Stop = 0;
-			tek->ComReg.bit.Open = 0;
-			tek->ComReg.bit.Close = 0;
+			GrT->ComReg.bit.Stop = 0;
+			GrT->ComReg.bit.Open = 0;
+			GrT->ComReg.bit.Close = 0;
 		}
-		else if(tek->ComReg.bit.Open)
+		else if(GrT->ComReg.bit.Open)
 		{
 			GrD->ControlWord = vcwOpen;
 
-			tek->ComReg.bit.Stop = 0;
-			tek->ComReg.bit.Open = 0;
-			tek->ComReg.bit.Close = 0;
+			GrT->ComReg.bit.Stop = 0;
+			GrT->ComReg.bit.Open = 0;
+			GrT->ComReg.bit.Close = 0;
 		}
-		else if(tek->ComReg.bit.Close)
+		else if(GrT->ComReg.bit.Close)
 		{
 			GrD->ControlWord = vcwClose;
 
-			tek->ComReg.bit.Stop = 0;
-			tek->ComReg.bit.Open = 0;
-			tek->ComReg.bit.Close = 0;
+			GrT->ComReg.bit.Stop = 0;
+			GrT->ComReg.bit.Open = 0;
+			GrT->ComReg.bit.Close = 0;
 		}
 	}
 	else
 	{
-		tek->ComReg.bit.Stop = 0;
-		tek->ComReg.bit.Open = 0;
-		tek->ComReg.bit.Close = 0;
+		GrT->ComReg.bit.Stop = 0;
+		GrT->ComReg.bit.Open = 0;
+		GrT->ComReg.bit.Close = 0;
 	}
 
-	if (tek->ComReg.bit.PrtReset)
+	if (GrT->ComReg.bit.PrtReset)
 	{
 		GrD->PrtReset = 1;
-		tek->ComReg.bit.PrtReset = 0;
+		GrT->ComReg.bit.PrtReset = 0;
 	}
 
-	if (tek->ComReg.bit.EnDiscrOutTest)
+	if (GrT->ComReg.bit.EnDiscrOutTest)
 	{
 		GrG->DiscrOutTest = 1;
 	}
-	else if (tek->ComReg.bit.DisDiscrOutTest)
+	else if (GrT->ComReg.bit.DisDiscrOutTest)
 	{
 		if (GrG->DiscrOutTest == 1)
 		{
@@ -377,11 +377,11 @@ void TekModbusParamsUpdate(void)
 			#endif
 		}
 	}
-	else if (tek->ComReg.bit.EnDiscrInTest)
+	else if (GrT->ComReg.bit.EnDiscrInTest)
 	{
 		GrG->DiscrInTest = 1;
 	}
-	else if (tek->ComReg.bit.DisDiscrInTest)
+	else if (GrT->ComReg.bit.DisDiscrInTest)
 	{
 		if (GrG->DiscrInTest == 1)
 		{
@@ -391,8 +391,8 @@ void TekModbusParamsUpdate(void)
 	}
 
 	// На всякий случай сбрасываем регистр команд
-	if (tek->ComReg.all != 0)
-		tek->ComReg.all = 0;
+	if (GrT->ComReg.all != 0)
+		GrT->ComReg.all = 0;
 
 // Убрали переключение МУ/ДУ
 /*
@@ -407,36 +407,36 @@ void TekModbusParamsUpdate(void)
 			tek->ComReg.bit.SetMu = 0;	
 		}
 */
-	tek->PositionPr 	 = GrA->PositionPr;
-	tek->CycleCnt 		 = GrH->CycleCnt;
-	tek->Iu				 = GrA->Iu;
-	tek->Ur				 = GrA->Ur;
-	tek->Torque			 = GrA->Torque;
-	tek->Speed			 = GrA->Speed;
-	tek->RsStation		 = GrB->RsStation;
+	GrT->PositionPr 	 = GrA->PositionPr;
+	GrT->CycleCnt 		 = GrH->CycleCnt;
+	GrT->Iu				 = GrA->Iu;
+	GrT->Ur				 = GrA->Ur;
+	GrT->Torque			 = GrA->Torque;
+	GrT->Speed			 = GrA->Speed;
+	GrT->RsStation		 = GrB->RsStation;
 
 	//Состояние дискретных входов и выходов
-	tek->TsTu.bit.IsDiscrOutActive = (GrG->DiscrOutTest);
-	tek->TsTu.bit.IsDiscrInActive = (GrG->DiscrInTest);
+	GrT->TsTu.bit.IsDiscrOutActive = (GrG->DiscrOutTest);
+	GrT->TsTu.bit.IsDiscrInActive = (GrG->DiscrInTest);
 
 	#if !BUR_M
-	tek->TsTu.bit.InOpen 	 = GrH->Inputs.bit.Open;
-	tek->TsTu.bit.InClose	 = GrH->Inputs.bit.Close;
-	tek->TsTu.bit.InStop 	 = GrH->Inputs.bit.Stop;
-	tek->TsTu.bit.InMu 		 = GrH->Inputs.bit.Mu;
-	tek->TsTu.bit.InDu 		 = GrH->Inputs.bit.Du;
+	GrT->TsTu.bit.InOpen 	 = GrH->Inputs.bit.Open;
+	GrT->TsTu.bit.InClose	 = GrH->Inputs.bit.Close;
+	GrT->TsTu.bit.InStop 	 = GrH->Inputs.bit.Stop;
+	GrT->TsTu.bit.InMu 		 = GrH->Inputs.bit.Mu;
+	GrT->TsTu.bit.InDu 		 = GrH->Inputs.bit.Du;
 	#else
 
 		if((GrG->DiscrInTest)&&(IsTestMode()))
 		{		
-			if (tek->TsTu.bit.InOpen && tek->TsTu.bit.InClose)
+			if (GrT->TsTu.bit.InOpen && GrT->TsTu.bit.InClose)
 			{
-				tek->TsTu.bit.InOpen = 0;
-				tek->TsTu.bit.InClose = 0;	
+				GrT->TsTu.bit.InOpen = 0;
+				GrT->TsTu.bit.InClose = 0;	
 			}
-			if (IsPowerOff() && tek->TsTu.bit.InOpen && !ContTest)
+			if (IsPowerOff() && GrT->TsTu.bit.InOpen && !ContTest)
 			{
-				tek->TsTu.bit.InOpen = 0;
+				GrT->TsTu.bit.InOpen = 0;
 				Dmc.RequestDir = 1;
 				ContTest = 1;
 				if(!PhEl.Direction)
@@ -444,9 +444,9 @@ void TekModbusParamsUpdate(void)
 						GrH->ContGroup = cgOpen;
 					}
 			}
-		   if (IsPowerOff() && tek->TsTu.bit.InClose && !ContTest)
+		   if (IsPowerOff() && GrT->TsTu.bit.InClose && !ContTest)
 			{
-				tek->TsTu.bit.InClose = 0;
+				GrT->TsTu.bit.InClose = 0;
 				Dmc.RequestDir = -1;
 				ContTest = 1;
 				if(!PhEl.Direction)
@@ -463,8 +463,8 @@ void TekModbusParamsUpdate(void)
 						GrH->Outputs.bit.Dout3 = 1;	
 					}
 					GrH->ContGroup = cgStop;
-						tek->TsTu.bit.InOpen = 0;
-							tek->TsTu.bit.InClose = 0;
+						GrT->TsTu.bit.InOpen = 0;
+							GrT->TsTu.bit.InClose = 0;
 					ContTest = 0;
 					Dmc.RequestDir = 0;	
 					ContTestTimer = 0;
@@ -482,40 +482,40 @@ void TekModbusParamsUpdate(void)
 	if (!GrG->DiscrOutTest)
 	{
 		#if BUR_M
-		tek->TsTu.bit.OutOpened = GrH->Outputs.bit.Dout7;
-		tek->TsTu.bit.OutClosed = GrH->Outputs.bit.Dout6;
-	 	tek->TsTu.bit.OutMufta  = GrH->Outputs.bit.Dout2;
-		tek->TsTu.bit.OutFault  = GrH->Outputs.bit.Dout3;
-		tek->TsTu.bit.OutNeispr = GrH->Outputs.bit.Dout8;
+		GrT->TsTu.bit.OutOpened = GrH->Outputs.bit.Dout7;
+		GrT->TsTu.bit.OutClosed = GrH->Outputs.bit.Dout6;
+	 	GrT->TsTu.bit.OutMufta  = GrH->Outputs.bit.Dout2;
+		GrT->TsTu.bit.OutFault  = GrH->Outputs.bit.Dout3;
+		GrT->TsTu.bit.OutNeispr = GrH->Outputs.bit.Dout8;
 		#else
-		tek->TsTu.bit.OutOpened  = GrH->Outputs.bit.Dout2;
-		tek->TsTu.bit.OutClosed  = GrH->Outputs.bit.Dout1;
-	 	tek->TsTu.bit.OutMufta   = GrH->Outputs.bit.Dout3;
-		tek->TsTu.bit.OutFault   = GrH->Outputs.bit.Dout0;
-		tek->TsTu.bit.OutOpening = GrH->Outputs.bit.Dout5;
-		tek->TsTu.bit.OutClosing = GrH->Outputs.bit.Dout4;
-		tek->TsTu.bit.OutMuDu 	 = GrH->Outputs.bit.Dout6;
-		tek->TsTu.bit.OutNeispr  = GrH->Outputs.bit.Dout7;
+		GrT->TsTu.bit.OutOpened  = GrH->Outputs.bit.Dout2;
+		GrT->TsTu.bit.OutClosed  = GrH->Outputs.bit.Dout1;
+	 	GrT->TsTu.bit.OutMufta   = GrH->Outputs.bit.Dout3;
+		GrT->TsTu.bit.OutFault   = GrH->Outputs.bit.Dout0;
+		GrT->TsTu.bit.OutOpening = GrH->Outputs.bit.Dout5;
+		GrT->TsTu.bit.OutClosing = GrH->Outputs.bit.Dout4;
+		GrT->TsTu.bit.OutMuDu 	 = GrH->Outputs.bit.Dout6;
+		GrT->TsTu.bit.OutNeispr  = GrH->Outputs.bit.Dout7;
 		#endif
 	}
 	else
 	{
 		#if BUR_M
-		GrH->Outputs.bit.Dout7 = tek->TsTu.bit.OutOpened; 
-		GrH->Outputs.bit.Dout6 = tek->TsTu.bit.OutClosed;
-	 	GrH->Outputs.bit.Dout2 = tek->TsTu.bit.OutMufta;
-		GrH->Outputs.bit.Dout3 = tek->TsTu.bit.OutFault;
-		GrH->Outputs.bit.Dout8 = tek->TsTu.bit.OutNeispr;
+		GrH->Outputs.bit.Dout7 = GrT->TsTu.bit.OutOpened; 
+		GrH->Outputs.bit.Dout6 = GrT->TsTu.bit.OutClosed;
+	 	GrH->Outputs.bit.Dout2 = GrT->TsTu.bit.OutMufta;
+		GrH->Outputs.bit.Dout3 = GrT->TsTu.bit.OutFault;
+		GrH->Outputs.bit.Dout8 = GrT->TsTu.bit.OutNeispr;
 		GrH->Outputs.bit.Dout5 = 1;								// питание ТС включено всегда
 		#else
-		GrH->Outputs.bit.Dout2 = tek->TsTu.bit.OutOpened;
-		GrH->Outputs.bit.Dout1 = tek->TsTu.bit.OutClosed;
-	 	GrH->Outputs.bit.Dout3 = tek->TsTu.bit.OutMufta;
-		GrH->Outputs.bit.Dout0 = tek->TsTu.bit.OutFault;
-		GrH->Outputs.bit.Dout5 = tek->TsTu.bit.OutOpening; 
-		GrH->Outputs.bit.Dout4 = tek->TsTu.bit.OutClosing;
-		GrH->Outputs.bit.Dout6 = tek->TsTu.bit.OutMuDu;
-		GrH->Outputs.bit.Dout7 = tek->TsTu.bit.OutNeispr;
+		GrH->Outputs.bit.Dout2 = GrT->TsTu.bit.OutOpened;
+		GrH->Outputs.bit.Dout1 = GrT->TsTu.bit.OutClosed;
+	 	GrH->Outputs.bit.Dout3 = GrT->TsTu.bit.OutMufta;
+		GrH->Outputs.bit.Dout0 = GrT->TsTu.bit.OutFault;
+		GrH->Outputs.bit.Dout5 = GrT->TsTu.bit.OutOpening; 
+		GrH->Outputs.bit.Dout4 = GrT->TsTu.bit.OutClosing;
+		GrH->Outputs.bit.Dout6 = GrT->TsTu.bit.OutMuDu;
+		GrH->Outputs.bit.Dout7 = GrT->TsTu.bit.OutNeispr;
 		#endif
 	}
 }

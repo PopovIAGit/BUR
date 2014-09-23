@@ -15,7 +15,7 @@
 typedef struct _TGroupA
 {
 	TStatusReg      Status;           	// 0.Статус работы
-	TFltUnion	    Faults;				// 1-4.Аварии
+	TFltUnion	    Faults;				   // 1-4.Аварии
 	TInputReg       Inputs;           	// 5.Состояние дискретных входов
 	TOutputReg      Outputs;          	// 6.Состояние дискретных выходов
 	Uns             Position;        	// 7.Положение
@@ -23,7 +23,7 @@ typedef struct _TGroupA
 	Int             Speed;				// 9.Скорость
 	Uns             Ur;                 // 10.Напряжение фазы R
   	Uns             Us;                 // 11.Напряжение фазы S
-  	Uns             Ut;                 // 12.Напряжение фазы T
+ 	Uns             Ut;                 // 12.Напряжение фазы T
 	Uns             Iu;                 // 13.Ток фазы U
 	Uns             Iv;                 // 14.Ток фазы V
 	Uns             Iw;                 // 15.Ток фазы W
@@ -343,24 +343,9 @@ typedef struct _TLogEvBuffer
 	Uns				LogOutputs;			// 11.Состояние дискретных выходов
 } TLogEvBuffer;
 
-
-// Структура параметров устройства
-typedef struct _TDriveData
-{
-	TGroupA 	GroupA;					// 0.Диагностика привода
-	TGroupB 	GroupB;					// 1.Пользовательские параметры
-	TGroupC		GroupC;					// 2.Заводские параметры
-	TGroupD		GroupD;					// 3.Команды управления
-	TGroupG		GroupG;					// 4.Заводскиой тест
-	TGroupH		GroupH;					// 5.Скрытые параметры
-	TGroupE		GroupE;					// 6.Журнал событий
-
-} TDriveData;
-
 // начальный адрес 4000
-typedef struct _TTEK_MB_GROUP
+typedef struct _TGroupT
 {
-	Uns 			Rsvd;				// 0 Резерв	
 	TTEK_TechReg 	TechReg;			// 1 Технологический регистр
 	TTEK_DefReg  	DefReg;				// 2 Регистр дефектов
 	Uns 		 	PositionPr;			// 3 Текущее положение %
@@ -371,22 +356,38 @@ typedef struct _TTEK_MB_GROUP
 	Uns 		 	Rsvd2[9];			// 8 - 16 Резерв
 	Uns 			Ur;					// 17 Напряжение входной сети
 	Uns				Rsvd3;				// 18 Резерв
-	Uns 		 	Speed;				// 19 Текущая скорость
+	Uns 		 	   Speed;				// 19 Текущая скорость
 	Uns			 	Rsvd4;				// 20 Резерв
 	Uns 		 	Torque;				// 21 Текущий момент нагрузки Н*м
 	TTEK_Discrete 	TsTu;				// 22 ТС/ТУ
 	Uns				Rsvd6[4];			// 23 - 26 Резерв
 	Uns				RsStation;			// 27 Адрес станции (только для чтения)
 	Uns				Rsvd7;				// 28 Резерв
-} TTEK_MB_GROUP;
+	Uns				Rsvd8[12];			// 29 Резерв
+} TGroupT;
 
 
 
 // Структура параметров устройства
-typedef struct _TTEKDriveData
+typedef struct _TDriveData
+{
+	TGroupT			GroupT;				// TechReg
+	TGroupB 		GroupB;				// 1.Пользовательские параметры
+	TGroupC			GroupC;				// 2.Заводские параметры
+	TGroupD			GroupD;				// 3.Команды управления
+	TGroupG			GroupG;				// 4.Заводскиой тест
+	TGroupH			GroupH;				// 5.Скрытые параметры
+	TGroupA 		GroupA;				// 0.Диагностика привода
+	TGroupE			GroupE;				// 6.Журнал событий
+
+} TDriveData;
+
+
+// Структура параметров устройства
+/*typedef struct _TTEKDriveData
 {
 	TTEK_MB_GROUP	MainGroup;
-} TTEKDriveData;
+} TTEKDriveData;*/
 
 #ifdef CREATE_DRIVE_DATA					// Чтобы экземпляр создал только в одном месте, иначе будет писать "define multiple times"
 TDriveData Ram;
@@ -398,8 +399,7 @@ TGroupD *GrD = &Ram.GroupD;
 TGroupE *GrE = &Ram.GroupE;
 TGroupG *GrG = &Ram.GroupG;
 TGroupH *GrH = &Ram.GroupH;
-
-TTEKDriveData RamTek;
+TGroupT *GrT = &Ram.GroupT;
 
 #else
 extern TDriveData Ram;
@@ -410,8 +410,7 @@ extern TGroupD *GrD;
 extern TGroupE *GrE;
 extern TGroupG *GrG;
 extern TGroupH *GrH;
-
-extern TTEKDriveData RamTek;
+extern TGroupT *GrT;
 
 #endif
 
@@ -462,7 +461,9 @@ extern TTEKDriveData RamTek;
 
 #define IM_READ_BUF_SIZE		((LOG_EV_DATA_CNT * LOG_EV_DATA_CELL) + (LOG_EV_BUF_DATA_CNT * LOG_EV_BUF_DATA_CELL))
 
+#define REG_TORQUE_ADDR		GetAdr(GroupA.Torque)
 #define REG_START_IND			GetAdr(GroupH.StartIndic)
+//#define REG_START_IND			GetAdr(GroupA.Torque)
 #define REG_LOG_ADDR			GetAdr(GroupH.LogEvAddr)
 #define REG_LOG_TIME			GetAdr(GroupE.LogTime)
 #define REG_LOG_DATE			GetAdr(GroupE.LogDate)

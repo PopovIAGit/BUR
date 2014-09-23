@@ -10,6 +10,7 @@
 #define MB_READ_REGS		0x03
 #define MB_DIAGNOSTICS		0x08
 #define MB_WRITE_REGS		0x10
+#define MB_WRITE_REG		0x6
 #define MB_REP_SLAVE_ID		0x11
 
 #define PLIS_SPI			SPIA

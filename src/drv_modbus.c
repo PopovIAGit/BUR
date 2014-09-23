@@ -26,6 +26,8 @@ TMbPort Mb;
 
 Bool MbConnect = false;
 
+Uns TempMbFlag = 0;
+
 Uint16 CrcTable[256];
 Uint16 MbTmpData[MB_DATA_MAX];
 static Uns BaudRates[7] = SCI_DEFAULT_BAUD_RATES;
@@ -246,11 +248,12 @@ inline void ModBusRecieve(TMbPort *Port)
 				if (!Count || (Count > MB_DATA_MAX))
 					{Port->Frame.Exception = EX_ILLEGAL_DATA_VALUE; break;}
 	// !
-				if (Tmp <= (RAM_DATA_SIZE + 5)) {Res = 1;}
-				else if (CHECK_TEK_MB_ADDR(Addr))	{Res = 5;}
+				Res = 1;
+				//if (Tmp <= (RAM_DATA_SIZE + 5)) {Res = 1;}
+				//else if (CHECK_TEK_MB_ADDR(Addr))	{Res = 5;}
 	//			else if ((Addr >= LOG_EV_RAM_DATA_ADR) && (Tmp <= LOG_EV_RAM_DATA_LADR))      
 	//				  {Res = 4; Addr = Addr - LOG_DATA_ADDR;}
-				else {Res = 0;}
+				//else {Res = 0;}
 
 				if (!Res) {Port->Frame.Exception = EX_ILLEGAL_DATA_ADDRESS; break;}
 
@@ -263,8 +266,8 @@ inline void ModBusRecieve(TMbPort *Port)
 									break;
 							//case 2:  ReadRegs(Port, (Uint16 *)MON_CH_ADR, Addr, Count); 	break;
 							//case 4:  ReadAckRegs(Port, Addr + LOG_MEM_ADDR,  Count); 		break;
-							case 5: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&RamTek, (Addr - TEK_MB_START_ADDR), Count);
-									break;
+							//case 5: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&RamTek, (Addr - TEK_MB_START_ADDR), Count);
+							//		break;
 							default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
 						}
 						break;
@@ -272,16 +275,32 @@ inline void ModBusRecieve(TMbPort *Port)
 						switch(Res)
 						{
 							case 1:
+															TempMbFlag = 1;
+								Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
+								if (!Port->Frame.Exception) SerialCommRefresh();
+
+								break;
+							//case 5:
+							//	Port->Frame.Exception = WriteRegsTek(Port, (Uint16 *)&RamTek, (Uint16 *)&Ram, (Addr - TEK_MB_START_ADDR), Count);
+							//	if (!Port->Frame.Exception) SerialCommRefresh();
+							//	break;
+							default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+										
+						}
+						break;
+
+						case MB_WRITE_REG:
+						switch(Res)
+						{
+							case 1:
 								Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
 								if (!Port->Frame.Exception) SerialCommRefresh();
 								break;
-							case 5:
-								Port->Frame.Exception = WriteRegsTek(Port, (Uint16 *)&RamTek, (Uint16 *)&Ram, (Addr - TEK_MB_START_ADDR), Count);
-								if (!Port->Frame.Exception) SerialCommRefresh();
-								break;
 							default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+										
 						}
 						break;
+
 					default:
 						Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
 				}
@@ -383,7 +402,6 @@ static Byte WriteRegsTek(TMbPort *Port, Uint16 *DataTek, Uint16 *Data, Uint16 Ad
 
 	return EX_ILLEGAL_DATA_ADDRESS;
 }
-
 
 
 static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)

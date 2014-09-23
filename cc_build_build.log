@@ -1,8 +1,8 @@
 ------------------------------  bur.pjt - build  ------------------------------
 [drv_modbus.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "drv_modbus.c"
-"drv_modbus.c", line 457: warning: function "ReadAckRegs" was declared but never referenced
-
-[encoder.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "encoder.c"
+"drv_modbus.c", line 207: warning: variable "Tmp" was set but never used
+"drv_modbus.c", line 475: warning: function "ReadAckRegs" was declared but never referenced
+"drv_modbus.c", line 373: warning: function "WriteRegsTek" was declared but never referenced
 
 [im.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "im.c"
 "im.c", line 391: warning: variable "DbgCellCnt" was set but never used
@@ -30,4 +30,4 @@
 <Linking>
 
 Build Complete,
-  0 Errors, 3 Warnings, 0 Remarks.
+  0 Errors, 5 Warnings, 0 Remarks.
