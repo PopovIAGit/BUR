@@ -1,0 +1,9 @@
+/build/bur.map
+bur.CS_
+obj
+cc_build_build.log
+build.lkf
+bur.paf2
+bur.sbl
+/obj/*.obj
+/obj/*.obj
