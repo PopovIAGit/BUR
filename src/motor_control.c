@@ -1472,12 +1472,12 @@ void SifuControlForDynBrake (SIFU *p)
 
 	if (PhEl.Direction > 0)		// Если чередование фаз прямое RST
 	{
-		if (UR.Input > 15)
+		if (US.Input > 15)
   		{
   	   		p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
 			p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
 		
-   			if (*p->UrAngle > p->SetAngle)	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
+   			if (*p->UsAngle > p->SetAngle)	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
 			{
 				p->Status.bit.sifu_S = 0;
 				p->Status.bit.sifu_R = 0;

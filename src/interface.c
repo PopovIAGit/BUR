@@ -86,6 +86,7 @@ void InterfaceInit(void)
 	GrD->SetDefaults = 0;
 	GrC->SetDefaults = 0;
 	GrG->DisplShow = 0;
+	GrT->ComReg.all = 0;
 //!!!!!!!!!!!!!!!!
 
 	PrevLogAddr[PREV_LEV_INDEX]   = GrH->LogEvAddr;
