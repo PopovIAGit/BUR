@@ -37,7 +37,7 @@ static void   ModBusReset(TMbPort *);
 inline void   ModBusRecieve(TMbPort *);
 static Byte	  ReadRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count);
 static Byte   WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count);
-static void   ReadAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count);
+//static void   ReadAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count);
 //static void   WriteAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count);
 inline void   GenCrcTable(void);
 inline Uint16 CalcCRC(Uint16 CRC, Uint16 c);
@@ -47,8 +47,6 @@ static Uint16 CalcBufCRC(Uint16 *Buf, Uint16 Count);
 inline Uint16 CalcTout(Uint16 Tout, Uint16 Baud);
 inline Uint16 TimerPending(Uint16 *Timer);
 static void   MbTxCtrl(Uint16 State);
-static Byte WriteRegsTek(TMbPort *Port, Uint16 *DataTek, Uint16 *Data, Uint16 Addr, Uint16 Count);
-
 
 void SerialCommInit(void)
 {
@@ -204,7 +202,7 @@ static void ModBusReset(TMbPort *Port)
 
 inline void ModBusRecieve(TMbPort *Port)
 {
-	Uint16 Res, Func, Addr, Tmp, Count;
+	Uint16 Res, Func, Addr, Count;
 	
 	Port->Frame.Size = Port->Frame.Counter;
 	
@@ -222,7 +220,7 @@ inline void ModBusRecieve(TMbPort *Port)
 	Func  = Port->Frame.Buf[1];
 	Addr  = (Port->Frame.Buf[2] << 8) | Port->Frame.Buf[3];
 	Count = (Port->Frame.Buf[4] << 8) | Port->Frame.Buf[5];
-	Tmp   = Addr + Count - 1;
+	//Tmp   = Addr + Count - 1;
 	
 	Port->Frame.Exception = 0;
 	/*
@@ -370,40 +368,6 @@ static Byte ReadRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 	return 0;
 }
 
-static Byte WriteRegsTek(TMbPort *Port, Uint16 *DataTek, Uint16 *Data, Uint16 Addr, Uint16 Count)
-{
-	Uint16 Tmp = 0;
-
-	// Проверяем совпадают ли адреса с адресами редактируемых параметров
-	if (Addr == 4)
-	{
-		if (Port->Frame.Buf[6] != (Count << 1)) return EX_ILLEGAL_DATA_VALUE;
-  		else if (Port->Frame.Size != (Port->Frame.Buf[6] + 9)) return EX_ILLEGAL_DATA_VALUE;
-		else
-		{
-			Tmp = ((Port->Frame.Buf[7] << 8) | (Port->Frame.Buf[8] &0xFF));
-			DataTek[Addr] = Tmp;
-
-			return 0;
-		}
-	}
-	else if (Addr == 22)
-	{
-		if (Port->Frame.Buf[6] != (Count << 1)) return EX_ILLEGAL_DATA_VALUE;
-  		else if (Port->Frame.Size != (Port->Frame.Buf[6] + 9)) return EX_ILLEGAL_DATA_VALUE;
-		else
-		{
-			Tmp = ((Port->Frame.Buf[7] << 8) | (Port->Frame.Buf[8] &0xFF));
-			DataTek[Addr] = Tmp & TEK_DISCR_TEST_MASK;
-
-			return 0;
-		}
-	}
-
-	return EX_ILLEGAL_DATA_ADDRESS;
-}
-
-
 static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 {
 	struct MENU_DCR Dcr;
@@ -471,40 +435,6 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 
 	return 0;
 }
-
-static void ReadAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count)
-{
-	if (!IsMemReady())
-	{
-		if (Port->Frame.Acknoledge) Port->Frame.Exception = EX_ACKNOWLEDGE;
-		else Port->Frame.Exception = EX_SLAVE_DEVICE_BUSY;
-	}
-	else if (Port->Frame.Acknoledge)
-	{
-		ReadRegs(Port, MbTmpData, 0, Count);
-		Port->Frame.Acknoledge = 0;
-	}
-	else
-	{
-		EEPROM_Func(0, F_READ, Addr, MbTmpData, Count);
-		Port->Frame.Exception = EX_ACKNOWLEDGE;
-	}
-}
-
-/*
-static void WriteAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count)
-{
-	if (!IsMemReady())
-	{
-		Port->Frame.Exception = EX_SLAVE_DEVICE_BUSY;
-	}
-	else
-	{
-		WriteRegs(Port, MbTmpData, 0, Count);
-		MemFunc(0, MEM_WRITE, Addr, MbTmpData, Count);
-	}
-}
-*/
 
 inline void GenCrcTable(void)
 {

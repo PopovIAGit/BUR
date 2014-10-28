@@ -1,4 +1,9 @@
-
+/*======================================================================
+Имя файла:          motor_control.c
+Автор:              $Author:  $     
+Описание:
+Модуль управления двигателем
+======================================================================*/
 #include "config.h"
 
 APFILTER3  URfltr;
@@ -24,51 +29,36 @@ PH_ORDER   PhEl 	= PH_EL_DEFAULT;
 TDmControl Dmc  	= DMC_DEFAULT;
 TTorqObs   Torq;
 
-
 Uns  ZazorTimer 	= 0;
 Uns  Iload[3] 		= {0,0,0};	//действующие токи в А (токи нагрузки)
 Uns  Ipr[3]   		= {0,0,0};	//действующие токи в % от номинального
 Uns  Imid	  		= 0;		//средний действующий ток	
 Uns  Imidpr	  		= 0;		//средний действующий ток в процентах от Iн
-Uns  Inom 	  		= 0;		//номинальный ток двигателя, убрать в структуру Net
-Uns  Umid     		= 0;	    //средний действующие напряжение
-Uns  AngleUI  		= 0;		//угол между током и напряжением
 Bool DynBrakeEnable = False;	// запрет динамического торможения по старту
 Uns  KickCounter    = 0;		// счетчик количества ударов
 Uns  KickModeTimer  = 0;		// счетчик для режима ударного момента
-Uns  TestModeTimer  = 0;		// время в тестовом режиме
 Uns  UporModeTimer  = 0;		// счетчик для упора
-Uns  PreventModeTimer = 0;		// время для защиты от раскачки в режимах
+Uns  timerMaxTorque = 0;		// время для защиты от раскачки в режимах
 Uns  PauseModeTimer = 0;		// счетчик для режима паузы
 Uns  DynModeTimer   = 0;		// счетчик для динамического торможения
-Uns  RunStatus 		= 0;
 Byte DmcRefrState   = 0;
 Uns  AbsSpeed 		= 0;
-Uns  KickSetAngle   = 0;		// задание угла открытия по ударному режиму
-Uns  LowPowerTimer  = 0;		// таймер режима провала напряжения
 Uns  LowPowerReset  = 0;		// сбросы режима провала напряжения
 Uns  SaveDirection  = SIFU_NONE;
 Uns  SaveContactorDirection = 0;
-Uns  TorqueMax 		= 0;
-Uns  TorqueUser     = 0;
 Bool KickModeEnable = False;	// разрешение ударного момента
 #if BUR_M
-Uns NetMonitorFlag  = 0;
 Uns Net_Mon_Timer   = 0;		//таймер перед тем как считаем наличие напряжение как команду на пуск
-Uns StopSetTimer 	= 0;
-Uns PowerLostTimer  = 0;
 Uns PowerLostTimer2 = 0;
 #endif
-Uns Ang 			= 2;
 Uns BreakFlag 		= 0;
 Uns PowerSupplyEnable 	= 0; 	// Наличие питания источника 
 Uns PowerSupplyCnt 		= 0;	// Задержка на выключение питания
 Uns ReqDirection 	= 0;
-
 Uns DebugStartDelayCnt = 0;
 Uns DebugStartDelayCnt2 = 10;
 Uns BreakVoltFlag = 0;
-																			// Порядок двигателей смотри в table_tomzel.asm
+// ----------------------------------------	
 Int InomDef[10]  	 = {13,11,18,52,52,47,56,110,85,148};						// default значения для Inom для разных приводов
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
 Int TransCurrDef[10] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100};	//					для TransCur править
@@ -79,6 +69,9 @@ extern Int	//типовые двигатели
 	drive6,  drive7,  drive8,  drive9,	drive10, 
 	drive11, drive12, drive13, drive14,	drive15, 
 	drive16, drive17, drive18, drive19, drive20;
+
+Uns TimerInterp = 0;
+Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time); 
 
 //-------------Монитор------------------
 Uns program   = 1;
@@ -319,7 +312,7 @@ void DefineCtrlParams(void) // задачи контролируемых параметров в
 	OpenZone = GrA->FullWay - OpenZone;	// зона открытия это полный путь - зона открытия заданная
 	
 	if (!Dmc.RequestDir)  // если не определенно направление вращения 
-		Dmc.TorqueSet = TorqueUser;// момент задания = TorqueUser
+		Dmc.TorqueSet = 0;// момент задания = 0
 	else if (Dmc.RequestDir > 0) // если подана команда на открытие
 	{
 		Dmc.TorqueSet = GrB->MoveOpenTorque; // момент задания забираемs
@@ -342,7 +335,7 @@ void DefineCtrlParams(void) // задачи контролируемых параметров в
 	}
 
 #if !TORQ_TEST
-	Dmc.TorqueSetPr = ValueToPU0(Dmc.TorqueSet, TorqueMax); // считаем момент в % от максимального
+	Dmc.TorqueSetPr = ValueToPU0(Dmc.TorqueSet, GrC->MaxTorque * 10); // считаем момент в % от максимального
 #endif
 }
 
@@ -356,7 +349,6 @@ void StopPowerControl(void) // упровление при стопе
 	#if BUR_M
 		GrH->ContGroup   = cgStop;
 		PhEl.Direction 	 = 0;
-		PowerLostTimer   = 0;
 		PowerLostTimer2  = 0;
 		Net_Mon_Timer = 0;
 		DbgStop++;
@@ -452,6 +444,7 @@ void NetMomitor(void)
 
 void ContactorControl(TContactorGroup i) // если 0 то 
 {
+	static Uns StopSetTimer 	= 0;
 	if(IsTestMode() || GrG->TestCamera) return; // SVS
    switch(i)
    {
@@ -503,6 +496,7 @@ void ContactorControl(TContactorGroup i) // если 0 то
 
 void StartPowerControl(TValveCmd ControlWord)	// управление при пуске
 {
+	static Uns  RunStatus = 0;
 register Uns Tmp;
 
 	if (GrH->FaultsLoad.all & LOAD_SHC_MASK) return;		// если есть кз то выходим
@@ -572,16 +566,13 @@ register Uns Tmp;
 	// сброс счетчиков режимов
 	KickCounter      = 0;
 	KickModeTimer    = 0;
-	TestModeTimer    = 0;
 	UporModeTimer    = 0;
-	PreventModeTimer = 0;
+	timerMaxTorque = 0;
 	PauseModeTimer   = 0;
 	DynModeTimer     = 0;
 	#if BUR_M
 	Net_Mon_Timer    = 0;
-
-		PowerLostTimer   = 0;
-		PowerLostTimer2  = 0;
+	PowerLostTimer2  = 0;
 	#endif
 
 	// определения открываемой группы тиристоров
@@ -655,6 +646,8 @@ __inline void StopMode(void)		// стм. стоп
 
 __inline void TestPhMode(void)		// стм. тест фаз
 {									// проверка на КЗ в protection.c
+	static Uns TestModeTimer  = 0;	// время в тестовом режиме
+
 	#if BUR_M	
 	if (!PhEl.Direction)	return;
 	#endif	 
@@ -701,12 +694,12 @@ __inline void MoveMode(void)	// стм. движение
 	Sifu.AccelTime  = GrC->VoltAcc;	// 100
 	GrH->Torque 	= Torq.Indication; // показываем момент как он есть
 
-	if (!Sifu.OpenAngle) PreventModeTimer++;		// если угол открытия тиристоров 0 то пускаем таймер
-	if (PreventModeTimer >= (Uns)MOVE_STATE_TIME)	// если находимся в режиме движения дольше 1 с
+	if (!Sifu.OpenAngle) timerMaxTorque++;		// если угол открытия тиристоров 0 то пускаем таймер
+	if (timerMaxTorque >= (Uns)MOVE_STATE_TIME)	// если находимся в режиме движения дольше 1 с
 	{
 		if ((Torq.Indication >= Dmc.TorqueSet) || (AbsSpeed < MIN_FREQ_RPM)) // если слищком большой момент или слишком маленькая скорость
 			Dmc.WorkMode = wmPause;	// стм. пауза
-		PreventModeTimer = 0;		// сбросили таймер 
+		timerMaxTorque = 0;		// сбросили таймер 
 	}
 }
 
@@ -741,6 +734,7 @@ __inline void UporFinishMode(void)	// стм. упор финиш
 
 __inline void KickMode(void)		// стм. удар
 {
+	static Uns  KickSetAngle = 0;			// задание угла открытия по ударному режиму
 	Sifu.SetAngle   = KickSetAngle;	// полное открытие
 	Sifu.AccelTime  = 0;			// макс. быстро
 	GrH->Torque = Dmc.TorqueSet - 1;// момент как момент задания
@@ -767,54 +761,61 @@ __inline void SpeedTestMode(void)	// стм. тест
 	Sifu.AccelTime  = GrC->VoltAcc;     // 100
 	GrH->Torque = Torq.Indication; // как есть
 }
-
-__inline void DynBrakeMode(void) // режим динамического торможения
+// -----------------------------------------------------------------
+// режим динамического торможения 
+__inline void DynBrakeMode(void) // 200 Hz в ControlMode(void)
 {
-	Sifu.AccelTime  = 0;		// максимальная скорость открытия
-	GrH->Torque = 0;		// не показываем момент
-	
-	if (++DynModeTimer < (GrC->BrakeTime * (Uns)CTRLMODE_SCALE))	 // если время торможения не привысело заднанное время
-	{
-		Mcu.StartDelay = 0xFFFF; // запрещаем обработку команд управления
+	Uns pauseTime = 0;			// Время паузы
+	Uns brakeTime = 0;			// Время торможения
 
-		if (DynModeTimer < (Uns)DYN_PAUSE_TIME) //  если таймер меньше 0.04с то
+	Sifu.AccelTime  = 0;										// максимальная скорость открытия
+	GrH->Torque = 0;											// не показываем момент
+	pauseTime = (Uns)DYN_PAUSE_TIME;			
+	brakeTime = GrC->BrakeTime * (Uns)CTRLMODE_SCALE;
+	Mcu.StartDelay = 0xFFFF; 									// запрещаем обработку команд управления
+
+	if (++DynModeTimer < (brakeTime + pauseTime))	// если время торможения не привысело заданное время
+	{
+		if (DynModeTimer < pauseTime) 							// если таймер меньше 0.04с то
 		{
-			Sifu.SetAngle  = SIFU_MAX_ANG;		// угол максимальный
-			Sifu.Direction = SIFU_NONE;			// сифу выключенно
+			Sifu.SetAngle  = SIFU_MAX_ANG;						// угол максимальный
+			Sifu.Direction = SIFU_NONE;							// сифу выключенно
+			TimerInterp = 0;									// Обнуляем таймер, чтобы в функции AngleInterp сбросилась переменная OutputIQ15
 		}
 		else // выбор угла в зависимости от чередования фаз
 		{
-			if (!GrC->SelectDynBr)
+			if (!GrC->SelectDynBr)								// Если динамическое торможение старого образца
 			{
-				if (!PhEl.Direction)	// если чередование фаз не определенно
-					Sifu.SetAngle = SIFU_CLOSE_ANG;	// угол задания 180
-				else if (PhEl.Direction > 0)	// прямая последовательность
+				if (!PhEl.Direction)							// если чередование фаз не определенно
+					Sifu.SetAngle = SIFU_CLOSE_ANG;				// угол задания 180
+				else if (PhEl.Direction > 0)					// прямая последовательность
 				{
-					Sifu.MaxAngle = 140;		// 140
-					Sifu.SetAngle = GrC->BrakeAngle - 30;//угол задания в начале 60 - 30
+					Sifu.MaxAngle = 140;						// 140
+					Sifu.SetAngle = GrC->BrakeAngle - 30;		//угол задания в начале 60 - 30
 				}
-				else							// обратная
+				else											// обратная
 				{
-					Sifu.MaxAngle = SIFU_MAX_ANG;// 180
-					Sifu.SetAngle = GrC->BrakeAngle + 30; // угол задания 60 + 30 
+					Sifu.MaxAngle = SIFU_MAX_ANG;				// 180
+					Sifu.SetAngle = GrC->BrakeAngle + 30;		// угол задания 60 + 30 
 				}
-				Sifu.Direction = SIFU_DYN_BREAK; // выставляем режим сифу динамическое торможение
+				Sifu.Direction = SIFU_DYN_BREAK;				// выставляем режим сифу динамическое торможение
 			}
 			else
 			{
-				Sifu.MaxAngle = SIFU_MAX_ANG;		// 180
-				Sifu.SetAngle = GrC->BrakeAngle; 	// угол задания динамического торможения
-				Sifu.Direction = SIFU_DYN_BREAK2; 	// выставляем режим сифу динамическое торможение	
+				Sifu.MaxAngle = SIFU_MAX_ANG;					// 180
+				Sifu.SetAngle = AngleInterp(GrC->BrakeAngle, (GrC->BrakeAngle - 10), GrC->BrakeTime);// угол задания динамического торможения
+				Sifu.OpenAngle = Sifu.SetAngle;
+				Sifu.Direction = SIFU_DYN_BREAK2; 				// выставляем режим сифу динамическое торможение	
 			}
 		}
 	}
 	else // если время торможения вышло то уходим в стм. стоп
 	{
-		Sifu.MaxAngle  = SIFU_MAX_ANG;			// максимальный угол  
+		Sifu.MaxAngle  = SIFU_MAX_ANG;							// максимальный угол  
 		Dmc.WorkMode   = wmStop;
-		DynBrakeEnable = False;	// запрещаем режим динамического торможения
-		DynModeTimer   = 0;		// сюрасываем таймер дин.торм.
-		Mcu.StartDelay = (Uns)START_DELAY_TIME; // задаем паузу между пусками
+		DynBrakeEnable = False;									// запрещаем режим динамического торможения
+		DynModeTimer   = 0;										// сюрасываем таймер дин.торм.
+		Mcu.StartDelay = (Uns)START_DELAY_TIME; 				// задаем паузу между пусками
 	}
 }
 
@@ -918,7 +919,7 @@ void TorqueCalc(void)	// расчет момента по кубу
 	if (Tmp < TORQ_MIN_PR) Tmp = TORQ_MIN_PR;	// проверяем на вхождение в зону от 
 	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 10 до 110 %
 	
-	Torq.Indication = PU0ToValue(Tmp, TorqueMax);// переводим проценты в Нм относительно максимального М
+	Torq.Indication = PU0ToValue(Tmp, GrC->MaxTorque * 10);// переводим проценты в Нм относительно максимального М
 #else
 	Torq.Indication = Cub->Output;	// если тест забираем без фильтра просто число
 #endif
@@ -1124,6 +1125,7 @@ void LowPowerControl(void)		// управление при провале напряжения ???
 {
 #if !LOWPOW_TEST
 	static Bool ShCFlag = False;
+	static Uns  LowPowerTimer  = 0;		// таймер режима провала напряжения
 	Uns ShCState = 0;
 	
 	ShCState = GrH->FaultsLoad.all & LOAD_SHC_MASK;	// смотрим состояние КЗ
@@ -1216,8 +1218,7 @@ Bool DmcControlRefresh(void) // это в RefreshData
 			IVfltr.Tf = IUfltr.Tf; 											ApFilter3Init(&IVfltr);
 			IWfltr.Tf = IUfltr.Tf; 											ApFilter3Init(&IWfltr);
 			break;
-		case 5:	TorqueMax = GrC->MaxTorque * 10; // Перевод максимального момента в *10
-		 		break;
+		case 5:	break;
 		case 6: CubRefresh(&Torq.Cub1, &GrH->TqCurr);  break;
 		case 7: CubRefresh(&Torq.Cub2, &GrH->TqAngUI); break;
 		case 8: CubRefresh(&Torq.Cub3, &GrH->TqAngSf);
@@ -1374,44 +1375,44 @@ void MonitorUpdate1(void){
 	}
 }
 
-void sifu_calc2(SIFU *v)				//функция сифу - изменена - фаза S и R поменялись местами, т.к. 
+void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись местами, т.к. 
 {
-	v->Status.all = 0x3F;				// выставляем в статусе единички на все используемые ножки и разрешение работы	тоесть 0011 1111 - чтобы сбросить разрешение тиристорам на работу при новом вызове функции
-	if (v->Direction == SIFU_NONE)	// если не задано направление работы - тоесть сифу выключенно то
+	v->Status.all = 0x3F;								// выставляем в статусе единички на все используемые ножки и разрешение работы	тоесть 0011 1111 - чтобы сбросить разрешение тиристорам на работу при новом вызове функции
+	if (v->Direction == SIFU_NONE)						// если не задано направление работы - тоесть сифу выключенно то
 	{
-		v->AccelTimer = 0;			// обнуляем таймер для последующего использования
-		v->OpenAngle = v->SetAngle; // и держим задание на угол открытия на текущем угле открытия
+		v->AccelTimer = 0;								// обнуляем таймер для последующего использования
+		v->OpenAngle = v->SetAngle; 					// и держим задание на угол открытия на текущем угле открытия
 	}
-	else if (v->Direction == SIFU_DYN_BREAK2)// Если сейчас режим динамического торможения нового образца
+	else if (v->Direction == SIFU_DYN_BREAK2)			// Если сейчас режим динамического торможения нового образца
 	{
-		SifuControlForDynBrake(v);			// управляем тиристорами как при динамическом торможении
+		SifuControlForDynBrake(v);						// управляем тиристорами как при динамическом торможении
 	}
-	else							// если сифу включенно и есть задание
+	else												// если сифу включенно и есть задание
 	{
-		v->Status.all &= ~(1<<SIFU_EN_TRN);	// сбрасываем бит включения чтобы не поехать раньше времени Status = 0001 1111
+		v->Status.all &= ~(1<<SIFU_EN_TRN);				// сбрасываем бит включения чтобы не поехать раньше времени Status = 0001 1111
 
 		if (!v->AccelTime) v->OpenAngle = v->SetAngle;	// если открытие происходит на частоте вызова функции тоесть не задана задержка открытия то задаем угол открытия = углу задания
-		else if (++v->AccelTimer >= v->AccelTime) // если задержка открытия заданна то запускаем таймер  отсчитывания задержки и когда он достчитает
+		else if (++v->AccelTimer >= v->AccelTime) 		// если задержка открытия заданна то запускаем таймер  отсчитывания задержки и когда он достчитает
 		{
 			if (v->OpenAngle < v->SetAngle) v->OpenAngle++;	// если текущий угол открытия меньше угла задания то увеличиваем угол открытия на 1
 			if (v->OpenAngle > v->SetAngle) v->OpenAngle--; // если угол открытия больше угла задания то уменьшаем текущий угол на 1
 			v->AccelTimer = 0;								// сбрасываем таймер для следующей итерации
 		}
-																			// тут происходит синхронизация сифу с входной сетью
-		if ((*v->UrAngle >= v->OpenAngle) && (*v->UrAngle < v->MaxAngle))	// если угол фазы сети больше угла отктрытия и угол фазы корректен - тоесть не больше 170 градусов
-			 v->Status.all &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));								// сбрасываем бит статуса отвечающий за ножку управления тиристора фазы UR. сбрасываем т.к. тиристор открывается нулем Status = 0001 1110
+																			  // тут происходит синхронизация сифу с входной сетью
+		if ((*v->UrAngle >= v->OpenAngle) && (*v->UrAngle < v->MaxAngle - 15))// если угол фазы сети больше угла отктрытия и угол фазы корректен - тоесть не больше 170 градусов
+			 v->Status.all &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));				  // сбрасываем бит статуса отвечающий за ножку управления тиристора фазы UR. сбрасываем т.к. тиристор открывается нулем Status = 0001 1110
 
-		if ((*v->UsAngle >= v->OpenAngle) && (*v->UsAngle < v->MaxAngle))	// аналогично
-		 	 v->Status.all &= ~(1<<SIFU_US);									// тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0000 1101
+		if ((*v->UsAngle >= v->OpenAngle) && (*v->UsAngle < v->MaxAngle - 15))// аналогично
+		 	 v->Status.all &= ~(1<<SIFU_US);								  // тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0000 1101
 
-	  	if ((*v->UtAngle >= v->OpenAngle) && (*v->UtAngle < v->MaxAngle))	// аналогично
-			 v->Status.all &= ~((1<<SIFU_UT)|(1<<SIFU_UT_REV));					// тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0001 0011
+	  	if ((*v->UtAngle >= v->OpenAngle) && (*v->UtAngle < v->MaxAngle - 15))// аналогично
+			 v->Status.all &= ~((1<<SIFU_UT)|(1<<SIFU_UT_REV));				  // тут обнуляем 2 бита для прямой и реверсивной группы фазы S Status = 0001 0011
 
-		switch(v->Direction)												// в зависимости от выбранного направления выдаем управление на тиристоры через статусный регистр
+		switch(v->Direction)		// в зависимости от выбранного направления выдаем управление на тиристоры через статусный регистр
 		{
 			case SIFU_DOWN: v->Status.all |= ((1<<SIFU_UR)|(1<<SIFU_UT)); break;// если реверсивное вращение то выставляем 1 для битов фазы R S если они были обнулены
 			case SIFU_UP:   v->Status.all |= ((1<<SIFU_UR_REV)|(1<<SIFU_UT_REV)); break; // аналогично только единички выставляются для битов реверсивной группы
-			case SIFU_DYN_BREAK:	// если включен сложный режим динамического торможения то (описание динамического  торможения)
+			case SIFU_DYN_BREAK:										// если включен сложный режим динамического торможения то (описание динамического  торможения)
 				if (*v->Polarity <= 0) v->Status.all |= (1<<SIFU_US); 	//  
 				v->Status.all |=  ((1<<SIFU_UT)|(1<<SIFU_UT_REV));		//  
 				v->Status.all &= ~((1<<SIFU_UR)|(1<<SIFU_UR_REV));		// 
@@ -1419,103 +1420,60 @@ void sifu_calc2(SIFU *v)				//функция сифу - изменена - фаза S и R поменялись ме
 		}
 	}
 }
-/*
+//---------------------Проверка питания источника-------------------------------
 void PowerCheck(void)			// 200 Hz 
 {
 	if(POWER_CONTROL)			// если питание отключено
-		{
-			PowerSupplyCnt++;			// задержка на выключение
-			
-			if (DebugStartDelayCnt < DEBUG_START_TIME) // если прошло меньше 5 сек, уходим в режим сбережени
-			{
-				DebugStartDelayCnt++;
-
-				if (PowerSupplyCnt >= 5)
-				{
-					PowerSupplyEnable = 0;
-					PowerSupplyCnt = 5;
-				}
-			}
-			else // если прошло больше 5 сек и не отключились то вышли в режим дебага
-			{
-				PowerSupplyEnable = 1;	// подали напряжение
-				PowerSupplyCnt = 0;		// сбросили таймер
-				DebugStartDelayCnt = DEBUG_START_TIME;
-			}
-		}
-	else 	// если питание включено
-		{
-			PowerSupplyEnable = 1;
-			PowerSupplyCnt = 0;
-			DebugStartDelayCnt = 0;
-		}					
-}*/
-
-void PowerCheck(void)			// 200 Hz 
-{
-	if(POWER_CONTROL)			// если питание отключено
-		{
-			PowerSupplyCnt++;			// задержка на выключение
-			if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
-		}
+	{
+		PowerSupplyCnt++;		// задержка на выключение
+		if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
+	}
 	else 						// если питание включено
-		{
-			PowerSupplyEnable = 1;
-			PowerSupplyCnt = 0;
-		}				
+	{
+		PowerSupplyEnable = 1;
+		PowerSupplyCnt = 0;
+	}				
 }
+
+//---------------------Плавное изменение угла во времени------------------------------------
+Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time)
+{
+	static LgInt OutputQ15 = 0;
+
+	if (TimerInterp == 0) OutputQ15 = (LgInt)StartValue << 15;
+	else OutputQ15 = OutputQ15 - _IQ15div(((LgInt)(StartValue - EndValue) << 15), _IQ15mpy((LgInt)Time * 3277, _IQ15(200.0)));	// При переносе функции из другого проекта, будьте внимательными!!
+
+	TimerInterp++;
+	
+	if (OutputQ15 <= ((LgInt)EndValue << 15)) return EndValue;
+	else if (OutputQ15 >= ((LgInt)StartValue << 15)) return StartValue;
+		 else return (Uns)(OutputQ15 >> 15);
+} 
 
 //----------Логика управления тиристорами для динамического торможения--------------------------- 
 void SifuControlForDynBrake (SIFU *p)
 {
 	p->Status.bit.sifu_ENB = 0;
-
-	if (PhEl.Direction > 0)		// Если чередование фаз прямое RST
+	if (US.Input > 50)					// Смотрим только на верхние полуволны пилы S
 	{
-		if (US.Input > 15)
-  		{
-  	   		p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
-			p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
-		
-   			if (*p->UsAngle > p->SetAngle)	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
-			{
-				p->Status.bit.sifu_S = 0;
-				p->Status.bit.sifu_R = 0;
-				p->Status.bit.sifu_RT = 0; 
-			}
-			else
-			{
-				p->Status.bit.sifu_S = 1;
-				p->Status.bit.sifu_R = 1;
-				p->Status.bit.sifu_RT = 1; 
-			}
-		} 
-		else	
-			p->Status.all = 0x003F;
-	} 
-	else						// Если чередование фаз обратное SRT
-  	{
-		if (US.Input > 15)
+	   	p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
+		p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
+	
+		if ((*p->UsAngle > p->OpenAngle)&&(*p->UsAngle < 160))	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
+		{														// Даем сигнал на закрытие тиристоров немного заранее
+			p->Status.bit.sifu_S = 0;
+			p->Status.bit.sifu_R = 0;
+			p->Status.bit.sifu_RT = 0; 
+		}
+		else
 		{
-  	   		p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
-			p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
-		
-   			if (*p->UsAngle > p->SetAngle)	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
-			{
-				p->Status.bit.sifu_S = 0;
-				p->Status.bit.sifu_R = 0;
-				p->Status.bit.sifu_RT = 0; 
-			}
-			else
-			{
-				p->Status.bit.sifu_S = 1;
-				p->Status.bit.sifu_R = 1;
-				p->Status.bit.sifu_RT = 1;  
-			}
-		} 
-		else	
-			p->Status.all = 0x003F;
-	}
+			p->Status.bit.sifu_S = 1;
+			p->Status.bit.sifu_R = 1;
+			p->Status.bit.sifu_RT = 1; 
+		}
+	} 
+	else	
+		p->Status.all = 0x003F;
 }
 
 //-----------Конец файла------------------------------ 
