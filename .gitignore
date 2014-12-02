@@ -7,3 +7,7 @@ bur.paf2
 bur.sbl
 /obj/*.obj
 /obj/*.obj
+/build/*.map
+/build.lkf
+/bur.paf2
+/bur.sbl

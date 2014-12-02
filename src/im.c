@@ -388,8 +388,6 @@ __inline Bool FuncFive(TIM *p, Byte LogType, Uns RecordNum)
 	Uns CurrentIndex = StartIndex;
 	Uns CellIndex = 0;	Uns ImIndex = 0; Uns i;
 
-	Uns DbgCellCnt = 0;
-
 	ImBufferReader(LogType, RecordNum);
 
 	if (p->IsBufReady)
@@ -437,7 +435,7 @@ __inline Bool FuncFive(TIM *p, Byte LogType, Uns RecordNum)
 						}
 					}
 
-					DbgCellCnt = (IM_LOGEV_BUF_CELL_CNT + 1);
+					//DbgCellCnt = (IM_LOGEV_BUF_CELL_CNT + 1);
 				}
 
 			break;

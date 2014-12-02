@@ -664,8 +664,6 @@ Bool EnableEdit(Uns Password, Uns Param)
 // Запись измененного параметра в ПЗУ
 Bool WriteValue(Uns Memory, Uns Param, Uns *Value)
 {
-	Uns TempValue;
-
 	if (Memory && !IsMemParReady()) return False;
 	
 	if (Param == REG_CODE)
@@ -690,7 +688,7 @@ Bool WriteValue(Uns Memory, Uns Param, Uns *Value)
 	*(ToUnsPtr(&Ram) + Param) = *Value;
 	if (Memory)
 	{
-		TempValue = *Value;
+		//TempValue = *Value;
 		WritePar(Param, Value, 1);
 		RefreshData();
 																	// Отправляем данные в журнал изменения параметров
