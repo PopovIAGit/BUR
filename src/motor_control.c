@@ -151,7 +151,7 @@ void MotorControlUpdate(void)
 	if (UR.Output < 70) PhEl.Direction = 0;
 	TestThyrControl();					// тест тиристоров - угол открытия 0
 	PulsePhaseControl();				// Сифу
-	MonitorUpdate1();					// Монитор - убрать потом
+	//MonitorUpdate1();					// Монитор - убрать потом
 }
 
 __inline void ADC_Aquisition(void){		//18kHz
@@ -319,8 +319,8 @@ void DefineCtrlParams(void) // задачи контролируемых параметров в
 		BreakFlag = 0;
 		if (!IsNoCalib())		 // если откалиброванн датик положения
 		{
-			if (GrA->CurWay <= CloseZone)    { Dmc.TorqueSet = GrB->StartCloseTorque;  BreakFlag = 0;}// если текущее положение находится в зоне закрыто то задаем момент как момент трогания на закрытие
-			else if (GrA->CurWay >= OpenZone){ Dmc.TorqueSet = GrB->BreakOpenTorque; BreakFlag = 1;} // если находимся в зоне открытия то  задаем момене как момент уплотнения на открытие
+			if 		(GrA->CurWay <= CloseZone)    	{ Dmc.TorqueSet = GrB->StartCloseTorque;  BreakFlag = 0;}// если текущее положение находится в зоне закрыто то задаем момент как момент трогания на закрытие
+			else if (GrA->CurWay >= OpenZone)		{ Dmc.TorqueSet = GrB->BreakOpenTorque; BreakFlag = 1;} // если находимся в зоне открытия то  задаем момене как момент уплотнения на открытие
 		}
 	}
 	else	// если команда закрываться то так же но наоборот и моменты называются по другому

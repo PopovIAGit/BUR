@@ -249,7 +249,7 @@ void ProtectionsReset(void)	// сброс силовых защит(для возможного пуска двигател
 	GrA->Faults.Proc.all &= ~PROC_RESET_MASK;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто) 
 	GrH->FaultsLoad.all  &= ~LOAD_RESET_MASK;	// сбросили ошибки нагрузки (все)
 	#if BUR_M
-	GrH->FaultsNet.all     &= ~NET_RESET_MASK;					
+	GrH->FaultsNet.all   &= ~NET_RESET_MASK;					
 	#endif
 }
 
@@ -303,7 +303,7 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 
 	GrA->Faults.Proc.bit.Overway = OverWayFlag;	// если уплотнение недастигнуто
 	
-	GrA->Faults.Proc.all &= ~PROC_CALIB_MASK;		// сбросили ошибки калибровки
+	GrA->Faults.Proc.all &= ~PROC_CALIB_MASK;	// сбросили ошибки калибровки
 	if (GrC->CalibIndic != pmOff)				// если защита по тех. процессу не отключенаы
 	{
 		GrA->Faults.Proc.bit.NoClose = IsNoClosePos();	// индикация отсутсвия калибровки на "закрыто"
@@ -326,7 +326,10 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 		GrH->FaultsDev.bit.PosSens = Encoder.Error;			// энкодер
 		GrH->FaultsDev.bit.Memory1 = Eeprom1.Error;			// еепром 1 
 		GrH->FaultsDev.bit.Memory2 = Eeprom2.Error;			// eeprom 2
-		GrH->FaultsDev.bit.Rtc     = Ds1305.Error;			// часы
+		if(!GrC->RTCErrOff)
+		{
+			GrH->FaultsDev.bit.Rtc     = Ds1305.Error;			// часы
+		}
 		GrH->FaultsDev.bit.TSens   = TempSens.Error;		// температура
 		GrH->FaultsDev.bit.AVRcon  = !PiData.Connect;		// наличие конекта до АВР
 		/*
