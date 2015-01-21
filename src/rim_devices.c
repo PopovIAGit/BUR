@@ -302,6 +302,7 @@ void TekModbusParamsUpdate(void)
 	GrT->TechReg.bit.Closing = GrA->Status.bit.Closing;
 	GrT->TechReg.bit.Stop    = GrA->Status.bit.Stop;
 	GrT->TechReg.bit.Ten     = GrA->Status.bit.Ten;
+	GrT->TechReg.bit.Ready   = !GrA->Status.bit.Fault;
 	
 	// Заполняем регистр дефектов
 	GrT->DefReg.bit.I2t = GrA->Faults.Load.bit.I2t;

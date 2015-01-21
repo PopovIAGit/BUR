@@ -530,7 +530,8 @@ typedef union _TTEK_TechReg
 		Uns Stop:1;			// 10 		Стоп
 		Uns Rsvd3:2;		// 11-12 	Резерв
 		Uns Ten:1;			// 13; 		Включен тен
-		Uns Rsvd4:2;		// 14-15; 	Резерв
+		Uns Rsvd4:1;		// 14	 	Резерв
+		Uns Ready:1;		// 15 		Готов к работе
 	} bit;
 } TTEK_TechReg;
 
