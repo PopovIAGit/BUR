@@ -325,7 +325,7 @@ void DefineCtrlParams(void) // задачи контролируемых параметров в
 		BreakFlag = 0;
 		if (!IsNoCalib())		 // если откалиброванн датик положения
 		{
-			if 		(GrA->CurWay <= CloseZone)    	{ Dmc.TorqueSet = GrB->StartCloseTorque;  BreakFlag = 0;}// если текущее положение находится в зоне закрыто то задаем момент как момент трогания на закрытие
+			if 		(GrA->CurWay <= CloseZone)    	{ Dmc.TorqueSet = GrB->StartOpenTorque;  BreakFlag = 0;}// если текущее положение находится в зоне закрыто то задаем момент как момент трогания на закрытие
 			else if (GrA->CurWay >= OpenZone)		{ Dmc.TorqueSet = GrB->BreakOpenTorque; BreakFlag = 1;} // если находимся в зоне открытия то  задаем момене как момент уплотнения на открытие
 		}
 	}
@@ -336,7 +336,7 @@ void DefineCtrlParams(void) // задачи контролируемых параметров в
 		if (!IsNoCalib())
 		{
 			if      (GrA->CurWay <= CloseZone)    	{ Dmc.TorqueSet = GrB->BreakCloseTorque; BreakFlag = 1;}
-			else if (GrA->CurWay >= OpenZone) 		{ Dmc.TorqueSet = GrB->StartOpenTorque; BreakFlag = 0;}
+			else if (GrA->CurWay >= OpenZone) 		{ Dmc.TorqueSet = GrB->StartCloseTorque; BreakFlag = 0;}
 		}
 	}
 

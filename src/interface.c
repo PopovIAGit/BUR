@@ -497,7 +497,11 @@ void GetCurrentCmd(void)
 				LogControlWord = bcmNone;
 		}
 	}
-
+	if (Mcu.EvLog.Value)
+	{
+		LogControlWord = LogControlWord | Mcu.EvLog.Source;
+		Mcu.EvLog.Source = 0;
+	}
 	Mcu.EvLog.Value = 0;
 
 	LogCmd.CmdReg = LogControlWord;

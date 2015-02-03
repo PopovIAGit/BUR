@@ -273,6 +273,8 @@ inline void ModBusRecieve(TMbPort *Port)
 						switch(Res)
 						{
 							case 1:
+								if ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET))
+								Mcu.EvLog.Source = CMD_SRC_SERIAL;
 															TempMbFlag = 1;
 								Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
 								if (!Port->Frame.Exception) SerialCommRefresh();
