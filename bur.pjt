@@ -1,7 +1,7 @@
 ; Code Composer Project File, Version 2.0 (do not modify or remove this line)
 
 [Project Settings]
-ProjectDir="C:\Tomzel\Bur1\BUR v1.113 (24.01.14) 3\"
+ProjectDir="C:\D\SOFT\BUR One\BUR\"
 ProjectType=Executable
 CPUFamily=TMS320C28XX
 Tool="Compiler"
@@ -27,6 +27,7 @@ Source="src\dac7513.c"
 Source="src\display.c"
 Source="src\drv_modbus.c"
 Source="src\ds1305.c"
+Source="src\ds3234.c"
 Source="src\DSP280x_CodeStartBranch.asm"
 Source="src\DSP280x_DelayUs.asm"
 Source="src\encoder.c"
@@ -48,7 +49,7 @@ Source="cmd\DSP280x_Headers.cmd"
 Source="cmd\F2808.cmd"
 
 ["Compiler" Settings: "build"]
-Options=-g -fr"$(Proj_dir)\obj" -i"$(Proj_dir)\include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -mf -ml -v28
+Options=-g -fr"$(Proj_dir)\obj" -i"$(Proj_dir)\include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf
 
 ["Linker" Settings: "build"]
 Options=-a -c -m".\build\bur.map" -o".\build\bur.out" -stack0x200 -w -x -l"rts2800_ml.lib"

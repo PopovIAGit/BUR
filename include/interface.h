@@ -188,8 +188,8 @@ typedef struct _TGroupC
 	Uns             ClosePosition;      // 95.Положение закрыто
 	Uns             OpenPosition;       // 96.Положение открыто
 	TTenMode		Rsvd6[3];			// 97 - 99 Резерв
-	Uns				ShC_Up; 			// 100 убрать
-	Uns				ShC_Down;			// 101 уброать в H
+	Uns				ShC_Up; 			// 100 
+	Uns				ShC_Down;			// 101 
 	Uns             Position;           // 102.Положение
 	Uns				LowPowerLvl;		// 103 Значение напряжения в попугаях для 3х секунд
 	Int				Upor25;				// 104 Значение для добавлени/убавления значения упора при 220в 25% от максМ

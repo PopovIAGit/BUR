@@ -328,7 +328,7 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 		GrH->FaultsDev.bit.Memory2 = Eeprom2.Error;			// eeprom 2
 		if(!GrC->RTCErrOff)
 		{
-			GrH->FaultsDev.bit.Rtc     = Ds1305.Error;			// часы
+			GrH->FaultsDev.bit.Rtc     = Ds3234.Error;			// часы
 		}
 		GrH->FaultsDev.bit.TSens   = TempSens.Error;		// температура
 		GrH->FaultsDev.bit.AVRcon  = !PiData.Connect;		// наличие конекта до АВР

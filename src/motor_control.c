@@ -81,10 +81,6 @@ Uns dot_max   = 10;
 Int buffer1[256];
 Int buffer2[256];
 
-Uns DbgEncoder = 0;
-Uns DbgStop =0;
-
-
 __inline void ADC_Aquisition(void);
 __inline void DmcPrepare(void);
 __inline void TorqueObsInit(void);
@@ -159,9 +155,19 @@ __inline void ADC_Aquisition(void){		//18kHz
 	URfltr.Input = _IQ16toIQ(ADC_UR);
 	USfltr.Input = _IQ16toIQ(ADC_US);
 	UTfltr.Input = _IQ16toIQ(ADC_UT);
-	IUfltr.Input = _IQ16toIQ(ADC_IU);
-	IVfltr.Input = _IQ16toIQ(ADC_IV);
-	IWfltr.Input = _IQ16toIQ(ADC_IW);
+
+	if (GrC->DriveType <= dt1000_V20)
+	{
+		IUfltr.Input = _IQ16toIQ(ADC_IU_MIN);
+		IVfltr.Input = _IQ16toIQ(ADC_IV_MIN);
+		IWfltr.Input = _IQ16toIQ(ADC_IW_MIN);
+	}
+	else if(GrC->DriveType > dt1000_V20)
+	{
+		IUfltr.Input = _IQ16toIQ(ADC_IU);
+		IVfltr.Input = _IQ16toIQ(ADC_IV);
+		IWfltr.Input = _IQ16toIQ(ADC_IW);
+	}
 
 	ApFilter3Calc(&URfltr);
 	ApFilter3Calc(&USfltr);
@@ -351,7 +357,6 @@ void StopPowerControl(void) // упровление при стопе
 		PhEl.Direction 	 = 0;
 		PowerLostTimer2  = 0;
 		Net_Mon_Timer = 0;
-		DbgStop++;
 	#endif 
 
 	// если останов не по аварии и не по муфте, то
@@ -868,7 +873,6 @@ void CalibStop(void)	// остановка по данным калибровки
 	
 	if (StopFlag)	// если нужно останавливаться
 	{
-		DbgEncoder = Encoder.Revolution;
 		if (Mcu.Valve.BreakFlag) OverWayFlag = 1; // если работаем с уплотнением то выставляем что уплотнение не достигнуто
 		else 
 			{

@@ -2,7 +2,7 @@
 #define CONFIG_
 
 // Глобальные настройки
-#define VERSION					1113	// Версия проекта
+#define VERSION					1114	// Версия проекта
 #define SUBVERSION				15		// Подверсия проекта
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)

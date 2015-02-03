@@ -1207,7 +1207,7 @@ void ClbControl(void)	// управление калибровками
     GrH->Position      = IndicPos(Encoder.Revolution);						// забираем текущее положение (пока с теста)
 	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
 	GrC->OpenPosition  = IndicPos(Calib.Indication->OpenPos);				// забираем положение открыто
-	GrC->Position 	   = GrH->Position;										// копируем текущее положение в гр.С
+//	GrC->Position 	   = GrH->Position;										// копируем текущее положение в гр.С
 
 	if (!IsNoCalib() && (Menu.State != MS_EXPRESS) && Menu.Express.Enable)
 		Menu.Express.Enable = FALSE;
@@ -1230,7 +1230,7 @@ void ClbControl(void)	// управление калибровками
 	}
 
 		
-GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+	GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
 	
 	if (GrD->CycleReset != 0)							// если подана команда на сброс счетчка колличества полных циклов
 	{

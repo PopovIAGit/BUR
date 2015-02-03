@@ -7,7 +7,8 @@
 #include "dac7513.h"
 #include "encoder.h"
 #include "adt7301.h"
-#include "ds1305.h"
+//#include "ds1305.h" // Заменено на ds3234
+#include "ds3234.h"
 #include "pult.h"
 #include "Inputs.h"		// Обработка входных сигналов
 
@@ -62,6 +63,9 @@
 #define ADC_US			AdcRegs.ADCRESULT4
 #define ADC_UT			AdcRegs.ADCRESULT5 
 
+#define ADC_IU_MIN		AdcRegs.ADCRESULT13
+#define ADC_IV_MIN		AdcRegs.ADCRESULT15
+#define ADC_IW_MIN		AdcRegs.ADCRESULT14
 
 #define HALL_SENS1		AdcRegs.ADCRESULT8
 #define HALL_SENS2		AdcRegs.ADCRESULT9
@@ -165,6 +169,13 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 	RtcCsSet \
 }
 
+#define DS3234_DEFAULT { \
+	PLIS_SPI, SPI_BRR(2000), \
+	ToPtr(&Rtc), \
+	0, 0, 0, False, False, False, \
+	RtcCsSet \
+}
+
 #define RTC_DEFAULT { 0,0,0,1,1,1,0,0xFF }
 
 #define DAC7513_DEFAULT { \
@@ -225,7 +236,8 @@ extern ADT7301		TempSens;
 extern ENCODER		Encoder;
 extern DAC7513  	Dac;
 extern TDisplay 	Display;
-extern DS1305		Ds1305;
+//extern DS1305		Ds1305;
+extern DS3234		Ds3234;
 extern RTC_Obj		Rtc;
 extern Bool 		RtcStart;
 extern TPult 		Pult;

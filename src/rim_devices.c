@@ -12,7 +12,8 @@ TDisplay Display   = DISPLAY_DEFAULT;
 DAC7513  Dac       = DAC7513_DEFAULT;
 ENCODER  Encoder   = ENCODER_DEFAULT;
 ADT7301  TempSens  = ADT7301_DEFAULT;
-DS1305   Ds1305    = DS1305_DEFAULT;
+//DS1305   Ds1305    = DS1305_DEFAULT;
+DS3234   Ds3234    = DS3234_DEFAULT;
 RTC_Obj  Rtc       = RTC_DEFAULT;
 TPult 	 Pult 	   = PULT_DEFAULTS;
 LOG_INPUT BtnOpen   	= BTN_DEFAULT(0, False);	// было true
@@ -58,7 +59,8 @@ void RimDevicesInit(void)
 
 	AT25XXX_Init(&Eeprom1);
 	AT25XXX_Init(&Eeprom2);
-	DS1305_Init(&Ds1305);
+//	DS1305_Init(&Ds1305);
+	DS3234_Init(&Ds3234);
 
 	DISPL_AddSymb(&Display,0,ToPtr(Icons), NUM_ICONS);
 
@@ -177,18 +179,20 @@ void RtcControl(void)
 	TTimeVar *DevTime = &GrB->DevTime;
 	TDateVar *DevDate = &GrB->DevDate;
 	
-	if (Ds1305.Busy) return;
+//	if (Ds1305.Busy) return;
+	if (Ds3234.Busy) return;
 	
 	if (RtcStart)
 	{
 		if (DevTime->all != PrevTime) 
-			{RTC_SetTime(&Rtc, DevTime, 0); Ds1305.Flag = True;}
+			{RTC_SetTime(&Rtc, DevTime, 0); Ds3234.Flag = True;}
 		if (DevDate->all != PrevDate) 
-			{RTC_SetDate(&Rtc, DevDate, 1); Ds1305.Flag = True;}
-		if (RTC_TimeCorr(&Rtc, GrB->TimeCorrection)) Ds1305.Flag = True;
+			{RTC_SetDate(&Rtc, DevDate, 1); Ds3234.Flag = True;}
+		if (RTC_TimeCorr(&Rtc, GrB->TimeCorrection)) Ds3234.Flag = True;
 	}
 
-	if (!Ds1305.Flag) 
+//	if (!Ds1305.Flag) 
+	if (!Ds3234.Flag)
 	{
 		RTC_GetTime(&Rtc, DevTime);
 		RTC_GetDate(&Rtc, DevDate);
