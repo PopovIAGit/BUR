@@ -89,8 +89,8 @@ Bool RimDevicesRefresh(void)
 	TuMu.Level    = DIN_LEVEL(SBEXT_MU,    (Uns)GrB->InputMask.bit.Mu);
 	TuDu.Level    = DIN_LEVEL(SBEXT_DU,    (Uns)GrB->InputMask.bit.Du);
 #endif
-	Dac.Gain   = GrC->Dac_Mpy;
-	Dac.Offset = GrC->Dac_Offset;
+	Dac.Gain   = GrH->Dac_Mpy;
+	Dac.Offset = GrH->Dac_Offset;
 
 	RimRefrState = 0;
 	return (!RimRefrState);
@@ -133,7 +133,7 @@ void SetPlisData(void)
 	SPI_init(SPIA, SPI_MASTER, 0, PLIS_BRR, 8);
 
 	SetPlisAddr(CS_LED);
-	SPI_send(PLIS_SPI, Ram.GroupC.LedsReg.all);
+	SPI_send(PLIS_SPI, Ram.GroupH.LedsReg.all);
 	SetPlisAddr(CS_NONE);
 
 	SetPlisAddr(CS_LCD_ON);

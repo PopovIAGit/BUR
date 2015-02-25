@@ -2,7 +2,7 @@
 #include "structs.h"
 #include "interface.h"
 
-#define BT_TIMER_SCALE			PRD3
+#define BT_TIMER_SCALE			PRD_10HZ
 #define BT_TIMER				1.00 * BT_TIMER_SCALE
 
 Byte RxState = 0;

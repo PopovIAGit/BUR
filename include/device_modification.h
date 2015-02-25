@@ -8,9 +8,9 @@
 
 // Идентификатор блока
 #if BUR_M
-#define DEVICE_ID		4001	// Идентификатор БУР-М
+#define DEVICE_ID		4502	// Идентификатор БУР-М 25.02.15
 #else
-#define DEVICE_ID		4000	// Идентификатор БУР-Т
+#define DEVICE_ID		4002	// Идентификатор БУР-Т 25.02.15
 #endif
 
 /*

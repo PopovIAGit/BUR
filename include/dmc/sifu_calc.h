@@ -20,7 +20,6 @@ extern "C" {
 #define SIFU_DOWN		1
 #define SIFU_UP			2
 #define SIFU_DYN_BREAK	3
-#define SIFU_DYN_BREAK2	5
 
 #define SIFU_UR			0
 #define SIFU_US			1

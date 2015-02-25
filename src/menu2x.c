@@ -769,6 +769,18 @@ static void ShowValue(MENU *p, Uns Position, Bool Edit)
 	
 	switch (Val->Type)
 	{
+	   case MT_VERS:
+		   Str = &p->LoString[10];
+		   
+		   if (!Edit)
+		   {
+			   DecToStr(p->Value, Str, Val->Precision, Val->RateMax, TRUE, Val->Signed);
+				p->LoString[2+2] = p->LoString[3+2];
+				p->LoString[3+2] = p->LoString[4+2];
+				p->LoString[4+2] = '.';
+		   }
+
+	   break;
 	   case MT_DEC:
 		   Str = &p->LoString[8];
 		   

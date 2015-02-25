@@ -179,12 +179,12 @@ __inline void ADC_Aquisition(void){		//18kHz
 
 __inline void DmcPrepare(void){	//18kHz
 
-		UR.Input = ADC_CONV(_IQtoIQ16(URfltr.Output), GrC->UR_Mpy, GrC->UR_Offset);
-		US.Input = ADC_CONV(_IQtoIQ16(USfltr.Output), GrC->US_Mpy, GrC->US_Offset);
-		UT.Input = ADC_CONV(_IQtoIQ16(UTfltr.Output), GrC->UT_Mpy, GrC->UT_Offset);
-		IU.Input = ADC_CONV(_IQtoIQ16(IUfltr.Output), GrC->IU_Mpy, GrC->IU_Offset);
-		IV.Input = ADC_CONV(_IQtoIQ16(IVfltr.Output), GrC->IV_Mpy, GrC->IV_Offset);
-		IW.Input = ADC_CONV(_IQtoIQ16(IWfltr.Output), GrC->IW_Mpy, GrC->IW_Offset);
+		UR.Input = ADC_CONV(_IQtoIQ16(URfltr.Output), GrH->UR_Mpy, GrH->UR_Offset);
+		US.Input = ADC_CONV(_IQtoIQ16(USfltr.Output), GrH->US_Mpy, GrH->US_Offset);
+		UT.Input = ADC_CONV(_IQtoIQ16(UTfltr.Output), GrH->UT_Mpy, GrH->UT_Offset);
+		IU.Input = ADC_CONV(_IQtoIQ16(IUfltr.Output), GrH->IU_Mpy, GrH->IU_Offset);
+		IV.Input = ADC_CONV(_IQtoIQ16(IVfltr.Output), GrH->IV_Mpy, GrH->IV_Offset);
+		IW.Input = ADC_CONV(_IQtoIQ16(IWfltr.Output), GrH->IW_Mpy, GrH->IW_Offset);
 
 		// автоподстройка датчиков тока
 
@@ -192,18 +192,18 @@ __inline void DmcPrepare(void){	//18kHz
 		{
 			if (!InRange(IU.Input, -15, 15))
 			{
-				if(IU.Input > 0) GrC->IU_Offset++;
-				if(IU.Input < 0) GrC->IU_Offset--;
+				if(IU.Input > 0) GrH->IU_Offset++;
+				if(IU.Input < 0) GrH->IU_Offset--;
 			}
 				if (!InRange(IV.Input, -15, 15))
 			{
-				if(IV.Input > 0) GrC->IV_Offset++;
-				if(IV.Input < 0) GrC->IV_Offset--;
+				if(IV.Input > 0) GrH->IV_Offset++;
+				if(IV.Input < 0) GrH->IV_Offset--;
 			}
 				if (!InRange(IW.Input, -15, 15))
 			{
-				if(IW.Input > 0) GrC->IW_Offset++;
-				if(IW.Input < 0) GrC->IW_Offset--;
+				if(IW.Input > 0) GrH->IW_Offset++;
+				if(IW.Input < 0) GrH->IW_Offset--;
 			}
 		}
 
@@ -241,9 +241,9 @@ void DmcIndication1(void)
 	Ipr[2] = ValueToPU1(Iload[2], GrC->Inom);
 
 	// индикация токов нагрузки и угла открытия тиристоров
-	if (GrB->IIndicMode == imRms)     memcpy(&GrH->Iu, Iload, 3);
-	if (GrB->IIndicMode == imPercent) memcpy(&GrH->Iu, Ipr,   3);
-	GrC->OpenAngle = Sifu.OpenAngle;
+	if (GrB->IIndicMode == imRms)     memcpy(&GrA->Iu, Iload, 3);
+	if (GrB->IIndicMode == imPercent) memcpy(&GrA->Iu, Ipr,   3);
+//	GrC->OpenAngle = Sifu.OpenAngle;
 
 	// средний действующий ток
 	if (GrB->IIndicMode == imRms)     GrH->Imid = Imid;//	выбор индикации среднего тока, в А или %
@@ -251,19 +251,23 @@ void DmcIndication1(void)
 	
 	// угол между током и напряжением
 	ApFilter1Calc(&Phifltr);
-	GrC->AngleUI = _IQtoIQ16(Phifltr.Output);
-	if (IsStopped() && !IsTestMode()) GrC->AngleUI = 0; // если не едим и не тест, то 0
+	GrA->AngleUI = _IQtoIQ16(Phifltr.Output);
+	if (IsStopped() && !IsTestMode()) GrA->AngleUI = 0; // если не едим и не тест, то 0
+
+	GrH->ADC_iu = ADC_IU; 
+	GrH->ADC_iv = ADC_IV;
+	GrH->ADC_iw = ADC_IW;
 }
 
 void DmcIndication2(void)
 {
 	// входные напряжения
-	GrH->Ur = UR.Output;
-	GrH->Us = US.Output;
-	GrH->Ut = UT.Output;
+	GrA->Ur = UR.Output;
+	GrA->Us = US.Output;
+	GrA->Ut = UT.Output;
 
 	// среднее действующее напряжение и чередование фаз сети
-	Umfltr.Input = _IQ16toIQ(Mid3UnsValue(GrH->Ur, GrH->Us, GrH->Ut));
+	Umfltr.Input = _IQ16toIQ(Mid3UnsValue(GrA->Ur, GrA->Us, GrA->Ut));
 	ApFilter1Calc(&Umfltr);
 	GrH->Umid = _IQtoIQ16(Umfltr.Output);
 
@@ -277,7 +281,7 @@ void DmcIndication2(void)
 				DebugStartDelayCnt2 = 0;
 			}
 		}	
-		else {memset(&GrH->Ur, 1, 3); 
+		else {memset(&GrA->Ur, 1, 3); 
 			}
 		#endif
 
@@ -289,17 +293,13 @@ void DmcIndication2(void)
 	// копии в диагностику
 	GrA->Torque  = GrH->Torque;
 	GrA->Speed   = GrH->Speed;
-	GrA->Ur		 = GrH->Ur;
-	GrA->Us		 = GrH->Us;
-	GrA->Ut		 = GrH->Ut;
-	GrA->Iu		 = GrH->Iu;
-	GrA->Iv		 = GrH->Iv;
-	GrA->Iw		 = GrH->Iw;
-	GrA->AngleUI = GrC->AngleUI;
-
-	GrC->IU_Input = IU.Input;
-	GrC->IV_Input = IV.Input;
-	GrC->IW_Input = IW.Input;
+//	GrA->Ur		 = GrH->Ur;
+//	GrA->Us		 = GrH->Us;
+//	GrA->Ut		 = GrH->Ut;
+//	GrA->Iu		 = GrH->Iu;
+//	GrA->Iv		 = GrH->Iv;
+//	GrA->Iw		 = GrH->Iw;
+//	GrA->AngleUI = GrC->AngleUI;
 }
 
 void DefineCtrlParams(void) // задачи контролируемых параметров в 
@@ -411,7 +411,7 @@ void NetMomitor(void)
 	}
 	if (IsPowerOff()&&(Dmc.WorkMode != wmStop)) //  если нет  напряжения и мы едем то выключаем
 	{
-		if(PowerLostTimer2 < NET_MON_STOP_TIME2) //ждем 1 с   (Uns)(GrC->BURM_Timer2 * PRD2) NET_MON_STOP_TIME2
+		if(PowerLostTimer2 < NET_MON_STOP_TIME2) //ждем 1 с   (Uns)(GrC->BURM_Timer2 * PRD_50HZ) NET_MON_STOP_TIME2
 		{
 			PowerLostTimer2++;
 		}
@@ -559,7 +559,7 @@ register Uns Tmp;
 	}
 	
 	// включение режима "пускового момента"
-	KickModeEnable = GrC->KickCount && (Dmc.RequestDir > 0); // если заданно количество ударов и определенно направление
+	KickModeEnable = GrH->KickCount && (Dmc.RequestDir > 0); // если заданно количество ударов и определенно направление
 	Torq.ObsEnable = True;//  Разрешить расчет момента
 	
 	// сброс аварий необходимый для пуска (кроме напряжений)
@@ -685,7 +685,7 @@ __inline void UporStartMode(void)	// стм. Упор старт
 		}
 		else if (KickModeEnable)	 // иначе если включен режим удара
 		{
-			if (KickCounter < GrC->KickCount) Dmc.WorkMode = wmKick; // если счетчик ударов не привышен то запускаем режим удара
+			if (KickCounter < GrH->KickCount) Dmc.WorkMode = wmKick; // если счетчик ударов не привышен то запускаем режим удара
 			else KickModeEnable = False;								 // иначе выключаем режим удара
 		}
 		UporModeTimer = 0;	// сбрасываем таймер упора, если слово не поменялось начинаем заново
@@ -789,8 +789,6 @@ __inline void DynBrakeMode(void) // 200 Hz в ControlMode(void)
 		}
 		else // выбор угла в зависимости от чередования фаз
 		{
-			if (!GrC->SelectDynBr)								// Если динамическое торможение старого образца
-			{
 				if (!PhEl.Direction)							// если чередование фаз не определенно
 					Sifu.SetAngle = SIFU_CLOSE_ANG;				// угол задания 180
 				else if (PhEl.Direction > 0)					// прямая последовательность
@@ -804,14 +802,6 @@ __inline void DynBrakeMode(void) // 200 Hz в ControlMode(void)
 					Sifu.SetAngle = GrC->BrakeAngle + 30;		// угол задания 60 + 30 
 				}
 				Sifu.Direction = SIFU_DYN_BREAK;				// выставляем режим сифу динамическое торможение
-			}
-			else
-			{
-				Sifu.MaxAngle = SIFU_MAX_ANG;					// 180
-				Sifu.SetAngle = AngleInterp(GrC->BrakeAngle, (GrC->BrakeAngle - 10), GrC->BrakeTime);// угол задания динамического торможения
-				Sifu.OpenAngle = Sifu.SetAngle;
-				Sifu.Direction = SIFU_DYN_BREAK2; 				// выставляем режим сифу динамическое торможение	
-			}
 		}
 	}
 	else // если время торможения вышло то уходим в стм. стоп
@@ -1387,10 +1377,6 @@ void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись м
 		v->AccelTimer = 0;								// обнуляем таймер для последующего использования
 		v->OpenAngle = v->SetAngle; 					// и держим задание на угол открытия на текущем угле открытия
 	}
-	else if (v->Direction == SIFU_DYN_BREAK2)			// Если сейчас режим динамического торможения нового образца
-	{
-		SifuControlForDynBrake(v);						// управляем тиристорами как при динамическом торможении
-	}
 	else												// если сифу включенно и есть задание
 	{
 		v->Status.all &= ~(1<<SIFU_EN_TRN);				// сбрасываем бит включения чтобы не поехать раньше времени Status = 0001 1111
@@ -1457,7 +1443,7 @@ Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time)
 //----------Логика управления тиристорами для динамического торможения--------------------------- 
 void SifuControlForDynBrake (SIFU *p)
 {
-	p->Status.bit.sifu_ENB = 0;
+/*	p->Status.bit.sifu_ENB = 0;
 	if (US.Input > 50)					// Смотрим только на верхние полуволны пилы S
 	{
 	   	p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
@@ -1477,7 +1463,7 @@ void SifuControlForDynBrake (SIFU *p)
 		}
 	} 
 	else	
-		p->Status.all = 0x003F;
+		p->Status.all = 0x003F;*/
 }
 
 //-----------Конец файла------------------------------ 

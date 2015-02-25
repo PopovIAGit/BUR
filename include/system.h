@@ -13,6 +13,8 @@
 
 #define _ELEMNAMES
 
+#include "protectionI2T.h"
+
 TRtosObj Rtos;
 
 TPrdObj  Prd0;
@@ -82,10 +84,7 @@ TPrdElem List2[] = {
 	PrdElemInit(PrtCalc,				&PhlU,				1),
 	PrdElemInit(PrtCalc,				&PhlV,				1),
 	PrdElemInit(PrtCalc,				&PhlW,				1),
-	PrdElemInit(PrtCalc,				&I2tMin,			1),
-	PrdElemInit(PrtCalc,				&I2tMid,			1),
-	PrdElemInit(PrtCalc,				&I2tMax,			1),
-	PrdElemInit(PrtCalc,				&IUnLoad,			1),
+	PrdElemInit(ProtectionI2T_Update,	&i2tOverload,		1),
 	PrdElemInit(PrtCalc,				&ISkew,				1),
 	PrdElemInit(PrtCalc,				&Th,				1),
 	PrdElemInit(PrtCalc,				&Th_Err,			1),
@@ -175,11 +174,11 @@ __inline void SystemInit(void)
 	Rtos.Timer      = ToPtr(&CpuTimer2Regs.TIM.all);
 	Rtos.ElemNames  = ELEM_NAMES;
 	
-	PrdCreate(&Prd0,   HZ/PRD0);
-	PrdCreate(&Prd1, PRD0/PRD1);
-	PrdCreate(&Prd2, PRD0/PRD2);
-	PrdCreate(&Prd3, PRD0/PRD3);
-	PrdCreate(&Prd4, PRD0/PRD4);
+	PrdCreate(&Prd0,   HZ/PRD_2KHZ);
+	PrdCreate(&Prd1, PRD_2KHZ/PRD_200HZ);
+	PrdCreate(&Prd2, PRD_2KHZ/PRD_50HZ);
+	PrdCreate(&Prd3, PRD_2KHZ/PRD_10HZ);
+	PrdCreate(&Prd4, PRD_2KHZ/PRD_50HZ);
 
 	
 	PrdInsert(&Prd0, List0, PRLCNT(List0));

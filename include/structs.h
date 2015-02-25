@@ -125,8 +125,7 @@ typedef union _TLoadReg {
 		Uns ShCU:1;			// 5	 Короткое замыкание в фазе U
 		Uns ShCV:1;			// 6	 Короткое замыкание в фазе V
 		Uns ShCW:1;			// 7	 Короткое замыкание в фазе W
-		Uns Rsvd2:2;		// 8-9	 Резерв
-		Uns IUnLoad:1;		// 10    Отсутствие нагрузки
+		Uns Rsvd2:3;		// 8-9	 Резерв
 		Uns ISkew:1;		// 11    Ассиметрия тока
 		Uns Rsvd:4;			// 12-15 Резерв
 	} bit;
@@ -264,7 +263,9 @@ typedef union _TOutputReg {
 		Uns Dout6:1;		// 6 - Резерв/	КВЗ
 		Uns Dout7:1;		// 7 - Му/Ду/ ---
 		Uns Dout8:1;		// 8 - --/неисправность	
-		Uns Rsvd:7;      	// 7-15  Резерв
+		Uns Dout9:1;		// 9   --/ КВЗ
+		Uns Dout10:1;		// 10  --/ КВО	
+		Uns Rsvd:5;      	// 11-15  Резерв
 	} bit;
 } TOutputReg;
 

@@ -41,9 +41,9 @@
 #define IsParamEditing()			(Menu.State == MS_EDITPAR)
 
 
-#define IsPowerOn()					(((GrH->Ur > 100) && (GrH->Ur <400)) || ((GrH->Us > 100) && (GrH->Us <400)) || ((GrH->Ut > 100) && (GrH->Ut <400)))  //??? 
-#define IsPowerOff()					((GrH->Ur < 100) && (GrH->Us <100) && (GrH->Ut <100)) //??? 
-#define IsPowerLost()				((GrH->Ur < 100) || (GrH->Us <100) || (GrH->Ut <100))
+#define IsPowerOn()					(((GrA->Ur > 100) && (GrA->Ur <400)) || ((GrA->Us > 100) && (GrA->Us <400)) || ((GrA->Ut > 100) && (GrA->Ut <400)))  //??? 
+#define IsPowerOff()					((GrA->Ur < 100) && (GrA->Us <100) && (GrA->Ut <100)) //??? 
+#define IsPowerLost()				((GrA->Ur < 100) || (GrA->Us <100) || (GrA->Ut <100))
 
 // ћакросы дл€ определени€ состо€ни€ калибровки
 #define IsNoCalib()					(GrH->CalibState != csCalib)
@@ -85,7 +85,7 @@
 #define IsTestMode()				(GrG->Mode)
 
 // ћакрос перевода положени€ дл€ индикации
-#define IndicPos(Position)		((Position) >> GrC->PosPrecision)
+//#define IndicPos(Position)		((Position) >> GrC->PosPrecision)
 
 // ѕроверка наличи€ кода доступа
 #define IsPassword1()				(GrH->Password1 != 0)

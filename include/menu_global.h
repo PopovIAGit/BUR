@@ -26,7 +26,7 @@ extern "C" {
 #define MT_DATE		4		// Дата
 #define MT_BIN		5		// Двоичный
 #define MT_HEX		6		// Шестнадцатеричный
-#define MT_RSVD     7     // Резервный
+#define MT_VERS     7       // Версия (2 точки xx.x.xx)
 
 // Структура конфигурации параметра
 struct MENU_VAL_CFG {

@@ -1,42 +1,43 @@
 #include "config.h"
+#include "protectionI2T.h"
 
 DIFF_INPUT Muf = MUF_DEFAULT(&Encoder.Revolution, 0); 	// Защита по перемещению
 
-TPrtElem UvR = UV_DEFAULT(&Ram.GroupH.Ur, 0); 			// пониженное напряжение 
-TPrtElem UvS = UV_DEFAULT(&Ram.GroupH.Us, 1);
-TPrtElem UvT = UV_DEFAULT(&Ram.GroupH.Ut, 2);
+TPrtElem UvR = UV_DEFAULT(&Ram.GroupA.Ur, 0); 			// пониженное напряжение 
+TPrtElem UvS = UV_DEFAULT(&Ram.GroupA.Us, 1);
+TPrtElem UvT = UV_DEFAULT(&Ram.GroupA.Ut, 2);
 
-TPrtElem UvR_Def = UVD_DEFAULT(&Ram.GroupH.Ur, 0); 		// пониженное напряжение неисправность
-TPrtElem UvS_Def = UVD_DEFAULT(&Ram.GroupH.Us, 1);
-TPrtElem UvT_Def = UVD_DEFAULT(&Ram.GroupH.Ut, 2);
+TPrtElem UvR_Def = UVD_DEFAULT(&Ram.GroupA.Ur, 0); 		// пониженное напряжение неисправность
+TPrtElem UvS_Def = UVD_DEFAULT(&Ram.GroupA.Us, 1);
+TPrtElem UvT_Def = UVD_DEFAULT(&Ram.GroupA.Ut, 2);
 
-TPrtElem OvR = OV_DEFAULT(&Ram.GroupH.Ur, 3); 			// повышенное напряжение
-TPrtElem OvS = OV_DEFAULT(&Ram.GroupH.Us, 4);
-TPrtElem OvT = OV_DEFAULT(&Ram.GroupH.Ut, 5);
+TPrtElem OvR = OV_DEFAULT(&Ram.GroupA.Ur, 3); 			// повышенное напряжение
+TPrtElem OvS = OV_DEFAULT(&Ram.GroupA.Us, 4);
+TPrtElem OvT = OV_DEFAULT(&Ram.GroupA.Ut, 5);
 
-TPrtElem OvR_Def = OVD_DEFAULT(&Ram.GroupH.Ur, 3); 		// повышенное напряжение немсправность
-TPrtElem OvS_Def = OVD_DEFAULT(&Ram.GroupH.Us, 4);
-TPrtElem OvT_Def = OVD_DEFAULT(&Ram.GroupH.Ut, 5); 
+TPrtElem OvR_Def = OVD_DEFAULT(&Ram.GroupA.Ur, 3); 		// повышенное напряжение немсправность
+TPrtElem OvS_Def = OVD_DEFAULT(&Ram.GroupA.Us, 4);
+TPrtElem OvT_Def = OVD_DEFAULT(&Ram.GroupA.Ut, 5); 
 
-TPrtElem OvR_max = OV_MAX_DEFAULT(&Ram.GroupH.Ur, 11); 	// повышенное напряжение 47%
-TPrtElem OvS_max = OV_MAX_DEFAULT(&Ram.GroupH.Us, 12);
-TPrtElem OvT_max = OV_MAX_DEFAULT(&Ram.GroupH.Ut, 13);
+TPrtElem OvR_max = OV_MAX_DEFAULT(&Ram.GroupA.Ur, 11); 	// повышенное напряжение 47%
+TPrtElem OvS_max = OV_MAX_DEFAULT(&Ram.GroupA.Us, 12);
+TPrtElem OvT_max = OV_MAX_DEFAULT(&Ram.GroupA.Ut, 13);
 
 TPrtElem Vsk = VSK_DEFAULT(&Ram.GroupH.VSkValue, 7); 	// небаланс напряжений
 
-TPrtElem BvR = BV_DEFAULT(&Ram.GroupH.Ur, 8); 			// Обрыв фаз
-TPrtElem BvS = BV_DEFAULT(&Ram.GroupH.Us, 9);
-TPrtElem BvT = BV_DEFAULT(&Ram.GroupH.Ut, 10);
+TPrtElem BvR = BV_DEFAULT(&Ram.GroupA.Ur, 8); 			// Обрыв фаз
+TPrtElem BvS = BV_DEFAULT(&Ram.GroupA.Us, 9);
+TPrtElem BvT = BV_DEFAULT(&Ram.GroupA.Ut, 10);
 
 TPrtElem PhlU = LI_DEFAULT(&Ipr[0], 0);					// пониженный ток 
 TPrtElem PhlV = LI_DEFAULT(&Ipr[1], 1);
 TPrtElem PhlW = LI_DEFAULT(&Ipr[2], 2);
-
+/*
 TPrtElem I2tMin = IT_DEFAULT(&Imidpr, 0, 3);			// время токовая защита 1 ступень
 TPrtElem I2tMid = IT_DEFAULT(&Imidpr, 1, 3);			// 2 ступень
-TPrtElem I2tMax = IT_DEFAULT(&Imidpr, 2, 3);			// 3 ступень
+TPrtElem I2tMax = IT_DEFAULT(&Imidpr, 2, 3);			// 3 ступень*/
 
-TPrtElem IUnLoad = IUL_DEFAULT(&Imidpr, 10);			// минимальная токовая (пропажа нагрузки)
+//TPrtElem IUnLoad = IUL_DEFAULT(&Imidpr, 10);			// минимальная токовая (пропажа нагрузки)
 TPrtElem ISkew   = ISK_DEFAULT(&Ram.GroupH.ISkewValue, 11); 	// небаланс токов
 
 TPrtElem Th = OT_DEFAULT(&Ram.GroupA.Temper, 5);		// защита от перегрева
@@ -58,13 +59,14 @@ Uns   OverWayFlag 	 = 0; 		// флаг недостигнутости уплотнения
 Uns   OtTime         = 0;
 Uns   UtTime         = 0;
 
-Uns   DrvTTout   	 = (Uns)DRV_TEMPER_TOUT;
-Uns   Fault_Delay 	 = (Uns)FLT_DEF_DELAY;
-Int   HighTemper	= 110;
-Uns VskTimer = 0;
- Uns  FlagEngPhOrd = 0;
+Uns   DrvTTout   	 	= (Uns)DRV_TEMPER_TOUT;
+Uns   Fault_Delay 	 	= (Uns)FLT_DEF_DELAY;
+Int   HighTemper		= 110;
+Uns   VskTimer 			= 0;
+Uns   FlagEngPhOrd		= 0;
 
-Uns PhOrdTimer = 0;
+Uns   PhOrdTimer 		= 0;
+
 
 Bool IsShcReset = false;			// флаг сброса КЗ
 
@@ -81,6 +83,11 @@ void ProtectionsInit(void)	// начальная инициализация для защит
 	memset(&GrH->FaultsNet, 0,		sizeof(TNetReg));// Выставили все структуры с ошибками в 0 (нет ошибок)
  	PhOrdTimer = 0;
 	EngPhOrdValue  = 0;
+
+	//-------------Времятоковая перегрузка-------------------------------------------
+	i2tOverload.inputCurr 		= &Ram.GroupH.Imid;
+	i2tOverload.nominalCurr 	= &Ram.GroupC.Inom;
+	ProtectionI2T_Init(&i2tOverload, PRD_50HZ);
 }
 
 void ProtectionsUpdate(void)// периодическое обновление в защитах
@@ -104,6 +111,7 @@ void ProtectionsUpdate(void)// периодическое обновление в защитах
 	GrC->DrvTInput = DRIVE_TEMPER - 10000;
 	if(GrG->TestCamera && GrA->Faults.Proc.bit.Drv_T) GrA->Faults.Proc.bit.Drv_T = 0;
 	if(GrG->TestCamera && GrA->Faults.Proc.bit.MuDuDef) GrA->Faults.Proc.bit.MuDuDef = 0;
+	GrH->FaultsLoad.bit.I2t = i2tOverload.isFault;
 }
 
 void ProtectionsEnable(void)// проверка включения защит ЭД
@@ -189,12 +197,8 @@ void ProtectionsEnable(void)// проверка включения защит ЭД
 				PhlV.Cfg.bit.Enable = Enable;
 				PhlW.Cfg.bit.Enable = Enable;
 		
-				Enable = !IsStopped() && (GrC->I2t != pmOff);
-				I2tMin.Cfg.bit.Enable = Enable;
-				I2tMid.Cfg.bit.Enable = Enable;
-				I2tMax.Cfg.bit.Enable = Enable;
-			
-				IUnLoad.Cfg.bit.Enable = !IsStopped() && (GrC->IUnLoad != pmOff);
+				i2tOverload.enable 	   = !IsStopped() && (GrC->I2t != pmOff);
+	//			IUnLoad.Cfg.bit.Enable = !IsStopped() && (GrC->IUnLoad != pmOff);
 				ISkew.Cfg.bit.Enable   = !IsStopped() && (GrC->ISkew   != pmOff);
 
 		break;
@@ -236,6 +240,7 @@ void ProtectionsClear(void)	// полная отчистка ошибок (включая ошибки энкодера и
 	TempSens.Error = False;
 
 	IsShcReset = true;
+	i2tOverload.isFault = false;
 
 }
 
@@ -268,9 +273,9 @@ void ProtectionsControl(void)	// для расчета ассиметрии
 		}
 		else
 		{
-			Dif1 = abs(GrH->Ur - GrH->Umid);			//Пример:   Ur = 222  Umid = 220 Dif1 = 2
-			Dif2 = abs(GrH->Us - GrH->Umid);			//			Us = 218			 Dif2 = 2
-			Dif3 = abs(GrH->Ut - GrH->Umid);			//			Ut = 220			 Dif3 = 0
+			Dif1 = abs(GrA->Ur - GrH->Umid);			//Пример:   Ur = 222  Umid = 220 Dif1 = 2
+			Dif2 = abs(GrA->Us - GrH->Umid);			//			Us = 218			 Dif2 = 2
+			Dif3 = abs(GrA->Ut - GrH->Umid);			//			Ut = 220			 Dif3 = 0
 			Tmp  = Max3UnsValue(Dif1, Dif2, Dif3);		//находим максимальное значение, или первое среди равных. тмп = 2			
 			GrH->VSkValue = ValueToPU0(Tmp, GrH->Umid);	// (2/220)*100 = 0.9% небаланс
 			
@@ -278,9 +283,9 @@ void ProtectionsControl(void)	// для расчета ассиметрии
 	}
 	#else
 	// расчет значения входа для защиты от асиметрии входных напряжений
-	Dif1 = abs(GrH->Ur - GrH->Umid);			//Пример:   Ur = 222  Umid = 220 Dif1 = 2
-	Dif2 = abs(GrH->Us - GrH->Umid);			//			Us = 160			 Dif2 = 2
-	Dif3 = abs(GrH->Ut - GrH->Umid);			//			Ut = 220			 Dif3 = 0
+	Dif1 = abs(GrA->Ur - GrH->Umid);			//Пример:   Ur = 222  Umid = 220 Dif1 = 2
+	Dif2 = abs(GrA->Us - GrH->Umid);			//			Us = 160			 Dif2 = 2
+	Dif3 = abs(GrA->Ut - GrH->Umid);			//			Ut = 220			 Dif3 = 0
 	Tmp  = Max3UnsValue(Dif1, Dif2, Dif3);		//находим максимальное значение, или первое среди равных. тмп = 2			
 	GrH->VSkValue = ValueToPU0(Tmp, GrH->Umid);	// (2/220)*100 = 0.9% небаланс
 	#endif
@@ -426,7 +431,7 @@ Bool IsDefectExist(TPrtMode Mode) // неисправность
 	if(GrC->VSk     		< Mode) Defects.Net.all 			&=~NET_VSK_MASK;	// Небаланс напряжений
 
 	if(GrC->Phl				< Mode) Defects.Load.all 		&=~LOAD_PHL_MASK; 	// Обрыв дв 
-	if(GrC->IUnLoad			< Mode) Defects.Load.all 		&=~LOAD_UNL_MASK;	// Пониженный ток
+  //	if(GrC->IUnLoad			< Mode) Defects.Load.all 		&=~LOAD_UNL_MASK;	// Пониженный ток
 	if(GrC->ISkew			< Mode) Defects.Load.all 		&=~LOAD_ISK_MASK;	// Небаланс токов
 
 	if(GrC->TemperTrack		< Mode) Defects.Dev.all 			&=~DEV_TMP_MASK;	// Перегрев, охлаждение блока - останов
@@ -517,8 +522,19 @@ switch(GrB->SettingPlace)
 }
 __inline void ShCProtect(void)			// проверка на КЗ 
 {
-	if(Fault_Delay > 0) return;
+	Uns adcU, adcV, adcW;
 
+	if((Fault_Delay > 0)||(!GrC->ShC)) return;
+
+	adcU = abs(ADC_IU - GrH->IU_Offset);
+	adcV = abs(ADC_IV - GrH->IV_Offset);
+	adcW = abs(ADC_IW - GrH->IW_Offset);
+	
+	if (adcU > GrC->ShC_Level)	GrA->Faults.Load.bit.ShCU = 1;
+	if (adcV > GrC->ShC_Level)	GrA->Faults.Load.bit.ShCV = 1;
+	if (adcW > GrC->ShC_Level)	GrA->Faults.Load.bit.ShCW = 1;
+
+/*
 	if(GrC->ShC)
 	{
 		if ((ADC_IU < GrC->ShC_Down)||(ADC_IU > GrC->ShC_Up))
@@ -533,7 +549,7 @@ __inline void ShCProtect(void)			// проверка на КЗ
 			{
 				GrH->FaultsLoad.bit.ShCW = 1;
 			}	
-	}	
+	}	*/
 }
 			
 void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВАНИЕ ФАЗ ДВИГАТЕЛЯ)

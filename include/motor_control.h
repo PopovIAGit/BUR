@@ -46,9 +46,9 @@
 }
 
 // Макросы
-#define ADC_CONV(Value, Gain, Offset) 	(((LgInt)(Value - Offset) * Gain) >> 13)
+#define ADC_CONV(Value, Gain, Offset) 	(((LgInt)(Value - Offset) * Gain) >> 13) 
 // Значение инициализации для структур
-#define URMSF_DEFAULT 	  { 0,0,0,_IQ(1.0/PRD1),_IQ(0.05),0,0 }		// tf 0.02
+#define URMSF_DEFAULT 	  { 0,0,0,_IQ(1.0/PRD_200HZ),_IQ(0.05),0,0 }		// tf 0.02
 #define RMS_FLTR_DEFAULT  { 0, 0, 0, _IQ(DMC_FLTR_TS), _IQ(0.05), 0, 0 }
 #define TORQ_FLTR_DEFAULT { 0, 0, 0, 0, 0, 0, _IQ(DMC_TORQF_TS), _IQ(0.02), 0, 0, 0}
 #define IMID_FLTR_DEFAULT { 0, 0, 0, 0, 0, 0, _IQ(DMC_TORQF_TS), _IQ(0.02), 0, 0, 0}

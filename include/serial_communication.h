@@ -7,7 +7,7 @@
 #define BT_SCI_BAUD		1152
 
 #define PI_ID			SPIC
-#define PI_CONN_TOUT	(3.000 * PRD0)
+#define PI_CONN_TOUT	(3.000 * PRD_2KHZ)
 #define PI_BAUD			1000		// „астота синхроимпульсов в √ц
 #if BUR_M	
 	#define PI_FRAME_SIZE	5
@@ -34,7 +34,7 @@ typedef struct
 
 #define BTWT41_DEFAULT { \
 	False, 0, 0, 0, BT_COMMAND_MODE, \
-	0, 0, (1.00 * PRD3), False, False, "", "", \
+	0, 0, (1.00 * PRD_10HZ), False, False, "", "", \
 	BtHardwareSetup, CheckSciCommErr, \
 	EnableBtRx, EnableBtTx, ReceiveBtByte, \
 	TransmitBtByte \

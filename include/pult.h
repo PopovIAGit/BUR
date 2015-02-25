@@ -2,7 +2,7 @@
 #define _PULT_H_
 
 
-#define PULT_TIME_FREQ				PRD4
+#define PULT_TIME_FREQ				PRD_50HZ
 #define PULT_CAP_RESET				(PULT_TIME_FREQ * 0.100)
 #define SYNC_PULSES_NUM				11		// 11 бит
 #define SYNC_PULSE_VALUE			85e3

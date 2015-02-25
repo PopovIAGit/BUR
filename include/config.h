@@ -2,8 +2,15 @@
 #define CONFIG_
 
 // Глобальные настройки
-#define VERSION					1114	// Версия проекта
-#define SUBVERSION				15		// Подверсия проекта
+/*#define VERSION					1114	// Версия проекта
+#define SUBVERSION				15		// Подверсия проекта*/
+
+#define DEVICE_GROUP			1 
+#define VERSION					114
+#define MODULE_VERSION			70
+#define SUBVERSION				1
+
+
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)
 #define BT_AUTH_CODE_STRING		"5124"	// Строка с кодом авторизации Bluetooth
@@ -18,12 +25,11 @@
 
 // Конфигурация операционной системы
 #define HZ						18e3		// Частота основного прерывания RTOS
-#define PRD0					2000		// Периодическая задача 2000 Гц
-#define PRD1					200			// Периодическая задача 200 Гц
-#define PRD2					50			// Периодическая задача 50 Гц
-#define PRD3					10			// Периодическая задача 10 Гц
-#define PRD4					50			// Периодическая задача 50 Гц
-#define PRD5					50			// Периодическая задача 50 Гц
+#define PRD_2KHZ				2000		// Периодическая задача 2000 Гц
+#define PRD_200HZ				200			// Периодическая задача 200 Гц
+#define PRD_50HZ				50			// Периодическая задача 50 Гц
+#define PRD_10HZ				10			// Периодическая задача 10 Гц
+#define PRD_50HZ				50			// Периодическая задача 50 Гц
 
 // Тестовые режимы
 #define TORQ_TEST			0			// Тест расчета момента

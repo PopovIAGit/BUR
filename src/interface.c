@@ -48,7 +48,7 @@ Uns  BtnOldStatus;
 Uns  PrevCycle;
 
 Bool PowerEnable = True;
-Uns  DisplayTimer = (PRD3 * 1);
+Uns  DisplayTimer = (PRD_10HZ * 1);
 Uns  DisplayRestartTimer = 0;
 Bool DisplayRestartFlag = false;
 
@@ -122,8 +122,8 @@ void InterfaceInit(void)
 	GrA->CalibState = GrH->CalibState;
 	GrA->CycleCnt = GrH->CycleCnt;
 	PrevCycle = GrH->CycleCnt;
-	GrA->MkuPoVersion = VERSION;
-	GrC->MkuPoSubVersion = SUBVERSION;
+	GrA->MkuPoVersion = (DEVICE_GROUP * 1000) + VERSION; // 1*1000+114 = 1114
+	GrC->MkuPoSubVersion = (MODULE_VERSION * 100) + SUBVERSION;
 
 	if (GrH->ScFaults) LowPowerReset |= BIT0;
 
@@ -231,15 +231,15 @@ void PowerOn(void)
 
 	if (DisplayRestartFlag)
 	{
-		DisplayTimer = (PRD3 * 1);
-	//	DisplayRestartTimer = (PRD3 * 2);
+		DisplayTimer = (PRD_10HZ * 1);
+	//	DisplayRestartTimer = (PRD_10HZ * 2);
 		DisplayRestartFlag = false;
 	}
 	
 	// Смотрим при включении, если было КЗ
 	if (DisplShcFlag && (GrH->FaultsLoad.bit.ShCU || GrH->FaultsLoad.bit.ShCV || GrH->FaultsLoad.bit.ShCW))
 	{
-		DisplayRestartTimer = (PRD3 * 1);
+		DisplayRestartTimer = (PRD_10HZ * 1);
 		DisplayRestartFlag = true;
 		DisplShcFlag = false;
 	}
@@ -256,7 +256,7 @@ void PowerOff(void)
 {
 	LcdEnable = 0;
  	Display.Enable = False;
-	GrC->LedsReg.all = 0x00;
+	GrH->LedsReg.all = 0x00;
 	PowerEnable = False;
 
 	#if BUR_M
@@ -280,11 +280,11 @@ Bool InterfaceRefresh(void)
 {
 	static Uns prevIndType = 123;			// Предыдущий тип индикатора
 
-	if (prevIndType != GrC->IndicatorType)	// Если тип индикатора был изменен
+	if (prevIndType != GrH->IndicatorType)	// Если тип индикатора был изменен
 	{
-		prevIndType = GrC->IndicatorType;	// Пересбрасываем дисплей
-		DisplayReset(&Display, (Uns)Ram.GroupC.IndicatorType);
-		WritePar(GetAdr(GroupC.IndicatorType), &Ram.GroupC.IndicatorType, 1);
+		prevIndType = GrH->IndicatorType;	// Пересбрасываем дисплей
+		DisplayReset(&Display, (Uns)Ram.GroupH.IndicatorType);
+		WritePar(GetAdr(GroupH.IndicatorType), &Ram.GroupH.IndicatorType, 1);
 	}
 
 	if (!InterfRefrState) return true;
@@ -323,7 +323,7 @@ void DataBufferPre(void)
 
 //	if (Timer > 0) {	Timer--;	return;		}
 
-	if ((++PreTimer >= PRD1) && !LogEv.EventFlag)						// Запись по секунде	
+	if ((++PreTimer >= PRD_200HZ) && !LogEv.EventFlag)						// Запись по секунде	
 	{			
 		PreTimer = 0;
 
@@ -1054,7 +1054,7 @@ void BlkSignalization(void)	// Сигнализация на блоке
 {
 	static Uns DspTimer = 0;
 
-	TLedsReg *Reg = &GrC->LedsReg;	// копия 
+	TLedsReg *Reg = &GrH->LedsReg;	// копия 
 	
 	if (++DspTimer >= DSP_LED_TIMER)
 	{
@@ -1132,6 +1132,8 @@ void TsSignalization(void) //ТС
 		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.Dout6;	//  Закрыто
 		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.Dout7;	//  Открыто
 		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.Dout1;	//  Неисправность 
+		Reg->bit.Dout9 = IsOpened() 	||		(!(IsOpened()&& IsClosed()));	//  КВЗ 
+		Reg->bit.Dout10 =IsClosed() 	||		(!(IsOpened()&& IsClosed()));	//  КВО 
 	#else 
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.Dout0;	//	тс аларм
 		Reg->bit.Dout1 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.Dout1;	//	закрыто
@@ -1208,9 +1210,9 @@ void ClbControl(void)	// управление калибровками
 	GrA->Status.bit.Closed = IsStopped() && ((Calib.Zone & CLB_CLOSE) != 0);	// закрытие - если в стопе и откалиброванно "закрыто"
 	GrA->Status.bit.Opened = IsStopped() && ((Calib.Zone & CLB_OPEN)  != 0);	// открытие - если в стопе и откалиброванно "открытие"
 						
-    GrH->Position      = IndicPos(Encoder.Revolution);						// забираем текущее положение (пока с теста)
-	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
-	GrC->OpenPosition  = IndicPos(Calib.Indication->OpenPos);				// забираем положение открыто
+    GrH->Position      = Encoder.Revolution;						// забираем текущее положение (пока с теста)
+//	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
+//	GrC->OpenPosition  = IndicPos(Calib.Indication->OpenPos);				// забираем положение открыто
 //	GrC->Position 	   = GrH->Position;										// копируем текущее положение в гр.С
 
 	if (!IsNoCalib() && (Menu.State != MS_EXPRESS) && Menu.Express.Enable)

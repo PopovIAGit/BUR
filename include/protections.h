@@ -8,7 +8,7 @@
 #define SHC_START_ANG	115	// Угол работы защиты КЗ в старте
 #define SHC_MOVE_ANG	30		// Угол работы защиты КЗ в движении
 
-#define PRT_SCALE (0.100 * PRD2)
+#define PRT_SCALE (0.100 * PRD_50HZ)
 
 #define MUF_DEFAULT(Input, Bit) { \
 	False, ToPtr(Input), &MuffFlag, \
@@ -154,7 +154,7 @@
 	&Ram.GroupC.PhlTime, \
 	PRT_SCALE, 0 \
 }
-
+/*
 #define IT_DEFAULT(Input, Index, Bit) { \
 	PRT_CFG_SET(1,1,Bit,0), \
 	ToPtr(Input), \
@@ -171,7 +171,7 @@
 	ToPtr(&Ram.GroupC.IUnLevel), \
 	&Ram.GroupC.IUnTime, \
 	PRT_SCALE, 0 \
-}
+}*/
 
 #define ISK_DEFAULT(Input, Bit) { \
 	PRT_CFG_SET(1,1,Bit,0), \
@@ -248,10 +248,8 @@ extern TPrtElem   BvT;
 extern TPrtElem   PhlU;
 extern TPrtElem   PhlV;
 extern TPrtElem   PhlW;
-extern TPrtElem   I2tMin;
-extern TPrtElem   I2tMid;
-extern TPrtElem   I2tMax;
-extern TPrtElem   IUnLoad;
+
+//extern TPrtElem   IUnLoad;
 extern TPrtElem   ISkew;
 extern TPrtElem   Th;
 extern TPrtElem   Th_Err;
