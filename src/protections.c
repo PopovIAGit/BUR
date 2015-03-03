@@ -64,9 +64,7 @@ Uns   Fault_Delay 	 	= (Uns)FLT_DEF_DELAY;
 Int   HighTemper		= 110;
 Uns   VskTimer 			= 0;
 Uns   FlagEngPhOrd		= 0;
-
 Uns   PhOrdTimer 		= 0;
-
 
 Bool IsShcReset = false;			// флаг сброса КЗ
 
@@ -557,6 +555,7 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 	          // флаг для единичной проверки правельности чередования фазы
 	static LgUns StartPos;
 	static Uns   Timer = 0;
+	static Uns   PhOrdZone = 10;
 	LgInt  Delta = 0;
 
 //	if(Fault_Delay>0) return;
@@ -592,8 +591,8 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 
 		EngPhOrdValue = 0;	// сбрасываем чередование фаз, останется нулем если вращения небыло
 	
-		if (Delta >=  ((LgInt)GrC->PhOrdZone)) EngPhOrdValue =  1; // если дельта больше расстояния чередования фаз то чередование фаз на прямое направление вращения
-		if (Delta <= -((LgInt)GrC->PhOrdZone)) EngPhOrdValue = -1; // если дельта меньше расстояния чередования фаз то чередование фаз на инверсное направление вращения
+		if (Delta >=  ((LgInt)PhOrdZone)) EngPhOrdValue =  1; // если дельта больше расстояния чередования фаз то чередование фаз на прямое направление вращения
+		if (Delta <= -((LgInt)PhOrdZone)) EngPhOrdValue = -1; // если дельта меньше расстояния чередования фаз то чередование фаз на инверсное направление вращения
 		
 		if (GrB->RodType == rdtInverse) EngPhOrdValue = -EngPhOrdValue; // если тип штока инверсный то разворачиваем
 		

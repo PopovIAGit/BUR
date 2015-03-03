@@ -106,6 +106,7 @@ void CubInit(TCubStr *, TCubConfig *Cfg);
 void CubRefresh(TCubStr *, TCubArray *Array);
 void CubCalc(TCubStr *);
 void PowerCheck(void);
+void ProgonModeUpdate (void);
 
 void TqHandControl(void);
 

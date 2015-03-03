@@ -1123,26 +1123,26 @@ void TsSignalization(void) //ТС
 	else	
 	{ 
 	#if BUR_M
-//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;	//  Ком.Закрыть
-//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;	//  Ком.Открыть
-		Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.Dout2;	//  Муфта
-		Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.Dout0;	//	тс аларм
-//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;	//  Ком.Стоп
-		Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.Dout5;	//  Питание
-		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.Dout6;	//  Закрыто
-		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.Dout7;	//  Открыто
-		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.Dout1;	//  Неисправность 
-		Reg->bit.Dout9 = IsOpened() 	||		(!(IsOpened()&& IsClosed()));	//  КВЗ 
-		Reg->bit.Dout10 =IsClosed() 	||		(!(IsOpened()&& IsClosed()));	//  КВО 
+//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
+//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
+		Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта
+		Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
+//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
+		Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.powerOn;	//  Питание
+		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
+		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
+		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность 
+		Reg->bit.Dout9 = IsOpened() 	||		(!(IsOpened()&& IsClosed()));		//  КВЗ 
+		Reg->bit.Dout10 = IsClosed() 	||		(!(IsOpened()&& IsClosed()));		//  КВО 
 	#else 
-		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.Dout0;	//	тс аларм
-		Reg->bit.Dout1 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.Dout1;	//	закрыто
-		Reg->bit.Dout2 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.Dout2;	//	открыто 
-		Reg->bit.Dout3 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.Dout3;	//	муфта
-		Reg->bit.Dout4 = IsClosing()	 ^ 		(Uns)GrB->OutputMask.bit.Dout4;	//	закрывается
-		Reg->bit.Dout5 = IsOpening()	 ^ 		(Uns)GrB->OutputMask.bit.Dout5;	//	открывается
-		Reg->bit.Dout6 = !IsLocalControl()^ 	(Uns)GrB->OutputMask.bit.Dout6; //	МУ/ДУ
-		Reg->bit.Dout7 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.Dout7;	//  Неисправность 
+		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
+		Reg->bit.Dout1 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//	закрыто
+		Reg->bit.Dout2 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//	открыто 
+		Reg->bit.Dout3 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//	муфта
+		Reg->bit.Dout4 = IsClosing()	 ^ 		(Uns)GrB->OutputMask.bit.closing;	//	закрывается
+		Reg->bit.Dout5 = IsOpening()	 ^ 		(Uns)GrB->OutputMask.bit.opening;	//	открывается
+		Reg->bit.Dout6 = !IsLocalControl()^ 	(Uns)GrB->OutputMask.bit.muDu; 		//	МУ/ДУ
+		Reg->bit.Dout7 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность 
 		
 	#endif
 	}

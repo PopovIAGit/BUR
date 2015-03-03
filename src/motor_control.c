@@ -30,10 +30,10 @@ TDmControl Dmc  	= DMC_DEFAULT;
 TTorqObs   Torq;
 
 Uns  ZazorTimer 	= 0;
-Uns  Iload[3] 		= {0,0,0};	//действующие токи в А (токи нагрузки)
-Uns  Ipr[3]   		= {0,0,0};	//действующие токи в % от номинального
-Uns  Imid	  		= 0;		//средний действующий ток	
-Uns  Imidpr	  		= 0;		//средний действующий ток в процентах от Iн
+Uns  Iload[3] 		= {0,0,0};	// действующие токи в А (токи нагрузки)
+Uns  Ipr[3]   		= {0,0,0};	// действующие токи в % от номинального
+Uns  Imid	  		= 0;		// средний действующий ток	
+Uns  Imidpr	  		= 0;		// средний действующий ток в процентах от Iн
 Bool DynBrakeEnable = False;	// запрет динамического торможения по старту
 Uns  KickCounter    = 0;		// счетчик количества ударов
 Uns  KickModeTimer  = 0;		// счетчик для режима ударного момента
@@ -48,18 +48,17 @@ Uns  SaveDirection  = SIFU_NONE;
 Uns  SaveContactorDirection = 0;
 Bool KickModeEnable = False;	// разрешение ударного момента
 #if BUR_M
-Uns Net_Mon_Timer   = 0;		//таймер перед тем как считаем наличие напряжение как команду на пуск
+Uns Net_Mon_Timer   = 0;		// таймер перед тем как считаем наличие напряжение как команду на пуск
 Uns PowerLostTimer2 = 0;
 #endif
-Uns BreakFlag 		= 0;
+Uns BreakFlag 			= 0;
 Uns PowerSupplyEnable 	= 0; 	// Наличие питания источника 
 Uns PowerSupplyCnt 		= 0;	// Задержка на выключение питания
-Uns ReqDirection 	= 0;
-Uns DebugStartDelayCnt = 0;
+Uns ReqDirection 		= 0;
 Uns DebugStartDelayCnt2 = 10;
-Uns BreakVoltFlag = 0;
+Uns BreakVoltFlag 		= 0;
 // ----------------------------------------	
-Int InomDef[10]  	 = {13,11,18,52,52,47,56,110,85,148};						// default значения для Inom для разных приводов
+Int InomDef[10]  	 = {13,11,18,52,52,47,56,110,85,148};					// default значения для Inom для разных приводов
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
 Int TransCurrDef[10] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100};	//					для TransCur править
 Int GearRatioDef[5]	 = {5250,7360,16720,16016,16016};						//для передаточного числа редуктора 
@@ -98,9 +97,6 @@ __inline void DynBrakeMode(void);
 __inline void DmcTest(void);
 
 static  void  ClkThyrControl(Uns State);
-// Логика управления тиристорами для динамического торможения:
-void SifuControlForDynBrake(SIFU *);
-
 
 //---- управление двигателем-----
 void MotorControlInit(void)
@@ -129,9 +125,8 @@ void MotorControlInit(void)
 	CubInit(&Torq.Cub1, &TqCurr);		 // инициализация структуры куба для расчета момента
 	CubInit(&Torq.Cub2, &TqAngUI);
 	CubInit(&Torq.Cub3, &TqAngSf);
-
-
 }
+// -----------------------------------------------------------------
 void MotorControlUpdate(void)
 {
 #if BUR_M
@@ -149,7 +144,7 @@ void MotorControlUpdate(void)
 	PulsePhaseControl();				// Сифу
 	//MonitorUpdate1();					// Монитор - убрать потом
 }
-
+// -----------------------------------------------------------------
 __inline void ADC_Aquisition(void){		//18kHz
 
 	URfltr.Input = _IQ16toIQ(ADC_UR);
@@ -176,7 +171,7 @@ __inline void ADC_Aquisition(void){		//18kHz
 	ApFilter3Calc(&IVfltr);
 	ApFilter3Calc(&IWfltr);
 }
-
+// -----------------------------------------------------------------
 __inline void DmcPrepare(void){	//18kHz
 
 		UR.Input = ADC_CONV(_IQtoIQ16(URfltr.Output), GrH->UR_Mpy, GrH->UR_Offset);
@@ -216,7 +211,7 @@ __inline void DmcPrepare(void){	//18kHz
 
 	if (!IV.CurAngle) Phifltr.Input = _IQ16toIQ(US.CurAngle); 
 }
-
+// -----------------------------------------------------------------
 __inline void PulsePhaseControl(void){	//18kHz	
 
 	sifu_calc2(&Sifu);	
@@ -226,7 +221,7 @@ __inline void PulsePhaseControl(void){	//18kHz
 
 	OUT_SET(ENB_TRN, (Sifu.Status.all >> SIFU_EN_TRN) & 0x1);
 }
-
+// -----------------------------------------------------------------
 void DmcIndication1(void)
 {
 	// токи нагрузки в А
@@ -258,7 +253,7 @@ void DmcIndication1(void)
 	GrH->ADC_iv = ADC_IV;
 	GrH->ADC_iw = ADC_IW;
 }
-
+// -----------------------------------------------------------------
 void DmcIndication2(void)
 {
 	// входные напряжения
@@ -293,15 +288,8 @@ void DmcIndication2(void)
 	// копии в диагностику
 	GrA->Torque  = GrH->Torque;
 	GrA->Speed   = GrH->Speed;
-//	GrA->Ur		 = GrH->Ur;
-//	GrA->Us		 = GrH->Us;
-//	GrA->Ut		 = GrH->Ut;
-//	GrA->Iu		 = GrH->Iu;
-//	GrA->Iv		 = GrH->Iv;
-//	GrA->Iw		 = GrH->Iw;
-//	GrA->AngleUI = GrC->AngleUI;
 }
-
+// -----------------------------------------------------------------
 void DefineCtrlParams(void) // задачи контролируемых параметров в 
 {
 	Int MaxZone, CloseZone, OpenZone;	// максимальная зона, зона открытия, зона закрытия
@@ -344,7 +332,7 @@ void DefineCtrlParams(void) // задачи контролируемых параметров в
 	Dmc.TorqueSetPr = ValueToPU0(Dmc.TorqueSet, GrC->MaxTorque * 10); // считаем момент в % от максимального
 #endif
 }
-
+//-----------------------Управление при стопе--------------------------------
 void StopPowerControl(void) // упровление при стопе
 {
 	GrA->Status.bit.Stop	  	= 1;	// выставили в статус устройства стоп и все остальное сбросили
@@ -373,7 +361,7 @@ void StopPowerControl(void) // упровление при стопе
 	BreakVoltFlag = 0;
 }
 
-
+//----------------Отслеживание состояние питающей сети для подачи команд БУР М
 #if BUR_M
 void NetMomitor(void)
 {
@@ -446,7 +434,7 @@ void NetMomitor(void)
 		PhEl.Direction = 0;
 	}
 }
-
+//----------Управление контакторами для БУР М
 void ContactorControl(TContactorGroup i) // если 0 то 
 {
 	static Uns StopSetTimer 	= 0;
@@ -499,6 +487,7 @@ void ContactorControl(TContactorGroup i) // если 0 то
 }
 #endif
 
+//----------Управление при пуске-----------------------
 void StartPowerControl(TValveCmd ControlWord)	// управление при пуске
 {
 	static Uns  RunStatus = 0;
@@ -608,7 +597,7 @@ register Uns Tmp;
 
 //---state machine---------
 
-void ControlMode(void)
+void ControlMode(void) // 200Hz
 {
 	PowerCheck(); // постоянно проверяем наличие питания источника
 
@@ -637,6 +626,61 @@ void ControlMode(void)
 	if (ZazorTimer > 0) ZazorTimer--;	// если есть обработка зазора
 }
 
+// Обработка режима прогона-------------------------------------------------
+void ProgonModeUpdate (void)	// 10 Гц
+{
+	static Uns progonDelay = 0,			// Задержка перед пуском, когда привод достигает крайней точки
+	           halfCycle = 0;			// Полцикла (открыто -> закрыто или закрыто -> открыто). Два полцикла равны 1 циклу
+	static Byte isComandDone = false;	// Флаг, подана ли команда. Команда должна подаваться только 1 раз из положения закрыто или открыто
+
+	if (!GrC->progonCycles) return; 
+	
+	if (IsFaulted() || IsNoCalib() ) 	// Без калибровки режим тестового прогона не работает
+	{
+		GrC->progonCycles = 0;
+		GrA->Faults.Proc.bit.CycleMode = 0;
+	}
+
+	if (!GrA->Faults.Proc.bit.CycleMode)
+	{
+		if (IsClosing() || IsOpening()) GrA->Faults.Proc.bit.CycleMode = 1;
+	}
+	else
+	{
+		if (IsClosed() || IsOpened())
+		{
+			if (!isComandDone)			// Если команда еще не была подана
+			{
+				if (progonDelay++ > 50)	// 50 = 5 сек на 10 Гц
+				{
+					GrD->ControlWord = IsClosed() ? vcwOpen : vcwClose;
+					isComandDone = true;
+					progonDelay = 0;
+					if (++halfCycle == 2) // Два полцикла = один полный цикл
+					{
+						halfCycle = 0;
+						GrC->progonCycles--;
+						if (!GrC->progonCycles)
+						{
+							progonDelay = 0;
+							GrA->Faults.Proc.bit.CycleMode = 0;
+						}
+					}
+				}
+			}
+		}
+		else 
+		{
+			isComandDone = false;
+			if (IsStopped() ) // Если выполнилось это условие, то во время прогона поступила команда "стоп"
+			{
+				GrC->progonCycles = 0;
+				GrA->Faults.Proc.bit.CycleMode = 0;	
+			}
+		}
+	}
+}
+// -----------------------------------------------------------------
 __inline void StopMode(void)		// стм. стоп
 {
 	Sifu.SetAngle   = SIFU_MAX_ANG; // закрываем тиристоры
@@ -648,7 +692,7 @@ __inline void StopMode(void)		// стм. стоп
 	
 	ClkThyrControl(0);				// выключили тактирование тиристоров
 }
-
+// -----------------------------------------------------------------
 __inline void TestPhMode(void)		// стм. тест фаз
 {									// проверка на КЗ в protection.c
 	static Uns TestModeTimer  = 0;	// время в тестовом режиме
@@ -667,7 +711,7 @@ __inline void TestPhMode(void)		// стм. тест фаз
 		TestModeTimer = 0;						// сбрасываем таймер тестового режима
 	}
 }
-
+// -----------------------------------------------------------------
 __inline void UporStartMode(void)	// стм. Упор старт
 {
 	Sifu.SetAngle   = Torq.SetAngle;// угол открытия на осове момента
@@ -692,7 +736,7 @@ __inline void UporStartMode(void)	// стм. Упор старт
 	}
 //	#endif
 }
-
+// -----------------------------------------------------------------
 __inline void MoveMode(void)	// стм. движение
 {
 	Sifu.SetAngle   = 0;	// полное открытие тиристоров (задание на угол открытия тиристоров)
@@ -707,7 +751,7 @@ __inline void MoveMode(void)	// стм. движение
 		timerMaxTorque = 0;		// сбросили таймер 
 	}
 }
-
+// -----------------------------------------------------------------
 __inline void PauseMode(void) // стм. пауза
 {
 	Sifu.OpenAngle  = SIFU_MAX_ANG; // закрываем тиристоры
@@ -720,7 +764,7 @@ __inline void PauseMode(void) // стм. пауза
 		PauseModeTimer = 0;				// сбросили таймер
 	}
 }
-
+// -----------------------------------------------------------------
 __inline void UporFinishMode(void)	// стм. упор финиш
 {
 	Sifu.SetAngle   = Torq.SetAngle;// угол по моменту
@@ -736,7 +780,7 @@ __inline void UporFinishMode(void)	// стм. упор финиш
 	}
 //	#endif
 }
-
+// -----------------------------------------------------------------
 __inline void KickMode(void)		// стм. удар
 {
 	static Uns  KickSetAngle = 0;			// задание угла открытия по ударному режиму
@@ -754,7 +798,7 @@ __inline void KickMode(void)		// стм. удар
 		KickModeTimer = 0;			// сбросили таймер
 	}
 }
-
+// -----------------------------------------------------------------
 __inline void SpeedTestMode(void)	// стм. тест
 {
 	#if BUR_M
@@ -813,7 +857,7 @@ __inline void DynBrakeMode(void) // 200 Hz в ControlMode(void)
 		Mcu.StartDelay = (Uns)START_DELAY_TIME; 				// задаем паузу между пусками
 	}
 }
-
+// -----------------------------------------------------------------
 __inline void DmcTest(void)				// тест работы тиристоров
 {
 	if (!GrG->SifuEnable)		// если запрещена работа сифу в тестовом режиме
@@ -839,7 +883,7 @@ __inline void DmcTest(void)				// тест работы тиристоров
 		ClkThyrControl(1);				// разришаем тактирование тиристоров 
 	}
 }
-
+// -----------------------------------------------------------------
 __inline void TestThyrControl(void)     //сим. тест тиристоров
 {
 	if (Dmc.WorkMode != wmTestThyr) return;	// если не тест то выходим от сюда от греха
@@ -848,7 +892,7 @@ __inline void TestThyrControl(void)     //сим. тест тиристоров
 	US.CurAngle = SIFU_OPEN_ANG;
 	UT.CurAngle = SIFU_OPEN_ANG;
 }
-
+// -----------------------------------------------------------------
 void CalibStop(void)	// остановка по данным калибровки
 {
 	Bool StopFlag = False; // внутенний флаг остановки
@@ -871,7 +915,7 @@ void CalibStop(void)	// остановка по данным калибровки
 			}
 	}
 }
-
+// -----------------------------------------------------------------
 void TorqueCalc(void)	// расчет момента по кубу
 {
 	register TCubStr *Cub;	//
@@ -885,7 +929,6 @@ void TorqueCalc(void)	// расчет момента по кубу
 	Imidpr = ValueToPU1(Imid, GrC->Inom);
 
 #if !TORQ_TEST	// если не тест
-//	if (GrC->DriveType != 0) return; // если определен тип привода то выходим
 	if (!Torq.ObsEnable) {Torq.Indication = 0; Torq.SetAngle = Sifu.MaxAngle; return;} //если выключен расчет момента то индикация 0 и закрываем тиристоры и выходим
 
 	Cub = (Imidpr >= GrH->TransCurr) ? &Torq.Cub1 : &Torq.Cub2;  // выбераем по какому кубу работаем для маленьких или больших токов
@@ -905,10 +948,6 @@ void TorqueCalc(void)	// расчет момента по кубу
 	Trqfltr.Input = _IQ16toIQ(Cub->Output); // фильтруем значение момента
 	ApFilter3Calc(&Trqfltr);				// 
 	Tmp =(_IQtoIQ16(Trqfltr.Output)) + Add; 
-
-
-//	Tmp = Cub->Output;
-
 
 	if (Tmp < TORQ_MIN_PR) Tmp = TORQ_MIN_PR;	// проверяем на вхождение в зону от 
 	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 10 до 110 %
@@ -931,8 +970,7 @@ else if	(Dmc.TorqueSetPr < 110)
 
 	Torq.SetAngle   = Torq.Cub3.Output - UporAdd; // забираем задание для сифу (Упор)
 }
-
-
+// -----------------------------------------------------------------
 __inline void TorqueObsInit(void)
 {	
 	switch (GrC->DriveType) 
@@ -1089,7 +1127,7 @@ __inline void TorqueObsInit(void)
 				break;//10
 	}
 } 
-
+// -----------------------------------------------------------------
 void SpeedCalc(void) // расчет скорости
 {
 	static   Uns   Timer = 0;
@@ -1114,7 +1152,7 @@ void SpeedCalc(void) // расчет скорости
 		Timer = 0;						// сбросили таймер
 	}
 }
-
+// -----------------------------------------------------------------
 void LowPowerControl(void)		// управление при провале напряжения ??? 
 {
 #if !LOWPOW_TEST
@@ -1192,7 +1230,7 @@ void LowPowerControl(void)		// управление при провале напряжения ???
 	}
 #endif
 }
-
+// -----------------------------------------------------------------
 Bool DmcControlRefresh(void) // это в RefreshData
 {
 	if (!DmcRefrState) return true;	
@@ -1218,12 +1256,11 @@ Bool DmcControlRefresh(void) // это в RefreshData
 		case 8: CubRefresh(&Torq.Cub3, &GrH->TqAngSf);
 				DmcRefrState = 0; 
 				break;
-
 	}
 	
 	return !DmcRefrState;
 }
-
+// -----------------------------------------------------------------
 void CubInit(TCubStr *v, TCubConfig *Cfg)	//инициализация куба
 {
 	register TCubPoint *Pt;
@@ -1253,7 +1290,7 @@ void CubInit(TCubStr *v, TCubConfig *Cfg)	//инициализация куба
 		}
 	}
 }
-
+// -----------------------------------------------------------------
 void CubRefresh(TCubStr *v, TCubArray *Array)	//
 {
 	register TCubPoint *Pt;
@@ -1268,7 +1305,7 @@ void CubRefresh(TCubStr *v, TCubArray *Array)	//
 		}
 	}
 }
-
+// -----------------------------------------------------------------
 void CubCalc(TCubStr *v)
 {
 	Int A0, A1, B0, B1;
@@ -1312,8 +1349,7 @@ void CubCalc(TCubStr *v)
 	
 	v->Output = B0 + _IQ1div((LgInt)(v->Input.Y - A0) * (B1 - B0), (A1 - A0) << 1);
 }
-
-
+// -----------------------------------------------------------------
 // тактирование тиристоров
 static void ClkThyrControl(Uns State)	
 {
@@ -1368,7 +1404,7 @@ void MonitorUpdate1(void){
 		dot = 0;
 	}
 }
-
+// -----------------------------------------------------------------
 void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись местами, т.к. 
 {
 	v->Status.all = 0x3F;								// выставляем в статусе единички на все используемые ножки и разрешение работы	тоесть 0011 1111 - чтобы сбросить разрешение тиристорам на работу при новом вызове функции
@@ -1439,31 +1475,4 @@ Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time)
 	else if (OutputQ15 >= ((LgInt)StartValue << 15)) return StartValue;
 		 else return (Uns)(OutputQ15 >> 15);
 } 
-
-//----------Логика управления тиристорами для динамического торможения--------------------------- 
-void SifuControlForDynBrake (SIFU *p)
-{
-/*	p->Status.bit.sifu_ENB = 0;
-	if (US.Input > 50)					// Смотрим только на верхние полуволны пилы S
-	{
-	   	p->Status.bit.sifu_T = 1;					// закрыли на всё торможение	         
-		p->Status.bit.sifu_TR = 1;					// закрыли на всё торможение
-	
-		if ((*p->UsAngle > p->OpenAngle)&&(*p->UsAngle < 160))	// смотрим только на фазу S - общая, работает в обоих направлениях  	  
-		{														// Даем сигнал на закрытие тиристоров немного заранее
-			p->Status.bit.sifu_S = 0;
-			p->Status.bit.sifu_R = 0;
-			p->Status.bit.sifu_RT = 0; 
-		}
-		else
-		{
-			p->Status.bit.sifu_S = 1;
-			p->Status.bit.sifu_R = 1;
-			p->Status.bit.sifu_RT = 1; 
-		}
-	} 
-	else	
-		p->Status.all = 0x003F;*/
-}
-
 //-----------Конец файла------------------------------ 

@@ -775,9 +775,9 @@ static void ShowValue(MENU *p, Uns Position, Bool Edit)
 		   if (!Edit)
 		   {
 			   DecToStr(p->Value, Str, Val->Precision, Val->RateMax, TRUE, Val->Signed);
-				p->LoString[2+2] = p->LoString[3+2];
-				p->LoString[3+2] = p->LoString[4+2];
-				p->LoString[4+2] = '.';
+				p->LoString[4] = p->LoString[5];
+				p->LoString[5] = p->LoString[6];
+				p->LoString[6] = '.';
 		   }
 
 	   break;

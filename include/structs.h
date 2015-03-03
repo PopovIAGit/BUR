@@ -49,7 +49,7 @@ typedef union _TStatusReg {
 #define PROC_OVERW_MASK		0x0020
 #define PROC_DRV_T_MASK 	0x0040
 #define PROC_RESET_MASK		0x00A1
-#define PROCESS_EVLOG_MASK	0x00A1
+#define PROCESS_EVLOG_MASK	0x01F3
 typedef union _TProcessReg {
 	Uns all;
 	struct {
@@ -61,7 +61,9 @@ typedef union _TProcessReg {
      	Uns Overway:1;		// 5     Уплотнение не достигнуто
 		Uns Drv_T:1;		// 6	 Перегрев двигателя
 		Uns MuDuDef:1;		// 7     Ошибка по дискретным входам Му/Ду
-		Uns Rsvd:8;			// 8-15  Резерв
+		Uns Rsvd1:1;		// 8	 Резерв
+		Uns CycleMode:1;	// 9	 Включен режим 
+		Uns Rsvd:6;			// 10-15 Резерв
 	} bit;
 } TProcessReg;
 
@@ -99,7 +101,7 @@ typedef union _TNetReg {
 		Uns OvT_max:1;		// 13    Превышение напряжения в фазе T на 47%
 		#if BUR_M
 		Uns RST_Err:1;		// 14   неверное чередование входных фаз БУР М
-		Uns Rsvd:1;			// 15 Резерв
+		Uns Rsvd:1;			// 15 	Резерв
 		#else
 		Uns Rsvd:2;			// 14-15 Резерв
 		#endif
@@ -113,7 +115,7 @@ typedef union _TNetReg {
 #define LOAD_UNL_MASK		0x0400
 #define LOAD_ISK_MASK		0x0800
 #define LOAD_RESET_MASK		0x0FE7
-#define LOAD_EVLOG_MASK		0x0FE7
+#define LOAD_EVLOG_MASK		0x08EF
 typedef union _TLoadReg {
 	Uns all;
 	struct {
@@ -138,7 +140,7 @@ typedef union _TLoadReg {
 #if BUR_M
 #define DEV_EVLOG_MASK		0x0000
 #else
-#define DEV_EVLOG_MASK		0x0100
+#define DEV_EVLOG_MASK		0x0961
 #endif
 typedef union _TDeviceReg {
 	Uns all;
@@ -269,35 +271,37 @@ typedef union _TOutputReg {
 	} bit;
 } TOutputReg;
 
-
-// Маска дискретных выходов
+#if BUR_M
+// Маска дискретных выходов для БУР М
 typedef union _TOutputMask {
 	Uns all;
 	 struct {
-	 	Uns Dout0:1;		// 0 - Открыто
-		Uns Dout1:1;		// 1 - Закрыто
-		Uns Dout2:1;		// 2 - Муфта
-		Uns Dout3:1;		// 3 - Авария
-		Uns Dout4:1;		// 4 - Открывается/ Блок включен
-		Uns Dout5:1;		// 5 - Закрывается/ КВО
-		Uns Dout6:1;		// 6 - Му/Ду /	КВЗ
-		Uns Dout7:1;		// 7 - Питание/ ---
+	 	Uns fault:1;		// 0 - Авария
+		Uns mufta:1;		// 1 - Муфта
+		Uns defect:1;		// 2 - Неисправность
+		Uns closed:1;		// 3 - Закрыто
+		Uns opened:1;		// 4 - открыто
+		Uns powerOn:1;		// 5 - Питание включено
+		Uns Rsvd:10;      	// 6-15  Резерв
+	 } bit;
+} TOutputMask;
+#else 
+// Маска дискретных выходов для БУР Т
+typedef union _TOutputMask {
+	Uns all;
+	 struct {
+	 	Uns muDu:1;			// 0 - Му/Ду
+		Uns defect:1;		// 1 - неисправность
+		Uns fault:1;		// 2 - авария
+		Uns mufta:1;		// 3 - муфта
+		Uns opened:1;		// 4 - Открыто
+		Uns closed:1;		// 5 - Закрыто
+		Uns closing:1;		// 6 - Открывается 
+		Uns opening:1;		// 7 - Закрывается 
 		Uns Rsvd:8;      	// 8-15  Резерв
 	 } bit;
 } TOutputMask;
-
-/*
-// Функции Profibus DP
-typedef union _TPbFuncs {
-	Uns all;
-	struct {
-		Uns Rsvd1:1;		// 0		Резерв
-		Uns Sync:1;			// 1		Sync supported
-		Uns Freeze:1;		// 2		Freeze supported
-		Uns Rsvd:13;		// 3-15  Резерв
-	} bit;
-} TPbFuncs;*/
-
+#endif
 
 // Управление работой защит
 typedef enum {
