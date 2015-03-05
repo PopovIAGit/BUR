@@ -51,6 +51,7 @@ TPrtElem DrvT = DT_DEFAULT(&Ram.GroupC.DrvTInput , 6);
 TFltUnion Faults;
 TFltUnion Defects;// Неисправности
  
+Bool  onlyPosSens = false;		// Флаг, означающий, что сбой датчика положения - единственная авария
 Uns   ShCLevel       = 32767; 	// максимальное инт число показывает уровень срабатывания защиты по кз
 Uns   MuffFlag       = 0;	  	// флаг срабатывания муфты
 Int   EngPhOrdValue  = 0; 		// показывает чередование фаз для направления вращения (0 небыло, 1 вперед, -1 назад)
@@ -384,8 +385,11 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 
 		if (IsFaulted())
 		{
-			ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
-			Mcu.EvLog.Value = CMD_DEFSTOP;	//???
+			if (!onlyPosSens || !GrC->PosSensEnable)
+			{
+				ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
+				Mcu.EvLog.Value = CMD_DEFSTOP;	
+			}
 		}
 
 		if (IsDefected())
@@ -417,6 +421,7 @@ Bool IsDefectExist(TPrtMode Mode) // неисправность
 	if(Defects.Proc.bit.Drv_T)		Defects.Proc.bit.Drv_T 	 			 = 0;	// перегрев дв
 	if(Defects.Proc.bit.NoMove)		Defects.Proc.bit.NoMove  			 = 0;	// нет движения
 	if(Defects.Proc.bit.PhOrd)		Defects.Proc.bit.PhOrd 	 			 = 0;
+	if(Defects.Dev.bit.PosSens)		Defects.Dev.bit.PosSens 	 		 = 0;
 	if(Defects.Net.all  & NET_BV_MASK)			Defects.Net.all 		&=~NET_BV_MASK;		// обрыв вх фаз
 	if(Defects.Load.all & LOAD_SHC_MASK)		Defects.Load.all 		&=~LOAD_SHC_MASK;	// КЗ
 	if(Defects.Load.all & LOAD_I2T_MASK)		Defects.Load.all 		&=~LOAD_I2T_MASK;	// ВТЗ
@@ -460,6 +465,7 @@ Bool IsFaultExist(TPrtMode Mode) // сигнализация и выключение двигателя
 	Faults.Proc.bit.PhOrd  = 	GrA->Faults.Proc.bit.PhOrd;
 
 	Faults.Dev.bit.Th_Err =  	GrH->FaultsDev.bit.Th_Err;
+	Faults.Dev.bit.PosSens =  	GrH->FaultsDev.bit.PosSens;
 
 	if(Fault_Delay > 0) return false;
  
@@ -513,7 +519,11 @@ switch(GrB->SettingPlace)
 	#endif
 	if(Faults.Load.all & LOAD_SHC_MASK)		return true;	// КЗ
 	if(Faults.Load.all & LOAD_I2T_MASK)		return true;	// ВТЗ
-	if(Faults.Dev.bit.Th_Err)				return true;	// температура 110град
+	if(Faults.Dev.all)
+	{
+		if (Faults.Dev.all == 1) onlyPosSens = true;
+		return true;	// температура 110град и сбой датчика положения
+	}
 
 	return false;						// если выключино или не сработало возвращаем фолс
 
