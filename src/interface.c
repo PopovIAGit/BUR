@@ -638,7 +638,9 @@ void ShowDriveType(void)
 // Определяем информацию, которая отображается на верхнем уровне меню
 void StartDispl(String Str)
 {
-	DecToStr(GrA->PositionPr, &Menu.HiString[8], 1, 4, True, True);
+	Uns displPosition = 0;
+	displPosition = !GrA->Faults.Dev.bit.PosSens ? GrA->PositionPr : 9999; // Если "сбой датчика положения", выводим 999.9
+	DecToStr(displPosition, &Menu.HiString[8], 1, 4, True, True);
 	Menu.HiString[9] = '%';
 
 	//ReadAddStr(Menu.HiString, 3);
@@ -1235,8 +1237,10 @@ void ClbControl(void)	// управление калибровками
 			Menu.Express.Enable = TRUE;
 	}
 
-		
-	GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+	if (GrG->TestCamera)
+		GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+	else
+		GrA->Position      = Encoder.Revolution;		
 	
 	if (GrD->CycleReset != 0)							// если подана команда на сброс счетчка колличества полных циклов
 	{
