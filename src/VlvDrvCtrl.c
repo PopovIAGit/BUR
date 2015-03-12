@@ -222,7 +222,11 @@ __inline void UnitControl(TVlvDrvCtrl *p)
 {
 	UpdateComm(p);
 	
-	if (p->StartDelay > 0) p->StartDelay--;
+	if (p->StartDelay > 0) 
+	{
+		p->StartDelay--;
+		if (*p->ControlWord) *p->ControlWord = vcwNone;
+	}
 	else if (*p->ControlWord)
 	{
 		switch(*p->ControlWord)
@@ -267,7 +271,6 @@ __inline void DriveClose(TVlvDrvCtrl *p)
 		p->Valve.BreakFlag = True;
 		p->Valve.Position  = -(LgInt)p->Valve.BreakDelta;
 	}
-	p->EvLog.Value = CMD_CLOSE;
 
 	UpdateControls(p, FreeRun);
 
@@ -295,7 +298,6 @@ __inline void DriveOpen(TVlvDrvCtrl *p)
 		p->Valve.BreakFlag = True;
 		p->Valve.Position  = (LgInt)Calib->FullStep + (LgInt)p->Valve.BreakDelta;
 	}
-	p->EvLog.Value = CMD_OPEN;
 
 	UpdateControls(p, FreeRun);
 

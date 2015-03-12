@@ -317,6 +317,7 @@ void DataBufferPre(void)
 		GrH->LogEvCount    = 0;
 		GrH->LogCmdCount   = 0;
 		GrH->LogParamCount = 0;
+		Mcu.EvLog.Value    = CMD_CLR_LOG;
 	}
 
 
@@ -454,18 +455,32 @@ void LogEvControl(void)
 
 void GetCurrentCmd(void)
 {
-	TBurCmd LogControlWord = bcmNone;
+	Uns LogControlWord = bcmNone;
 	static Uns PrevEvLogValue = 0;
 	static Bool FirstCmd = true;
+	static Uns DelayTimer = 0;
 
 	if (Mcu.EvLog.Value != 0)
 		LogControlWord = bcmNone;
-
-	// Отсекаем повторяющуся команду Стоп
-	if ((Mcu.EvLog.Value == CMD_STOP) && (PrevEvLogValue == CMD_STOP))
+	else if (Mcu.EvLog.QueryValue)
 	{
-		Mcu.EvLog.Value = 0;
-		return;
+		if (DelayTimer++ > 25)
+		{
+			Mcu.EvLog.Value = Mcu.EvLog.QueryValue;
+			Mcu.EvLog.QueryValue = 0;
+			LogControlWord = bcmNone;
+			DelayTimer = 0;
+		}
+	}
+
+	// Отсекаем повторяющуся команду Стоп, открыть, закрыть
+	if (Mcu.EvLog.Value <= CMD_OPEN)	// CMD_OPEN = 0x4, CMD_CLOSE = 0x2, CMD_STOP = 0x1, все это меньше или равно 0x4 
+	{
+		if (Mcu.EvLog.Value == PrevEvLogValue)
+		{
+			Mcu.EvLog.Value = 0;
+			return;
+		}
 	}
 
 	switch(Mcu.EvLog.Value)
@@ -860,7 +875,6 @@ void AddControl(void)
 			if (IsMemLogReady())
 			{
 				Mcu.EvLog.Source = ClearLogSource;
-				Mcu.EvLog.Value  = CMD_CLR_LOG;
 				ClearLogFlag = False;	
 			}
 		}

@@ -510,6 +510,7 @@ register Uns Tmp;
 				GrH->ContGroup = cgClose;
 			}
 			#endif 
+			Mcu.EvLog.Value = CMD_CLOSE;
 			break;
 		case vcwOpen:					 
 			Dmc.WorkMode   = wmTestPh;	 
@@ -520,6 +521,7 @@ register Uns Tmp;
 				GrH->ContGroup = cgOpen;
 			}
 			#endif 
+			Mcu.EvLog.Value = CMD_OPEN;
 			break;
 		case vcwTestClose:				 // если тест закрытие 
 			Dmc.WorkMode   = wmSpeedTest;// вызываем тестовое закрытие
@@ -531,6 +533,7 @@ register Uns Tmp;
 			GrH->ContGroup = cgClose;
 			}
 			#endif 
+			Mcu.EvLog.Value = CMD_CLOSE;
 			break;
 		case vcwTestOpen:
 			Dmc.WorkMode   = wmSpeedTest;
@@ -542,6 +545,7 @@ register Uns Tmp;
 				GrH->ContGroup = cgOpen;
 			}
 			#endif 
+			Mcu.EvLog.Value = CMD_OPEN;
 			break;
 		default:
 			return;						 // по дефолту пока не пришла команда выходим 

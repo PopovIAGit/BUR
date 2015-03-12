@@ -380,7 +380,8 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 	
 			ValveDriveStop(&Mcu, True);//даем команду на остановку (без плавного)
 
-			Mcu.EvLog.Value = CMD_DEFSTOP;	//???  Псевдокоманда для
+			if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
+			else Mcu.EvLog.Value = CMD_DEFSTOP;	//???  Псевдокоманда для
 		}
 
 		if (IsFaulted())
@@ -388,14 +389,16 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 			if (!onlyPosSens || !GrC->PosSensEnable)
 			{
 				ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
-				Mcu.EvLog.Value = CMD_DEFSTOP;	
+				if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
+				else Mcu.EvLog.Value = CMD_DEFSTOP;
 			}
 		}
 
 		if (IsDefected())
 		{
 			ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
-			Mcu.EvLog.Value = CMD_DEFSTOP;	
+			if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
+			else Mcu.EvLog.Value = CMD_DEFSTOP;
 		}
 		
 	}

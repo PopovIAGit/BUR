@@ -583,7 +583,7 @@ extern TGroupT *GrT;
 	True, False, POS_UNDEF, 0, \
 	&Ram.GroupB.BreakMode, \
 	&Calib, \
-	0, 0, vcwNone, 0, 0, 0, 0,\
+	0, 0, 0, vcwNone, 0, 0, 0, 0,\
 	&StopPowerControl, \
 	&StartPowerControl \
 }
