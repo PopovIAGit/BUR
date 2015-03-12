@@ -317,6 +317,7 @@ void DataBufferPre(void)
 		GrH->LogEvCount    = 0;
 		GrH->LogCmdCount   = 0;
 		GrH->LogParamCount = 0;
+		Mcu.EvLog.Value    = CMD_CLR_LOG;
 	}
 
 
@@ -454,18 +455,32 @@ void LogEvControl(void)
 
 void GetCurrentCmd(void)
 {
-	TBurCmd LogControlWord = bcmNone;
+	Uns LogControlWord = bcmNone;
 	static Uns PrevEvLogValue = 0;
 	static Bool FirstCmd = true;
+	static Uns DelayTimer = 0;
 
 	if (Mcu.EvLog.Value != 0)
 		LogControlWord = bcmNone;
-
-	// Отсекаем повторяющуся команду Стоп
-	if ((Mcu.EvLog.Value == CMD_STOP) && (PrevEvLogValue == CMD_STOP))
+	else if (Mcu.EvLog.QueryValue)
 	{
-		Mcu.EvLog.Value = 0;
-		return;
+		if (DelayTimer++ > 25)
+		{
+			Mcu.EvLog.Value = Mcu.EvLog.QueryValue;
+			Mcu.EvLog.QueryValue = 0;
+			LogControlWord = bcmNone;
+			DelayTimer = 0;
+		}
+	}
+
+	// Отсекаем повторяющуся команду Стоп, открыть, закрыть
+	if (Mcu.EvLog.Value <= CMD_OPEN)	// CMD_OPEN = 0x4, CMD_CLOSE = 0x2, CMD_STOP = 0x1, все это меньше или равно 0x4 
+	{
+		if (Mcu.EvLog.Value == PrevEvLogValue)
+		{
+			Mcu.EvLog.Value = 0;
+			return;
+		}
 	}
 
 	switch(Mcu.EvLog.Value)
@@ -638,7 +653,9 @@ void ShowDriveType(void)
 // Определяем информацию, которая отображается на верхнем уровне меню
 void StartDispl(String Str)
 {
-	DecToStr(GrA->PositionPr, &Menu.HiString[8], 1, 4, True, True);
+	Uns displPosition = 0;
+	displPosition = !GrA->Faults.Dev.bit.PosSens ? GrA->PositionPr : 9999; // Если "сбой датчика положения", выводим 999.9
+	DecToStr(displPosition, &Menu.HiString[8], 1, 4, True, True);
 	Menu.HiString[9] = '%';
 
 	//ReadAddStr(Menu.HiString, 3);
@@ -858,7 +875,6 @@ void AddControl(void)
 			if (IsMemLogReady())
 			{
 				Mcu.EvLog.Source = ClearLogSource;
-				Mcu.EvLog.Value  = CMD_CLR_LOG;
 				ClearLogFlag = False;	
 			}
 		}
@@ -1235,8 +1251,10 @@ void ClbControl(void)	// управление калибровками
 			Menu.Express.Enable = TRUE;
 	}
 
-		
-	GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+	if (GrG->TestCamera)
+		GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+	else
+		GrA->Position      = Encoder.Revolution;		
 	
 	if (GrD->CycleReset != 0)							// если подана команда на сброс счетчка колличества полных циклов
 	{
