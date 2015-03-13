@@ -151,18 +151,10 @@ __inline void ADC_Aquisition(void){		//18kHz
 	USfltr.Input = _IQ16toIQ(ADC_US);
 	UTfltr.Input = _IQ16toIQ(ADC_UT);
 
-	if (GrC->DriveType <= dt1000_V20)
-	{
-		IUfltr.Input = _IQ16toIQ(ADC_IU_MIN);
-		IVfltr.Input = _IQ16toIQ(ADC_IV_MIN);
-		IWfltr.Input = _IQ16toIQ(ADC_IW_MIN);
-	}
-	else if(GrC->DriveType > dt1000_V20)
-	{
 		IUfltr.Input = _IQ16toIQ(ADC_IU);
 		IVfltr.Input = _IQ16toIQ(ADC_IV);
 		IWfltr.Input = _IQ16toIQ(ADC_IW);
-	}
+
 
 	ApFilter3Calc(&URfltr);
 	ApFilter3Calc(&USfltr);

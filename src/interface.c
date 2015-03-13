@@ -65,6 +65,7 @@ Uns PduKeyFlag = 0;
 
 Uns DbgLog = 0;
 Uns TempMuDu = 0;
+Uns MuDuDefTimer = 0;
 
 __inline void CheckParams(void);
 __inline void DefParamsSet(Uns Code);
@@ -1034,20 +1035,34 @@ void RemoteControl(void) //24 - 220 + маски,
 					{
 						if(!GrH->Inputs.bit.Mu      && !GrH->Inputs.bit.Du)
 						{	 	
-								Mcu.MuDuInput = 0;
-								GrA->Faults.Proc.bit.MuDuDef = 1;}
+								if (++MuDuDefTimer > (1 * PRD_50HZ))
+								{
+									Mcu.MuDuInput = 0;
+									GrA->Faults.Proc.bit.MuDuDef = 1;
+									MuDuDefTimer = 0;
+								}		
+						}
 						else if(GrH->Inputs.bit.Mu  && !GrH->Inputs.bit.Du)
 						{		
+								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 1;
-								GrA->Faults.Proc.bit.MuDuDef = 0;}
+								GrA->Faults.Proc.bit.MuDuDef = 0;
+						}
 						else if(!GrH->Inputs.bit.Mu && GrH->Inputs.bit.Du) 
 						{ 		
+								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 0;
-								GrA->Faults.Proc.bit.MuDuDef = 0;}
+								GrA->Faults.Proc.bit.MuDuDef = 0;
+						}
 						else if(GrH->Inputs.bit.Mu  && GrH->Inputs.bit.Du)  
 						{		
-								Mcu.MuDuInput = 0;
-								GrA->Faults.Proc.bit.MuDuDef = 1;}
+								if (++MuDuDefTimer > (1 * PRD_50HZ))
+								{
+									Mcu.MuDuInput = 0;
+									GrA->Faults.Proc.bit.MuDuDef = 1;
+									MuDuDefTimer = 0;
+								}
+						}
 					} 
 					break; 
 	}

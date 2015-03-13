@@ -1,4 +1,8 @@
 ------------------------------  bur.pjt - build  ------------------------------
+[btwt41.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "btwt41.c"
+
+[display.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "display.c"
+
 [drv_modbus.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "drv_modbus.c"
 
 [im.c] "C:\CCStudio_v3.3MCU\C2000\cgtools\bin\cl2000" -g -fr"C:/D/SOFT/BUR One/BUR/obj" -i"C:/D/SOFT/BUR One/BUR/include" -d"_DEBUG" -d"LARGE_MODEL" -d"FLASH_PROJ" -ml -v28 -mf -@"../build.lkf" "im.c"
