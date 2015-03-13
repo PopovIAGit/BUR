@@ -396,9 +396,9 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 
 		if (IsDefected())
 		{
-			ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
-			if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
-			else Mcu.EvLog.Value = CMD_DEFSTOP;
+		//	ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
+		//	if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
+		//	else Mcu.EvLog.Value = CMD_DEFSTOP;
 		}
 		
 	}
@@ -423,6 +423,7 @@ Bool IsDefectExist(TPrtMode Mode) // неисправность
 	// удоляем то что является аварией
 	if(Defects.Proc.bit.Drv_T)		Defects.Proc.bit.Drv_T 	 			 = 0;	// перегрев дв
 	if(Defects.Proc.bit.NoMove)		Defects.Proc.bit.NoMove  			 = 0;	// нет движения
+	if(Defects.Proc.bit.CycleMode)  Defects.Proc.bit.CycleMode			 = 0;
 	if(Defects.Proc.bit.PhOrd)		Defects.Proc.bit.PhOrd 	 			 = 0;
 	if(Defects.Dev.bit.PosSens)		Defects.Dev.bit.PosSens 	 		 = 0;
 	if(Defects.Net.all  & NET_BV_MASK)			Defects.Net.all 		&=~NET_BV_MASK;		// обрыв вх фаз
