@@ -92,8 +92,8 @@ typedef struct _TGroupC
   	Uns             MaxTorque;          // 4.Максимальный момент привода
 	Uns             Inom;               // 5.Номинальный ток
   	Uns             GearRatio;          // 6.Передаточное число редуктора
-	Uns             Rsvd1;       		// 7.резерв
-	Uns             Rsvd2;       		// 8.резерв
+	Uns             RevErrValue;       	// 7.Количество сбоев датчика положения
+	Uns			    RevErrLevel;		// 8.Уровень сбоя датчика положения
 	THallBlock      HallBlock;          // 9.Состояние датчиков холла блока
 	Uns             MkuPoSubVersion;    // 10.Подверсия ПО
 //-----------------------Второстепенные настройки---------------------
@@ -235,8 +235,8 @@ typedef struct _TGroupH
 	Uns             ScFaults;            // 8.Аварии КЗ
 	Uns				UporOnly;			 // 9.Параметр включающий работу только на упоре
 	Uns             CycleCnt;            // 10.Счетчик циклов
-	Uns             RevErrValue;       	 // 11.Количество сбоев датчика положения
-	Uns			    RevErrLevel;		 // 12.Уровень сбоя датчика положения
+	Uns             reservH11;       	 // 11.Резерв
+	Uns			    reservH12;		 	 // 12.Резерв
 	Uns				KickCount;			 // 13.Колличество ударов
 	TLedsReg        LedsReg;             // 14.Состояние светодиодов блока
 	Uns				Rsvd1;			     // 15.Резерв

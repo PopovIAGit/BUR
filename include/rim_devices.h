@@ -188,8 +188,8 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 #define ENCODER_DEFAULT { \
 	PLIS_SPI, SPI_BRR(1000), \
 	14, 0, REV_MAX, 0UL, \
-	&Ram.GroupH.RevErrValue, \
-	&Ram.GroupH.RevErrLevel, \
+	&Ram.GroupC.RevErrValue, \
+	&Ram.GroupC.RevErrLevel, \
 	0, 0UL, 5, 3, 0, 0, 0, false, false, \
 	EncCsSet \
 }
