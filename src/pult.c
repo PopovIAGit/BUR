@@ -57,7 +57,12 @@ void PultKeyExecute(TPult *p)
 {
 	if (!p->CapComplete)
 		return;
-	
+
+	if ((p->CapCode >> 9) == 3) 
+	{
+		p->CapCode = (p->CapCode << 1) & 0x7FF;
+	}
+
 	if ((p->CapCode >> 10) != 1)								// Проверяем наличие стартового бита
 		return;
 	
