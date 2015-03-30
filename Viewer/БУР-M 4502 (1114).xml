@@ -250,7 +250,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-3600</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>3600</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -371,7 +371,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-180</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>180</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -411,7 +411,7 @@
         <Chosen>True</Chosen>
       </Configuration>
       <ValueDescription>
-        <Minimum>-1000</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>2000</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -447,7 +447,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-3000</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>3000</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -481,7 +481,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-100</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>100</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -647,7 +647,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>4</Maximum>
         <Default>1</Default>
         <Type>Enum</Type>
@@ -800,7 +800,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-300</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>300</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -905,7 +905,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>100</Maximum>
         <Default>1</Default>
         <Type>Uns</Type>
@@ -967,7 +967,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>32</Maximum>
         <Default>1</Default>
         <Type>Uns</Type>
@@ -1023,7 +1023,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>3</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>100</Maximum>
         <Default>50</Default>
         <Type>Uns</Type>
@@ -1042,7 +1042,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>1000</Maximum>
         <Default>100</Default>
         <Type>Uns</Type>
@@ -1162,7 +1162,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>10</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>1000</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1181,7 +1181,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>300</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1200,11 +1200,46 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>65530</Maximum>
         <Default>20000</Default>
         <Type>Uns</Type>
         <Coefficient>0,01</Coefficient>
+      </ValueDescription>
+      <Info>
+        <Description />
+      </Info>
+    </Parameter>
+    <Parameter Index="C7" Name="Количество сбоев датчика положения">
+      <Address>97</Address>
+      <Configuration>
+        <Type>Factory</Type>
+        <Appointment>Regular</Appointment>
+      </Configuration>
+      <ValueDescription>
+        <Minimum>0</Minimum>
+        <Maximum>100</Maximum>
+        <Default>0</Default>
+        <Type>Uns</Type>
+        <Unit>%</Unit>
+      </ValueDescription>
+      <Info>
+        <Description />
+      </Info>
+    </Parameter>
+    <Parameter Index="C8" Name="Уровень сбоев датчика положения">
+      <Address>98</Address>
+      <Configuration>
+        <Type>Factory</Type>
+        <Appointment>Regular</Appointment>
+        <CanEdit>True</CanEdit>
+      </Configuration>
+      <ValueDescription>
+        <Minimum>0</Minimum>
+        <Maximum>100</Maximum>
+        <Default>50</Default>
+        <Type>Uns</Type>
+        <Unit>%</Unit>
       </ValueDescription>
       <Info>
         <Description />
@@ -1251,7 +1286,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>65530</Maximum>
         <Default>217</Default>
         <Type>Uns</Type>
@@ -1375,7 +1410,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>60</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>140</Maximum>
         <Default>130</Default>
         <Type>Uns</Type>
@@ -1411,7 +1446,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-100</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>100</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -1488,7 +1523,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>220</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>600</Maximum>
         <Default>318</Default>
         <Type>Uns</Type>
@@ -1506,7 +1541,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>200</Maximum>
         <Default>20</Default>
         <Type>Uns</Type>
@@ -1525,7 +1560,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>220</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>335</Maximum>
         <Default>285</Default>
         <Type>Uns</Type>
@@ -1543,7 +1578,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>200</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1562,7 +1597,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>250</Maximum>
         <Default>210</Default>
         <Type>Uns</Type>
@@ -1604,7 +1639,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>90</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>220</Maximum>
         <Default>115</Default>
         <Type>Uns</Type>
@@ -1622,7 +1657,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>200</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1640,7 +1675,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>250</Maximum>
         <Default>210</Default>
         <Type>Uns</Type>
@@ -1682,7 +1717,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>3</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>25</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1699,7 +1734,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>2</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>200</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1759,7 +1794,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>250</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1824,7 +1859,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>20</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>500</Maximum>
         <Default>200</Default>
         <Type>Uns</Type>
@@ -1842,7 +1877,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>100</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -1907,7 +1942,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>2</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>70</Maximum>
         <Default>65</Default>
         <Type>Uns</Type>
@@ -1925,7 +1960,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>2</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>1000</Maximum>
         <Default>10</Default>
         <Type>Uns</Type>
@@ -2070,7 +2105,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-50</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>10</Maximum>
         <Default>-37</Default>
         <Type>Int</Type>
@@ -2087,7 +2122,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-40</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>10</Maximum>
         <Default>-10</Default>
         <Type>Int</Type>
@@ -2104,7 +2139,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-20</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>50</Maximum>
         <Default>10</Default>
         <Type>Int</Type>
@@ -2201,7 +2236,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>1</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>600</Maximum>
         <Default>8</Default>
         <Type>Uns</Type>
@@ -2284,7 +2319,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-15</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>15</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2301,7 +2336,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-15</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>15</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2318,7 +2353,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-15</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>15</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2335,7 +2370,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-15</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>15</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2352,7 +2387,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-15</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>15</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2369,7 +2404,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-25</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>25</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2386,7 +2421,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-25</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>25</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
@@ -2403,7 +2438,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-25</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>25</Maximum>
         <Default>0</Default>
         <Type>Uns</Type>
@@ -2420,7 +2455,7 @@
         <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
-        <Minimum>-25</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>25</Maximum>
         <Default>0</Default>
         <Type>Uns</Type>
@@ -3019,41 +3054,6 @@
         <Maximum>65535</Maximum>
         <Default>0</Default>
         <Type>Uns</Type>
-      </ValueDescription>
-      <Info>
-        <Description />
-      </Info>
-    </Parameter>
-    <Parameter Index="H11" Name="Количество сбоев датчика положения">
-      <Address>271</Address>
-      <Configuration>
-        <Type>Hide</Type>
-        <Appointment>Regular</Appointment>
-      </Configuration>
-      <ValueDescription>
-        <Minimum>0</Minimum>
-        <Maximum>100</Maximum>
-        <Default>0</Default>
-        <Type>Uns</Type>
-        <Unit>%</Unit>
-      </ValueDescription>
-      <Info>
-        <Description />
-      </Info>
-    </Parameter>
-    <Parameter Index="H12" Name="Уровень сбоя датчика положения">
-      <Address>272</Address>
-      <Configuration>
-        <Type>Hide</Type>
-        <Appointment>Regular</Appointment>
-        <CanEdit>True</CanEdit>
-      </Configuration>
-      <ValueDescription>
-        <Minimum>0</Minimum>
-        <Maximum>100</Maximum>
-        <Default>50</Default>
-        <Type>Uns</Type>
-        <Unit>%</Unit>
       </ValueDescription>
       <Info>
         <Description />
@@ -4942,7 +4942,7 @@
         <Appointment>Regular</Appointment>
       </Configuration>
       <ValueDescription>
-        <Minimum>-3600</Minimum>
+        <Minimum>0</Minimum>
         <Maximum>3600</Maximum>
         <Default>0</Default>
         <Type>Int</Type>
