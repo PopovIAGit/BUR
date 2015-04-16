@@ -6,9 +6,11 @@
 #define SetCs()	p->CsFunc(0)
 #define ClrCs()	p->CsFunc(1)
 
+Uns encoderReset = 0;		// Флаг "пересброса" энкодера
+Uns ResetTimer = 0;
+Uns goodPacket = true;		// Флаг "хорошего пакета"
 
-
-void AtMegaAvagoEncoderCalc(ENCODER *p)
+void AtMegaAvagoEncoderCalc(ENCODER *p) // 200 Hz
 {
 	static Uns errorCount = 0;		// Еоличество "ошибочных" пакетов
 	static Uns packetCount = 0;		// Общее количество пакетов
@@ -33,17 +35,29 @@ void AtMegaAvagoEncoderCalc(ENCODER *p)
 	((Delta >= ((Uns)p->RevMax - (Uns)p->RevMisc)) && 	\
 	(Delta <= (Uns)p->RevMax)))
 	{
-		p->Revolution  = Data & (Uns)p->RevMax;
-		p->RevData     = Data;
-		p->RevErrCount = 0;
-
-		p->TmpError = false;
+		goodPacket = true;	
 	}
 	else
 	{
-		//p->Revolution  = Data;
-		p->RevData     = Data;
+		goodPacket = false;
 		errorCount++;		// Увеличиваем счетчик ошибок
+		encoderReset = true;
+	}
+
+	if ((goodPacket)&&(!encoderReset))
+	{
+		p->Revolution  = Data & (Uns)p->RevMax;
+	}
+	p->RevData     = Data;
+
+	if (encoderReset)
+	{
+		ResetTimer++;
+		if (ResetTimer > ENC_RESET_DELAY_LEVEL)
+		{
+			ResetTimer = 0;
+			encoderReset = false;
+		}
 	}
 
 	if (packetCount++ > 200) // (200 Гц) * (1 сек)

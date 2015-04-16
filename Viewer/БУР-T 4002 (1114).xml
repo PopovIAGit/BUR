@@ -5022,6 +5022,7 @@
           <Field BitValue="4096" Description="МПУ" />
           <Field BitValue="8192" Description="ТУ" />
           <Field BitValue="16384" Description="RS-485" />
+          <Field BitValue="1024" Description="БУ" />
         </Fields>
       </ValueDescription>
       <Info>

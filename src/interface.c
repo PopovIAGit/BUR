@@ -515,6 +515,8 @@ void GetCurrentCmd(void)
 	}
 	if (Mcu.EvLog.Value)
 	{
+		if (!Mcu.EvLog.Source) Mcu.EvLog.Source = CMD_SRC_BLOCK;
+
 		LogControlWord = LogControlWord | Mcu.EvLog.Source;
 		Mcu.EvLog.Source = 0;
 	}
