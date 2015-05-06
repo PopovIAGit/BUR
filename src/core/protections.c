@@ -123,7 +123,7 @@ void ProtectionsEnable(void)// проверка включения защит ЭД
 	switch(++State)
 	{
 		case 1: 				// включение по муфте
-				Muf.Enable = ((Dmc.WorkMode & wmMuffEnable) != 0) && !ZazorTimer && !KickModeEnable && !GrG->TestCamera;
+				Muf.Enable = ((Dmc.WorkMode & wmMuffEnable) != 0) && !GrG->SimulSpeedMode && !ZazorTimer && !KickModeEnable && !GrG->TestCamera;
 		break;
 		case 2: 				// включение по напряжению
 			

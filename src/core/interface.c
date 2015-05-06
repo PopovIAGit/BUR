@@ -125,6 +125,7 @@ void InterfaceInit(void)
 	PrevCycle = GrH->CycleCnt;
 	GrA->MkuPoVersion = (DEVICE_GROUP * 1000) + VERSION; // 1*1000+114 = 1114
 	GrC->MkuPoSubVersion = (MODULE_VERSION * 100) + SUBVERSION;
+	GrG->SimulSpeedMode = 0;	// И всякий случай выключаем режим симуляции скорости
 
 	if (GrH->ScFaults) LowPowerReset |= BIT0;
 

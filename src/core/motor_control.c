@@ -1130,6 +1130,16 @@ void SpeedCalc(void) // расчет скорости
 	static   LgUns RevPrev = -1UL;
 	register LgInt Delta;
 	
+	if (GrG->SimulSpeedMode)	// Если включен режим симуляции скорости
+	{							// выставляем подставную скорость
+		if (IsOpening()) GrH->Speed = 3000;
+		else if (IsClosing()) GrH->Speed = -3000;
+		else GrH->Speed = 0;
+
+		AbsSpeed = abs(GrH->Speed);
+		return;					// Выходим, не произволя расчетов
+	}
+
 	if (++Timer >= (Uns)SP_CALC_TOUT) // интервал расчета скорости 1 сек
 	{
 		if (RevPrev == -1UL) 		  // 1 итерация
