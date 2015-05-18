@@ -104,11 +104,11 @@ typedef struct _TGroupC
 	Uns			    DisplResTout;		// 15.Время сброса индикатора
 	Uns             SetDefaults;        // 16.Задание параметров по умолчанию
 	Uns             VoltAcc;            // 17.Интенсивность разгона
-	Uns       	    Rsvd4;           	// 18.Резерв
+	Uns       	    selectBraking;      // 18.Выбор динамического торможения (0-двухфазовое, 1-трехфазовое)
 	Uns             BrakeAngle;         // 19.Угол торможения
 	Uns             BrakeTime;          // 20.Время торможения 
-	Uns 			CycleModeOn;		// 21.Включение режима прогона
-	Uns 			CycleModeCount;		// 22.Колличество циклов прогона
+	Uns 			NoCurrPause;		// 21.Время безтоковой паузы перед торможением
+	Uns 			Rsvd22;				// 22.Резерв
 	Uns       	    Rsvd5[12];          // 23-34.Резерв
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока
@@ -207,20 +207,21 @@ typedef struct _TGroupD
 // Группа G (Адрес 230, Количество 30)  - Предположительно заводской тест
 typedef struct _TGroupG
 {
-	Uns            Mode;                // 0.Режим теста
-	TLedsReg       LedsReg;             // 1.Тест светодиодов блока
-	TOutputReg     OutputReg;			// 2.Тест дискретных выходов
-	Int			   DacValue;			// 3.Значение ЦАП
-	Uns			   DisplShow;			// 4.Старт дисплея
-	Uns			   TestCamera;			// 5.Тест с камеры
-	Uns			   ThyrGroup;			// 6.Выбор группы тиристоров
-	Uns            SifuEnable;          // 7.Разрешение работы СИФУ
-	Uns			   Rsvd2[10];			// 8-17.Резерв
-	Uns			   ThyrOpenAngle;		// 18.Тестовый угол открытия
-	Uns			   DiscrInTest;			// 19. Тест дискретных входов
-	Uns			   DiscrOutTest;		// 20. Тест дискретных выходов
-	Bool		   IsDiscrTestActive;	// 21. Активен ли тест ТС/ТУ
-	Uns 		   Rsvd[8];			    // 22-29.Резерв
+	Uns            Mode;                // G0. 230 Режим теста
+	TLedsReg       LedsReg;             // G1. 231 Тест светодиодов блока
+	TOutputReg     OutputReg;			// G2. 232 Тест дискретных выходов
+	Int			   DacValue;			// G3. 233 Значение ЦАП
+	Uns			   DisplShow;			// G4. 234 Старт дисплея
+	Uns			   TestCamera;			// G5. 235 Тест с камеры
+	Uns			   ThyrGroup;			// G6. 236 Выбор группы тиристоров
+	Uns            SifuEnable;          // G7. 237 Разрешение работы СИФУ
+	Uns            SimulSpeedMode;		// G8. 238 Режим симуляции скорости
+	Uns			   Rsvd2[9];			// G9-17. 239-247 Резерв
+	Uns			   ThyrOpenAngle;		// G18. 248 Тестовый угол открытия
+	Uns			   DiscrInTest;			// G19. 249 Тест дискретных входов
+	Uns			   DiscrOutTest;		// G20. 250 Тест дискретных выходов
+	Bool		   IsDiscrTestActive;	// G21. 251 Активен ли тест ТС/ТУ
+	Uns 		   Rsvd[8];			    // G22-29. 252-259 Резерв
 } TGroupG;
 
 // Группа H (Адрес 260, Количество 140)

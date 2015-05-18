@@ -42,8 +42,8 @@ typedef union {
    		Uns sifu_R:1;		// 0 фаза R
    		Uns sifu_S:1;		// 1 фаза S
    		Uns sifu_T:1;		// 2 фаза T
-   		Uns sifu_TR:1;		// 3 фаза RT
-   		Uns sifu_RT:1;		// 4 фаза TR
+   		Uns sifu_RT:1;		// 3 фаза RT
+   		Uns sifu_TR:1;		// 4 фаза TR
    		Uns sifu_ENB:1;		// 5 enable
 		Uns NoUse:10;		// 6-15	Ќе используютс€
 	} bit;
