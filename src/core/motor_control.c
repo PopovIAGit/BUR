@@ -779,13 +779,13 @@ __inline void UporFinishMode(void)	// стм. упор финиш
 // -----------------------------------------------------------------
 __inline void KickMode(void)		// стм. удар
 {
-	static Uns  KickSetAngle = 0;			// задание угла открытия по ударному режиму
+	static Uns  KickSetAngle = 0;	// задание угла открытия по ударному режиму
 	Sifu.SetAngle   = KickSetAngle;	// полное открытие
 	Sifu.AccelTime  = 0;			// макс. быстро
 	GrH->Torque = Dmc.TorqueSet - 1;// момент как момент задания
 	
-	KickModeTimer++;		// пустили таймер удара
-	KickSetAngle = 150;		// закрыли тиристоры на 150 град
+	KickModeTimer++;				// пустили таймер удара
+	KickSetAngle = 150;				// закрыли тиристоры на 150 град
 	if (KickModeTimer >= (Uns)KICK_ST0_TIME) KickSetAngle = 0; // если таймер больше 0.04 то открываем
 	if (KickModeTimer >= (Uns)KICK_ST1_TIME)				   // если таймер досчитал до 0.08 то 
 	{
@@ -856,13 +856,13 @@ __inline void DynBrakeMode(void) // 200 Hz в ControlMode(void)
 // -----------------------------------------------------------------
 __inline void DmcTest(void)				// тест работы тиристоров
 {
-	if (!GrG->SifuEnable)		// если запрещена работа сифу в тестовом режиме
+	if (!GrG->SifuEnable)				// если запрещена работа сифу в тестовом режиме
 	{									// полностью закрываем сифу и все все все
 		Dmc.WorkMode   = wmStop;		// пишем что в стопе 
 		Sifu.SetAngle  = Sifu.MaxAngle; // закрываем тиристоры
 		Sifu.AccelTime = 0;				// скорость открытия максимальная
 		Sifu.Direction = SIFU_NONE;     // выключаем сифу
-		GrA->Status.bit.Test = 0;     // сбрасываем бит теста чтобы в следующем такте работать уже по нормальным установкам
+		GrA->Status.bit.Test = 0;     	// сбрасываем бит теста чтобы в следующем такте работать уже по нормальным установкам
 		ClkThyrControl(0);				// запрещаем тактирование тиристоров
 	}
 	else
@@ -875,12 +875,12 @@ __inline void DmcTest(void)				// тест работы тиристоров
 		#else
 		Sifu.Direction  = (!GrG->ThyrGroup) ? SIFU_UP : SIFU_DOWN; // выбор группу тиристоров для проверки - прямую или реверсивную
 		#endif
-		GrA->Status.bit.Test = 1;     // выставляем что находимся в тесте
+		GrA->Status.bit.Test = 1;     	// выставляем что находимся в тесте
 		ClkThyrControl(1);				// разришаем тактирование тиристоров 
 	}
 }
 // -----------------------------------------------------------------
-__inline void TestThyrControl(void)     //сим. тест тиристоров
+__inline void TestThyrControl(void)     	//сим. тест тиристоров
 {
 	if (Dmc.WorkMode != wmTestThyr) return;	// если не тест то выходим от сюда от греха
 	
@@ -889,9 +889,9 @@ __inline void TestThyrControl(void)     //сим. тест тиристоров
 	UT.CurAngle = SIFU_OPEN_ANG;
 }
 // -----------------------------------------------------------------
-void CalibStop(void)	// остановка по данным калибровки
+void CalibStop(void)						// остановка по данным калибровки
 {
-	Bool StopFlag = False; // внутенний флаг остановки
+	Bool StopFlag = False; 					// внутенний флаг остановки
 
 	if (Mcu.Valve.Position == POS_UNDEF) {Dmc.TargetPos = POS_UNDEF; return;}  // если не знаем текущее положение то ставим целевое в неизвестное и выходим
 	Dmc.TargetPos = Calib.LinePos - Mcu.Valve.Position; // если значем положение, то  сложный расчет :)
@@ -1456,7 +1456,6 @@ void PowerCheck(void)			// 200 Hz
 		PowerSupplyCnt = 0;
 	}				
 }
-
 //---------------------Плавное изменение угла во времени------------------------------------
 Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time)
 {
