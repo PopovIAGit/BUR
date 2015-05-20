@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Table DeviceId="4003" DeviceName="БУР-T" FirmwareVersion="1114">
+<Table DeviceId="4003" DeviceName="БУР-T" FirmwareVersion="1115">
   <Group Name="Группа A" Type="Show" Description="Индикация">
     <Parameter Index="А0" Name="Статус работы">
       <Address>400</Address>
@@ -3501,7 +3501,7 @@
     <Parameter Index="H34" Name="Ток поверхности 2 5">
       <Address>294</Address>
       <Configuration>
-        <Type>Factory</Type>
+        <Type>Hide</Type>
         <Appointment>Regular</Appointment>
         <CanEdit>True</CanEdit>
       </Configuration>
@@ -3715,7 +3715,7 @@
     <Parameter Index="H46" Name="Угол нагрузки 0 5">
       <Address>306</Address>
       <Configuration>
-        <Type>None</Type>
+        <Type>Hide</Type>
         <Appointment>Regular</Appointment>
         <CanEdit>True</CanEdit>
       </Configuration>
@@ -4216,6 +4216,7 @@
       <Configuration>
         <Type>Hide</Type>
         <Appointment>Regular</Appointment>
+        <CanEdit>True</CanEdit>
       </Configuration>
       <ValueDescription>
         <Minimum>0</Minimum>
@@ -4356,7 +4357,7 @@
     <Parameter Index="H82" Name="Угол СИФУ 2 4">
       <Address>342</Address>
       <Configuration>
-        <Type>None</Type>
+        <Type>Hide</Type>
         <Appointment>Regular</Appointment>
         <CanEdit>True</CanEdit>
       </Configuration>
