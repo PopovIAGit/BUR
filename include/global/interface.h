@@ -245,21 +245,11 @@ typedef struct _TGroupH
 	TCubArray		TqCurr;				 // 17-36.Ток поверхности
 	TCubArray		TqAngUI;			 // 37-56.Углы нагрузки
 	TCubArray		TqAngSf;			 // 57-76.Углы СИФУ
-	Uns				ZazorTime;			 // 77.Время выборки зазора
-	TNetReg         FaultsNet;           // 78.Диагностика сети
-  	Uns				Rsvd6[3];			 // 79-81.
-	Uns             Umid;             	 // 82.Среднее напряжение
-	Uns             VSkValue;          	 // 83.Асиметрия фаз питающей сети
-  	Uns     	    PhOrdValue;        	 // 84.Чередование фаз сети
-	TNetReg         DefectsNet;          // 85.Диагностика сети (для неисправностей)
-	Uns             Rsvd7;         	 	 // 86. Резерв
-	TLoadReg        FaultsLoad;          // 87.Диагностика нагрузки
-	Uns				ADC_iu;				 // 88.АЦП IU 
-	Uns				ADC_iv;				 // 89.АЦП IV
-	Uns				ADC_iw;				 // 90.АЦП IW 
-	Uns             Imid;				 // 91.Средний ток
-  	Uns             ISkewValue;          // 92.Асиметрия токов нагрузки
-	Uns             Position;            // 93.Положение
+	Uns				ZazorTime;			 // 89.Время выборки зазора
+	TNetReg         FaultsNet;           // 90.Диагностика сети
+	Uns             Umid;             	 // 91.Среднее напряжение
+	Uns             VSkValue;          	 // 92.Асиметрия фаз питающей сети
+  	Uns     	    PhOrdValue;        	 // 93.Чередование фаз сети
 	TInputReg       Inputs;           	 // 94.Состояние дискретных входов
 	TOutputReg      Outputs;          	 // 95.Состояние дискретных выходов
 	TReverseType	ReverseType;         // 96.Тип реверса
@@ -295,7 +285,16 @@ typedef struct _TGroupH
 	TContactorGroup ContGroup;			 // 126. Управление контакторами
 	TBurCmd 		LogControlWord;		 // 127. Команды БУР
 	Uns				LogReset;			 // 128. Сброс журналов
-	Uns 			Rsvd3[11];			 // 129-139.Резерв
+	TNetReg         DefectsNet;          // 129.Диагностика сети (для неисправностей)
+	Uns             Rsvd7;         	 	 // 130. Резерв
+	TLoadReg        FaultsLoad;          // 131.Диагностика нагрузки
+	Uns				ADC_iu;				 // 132.АЦП IU
+	Uns				ADC_iv;				 // 133.АЦП IV
+	Uns				ADC_iw;				 // 134.АЦП IW
+	Uns             Imid;				 // 135.Средний ток
+  	Uns             ISkewValue;          // 136.Асиметрия токов нагрузки
+	Uns             Position;            // 137.Положение
+	Uns 			Rsvd3[2];			 // 138-139.Резерв
 } TGroupH;
 
 // Группа E (Адрес 400, Количество 32)

@@ -58,7 +58,8 @@ Uns ReqDirection 		= 0;
 Uns DebugStartDelayCnt2 = 10;
 Uns BreakVoltFlag 		= 0;
 // ----------------------------------------	
-Int InomDef[10]  	 = {13,11,18,52,52,47,56,110,85,148};					// default значени€ дл€ Inom дл€ разных приводов
+Int InomDefU[10]  	 = {13,11,18,52,52,47,56,110,85,148};					// default значени€ дл€ Inom дл€ разных приводов уфа
+Int InomDefS[10]	 = {11,9,13,32,32,33,73,85,95,150};						// —арапуль
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					дл€ Mmax 
 Int TransCurrDef[10] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100};	//					дл€ TransCur править
 Int GearRatioDef[5]	 = {5250,7360,15675,16016,16016};						//дл€ передаточного числа редуктора 
@@ -966,156 +967,307 @@ __inline void TorqueObsInit(void)
 {	
 	switch (GrC->DriveType) 
 	{
-		case dt100_A25:   PFUNC_blkRead(&drive1,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt100_A25_U: PFUNC_blkRead(&drive1,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 						  GrH->UporOnly = 1;
 
-						  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDef[0])||(GrC->MaxTorque != MomMaxDef[0]))
+						  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefU[0])||(GrC->MaxTorque != MomMaxDef[0]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[0];
-								GrC->Inom = InomDef[0];
+								GrC->Inom = InomDefU[0];
 								GrC->MaxTorque = MomMaxDef[0];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }						  
 		 		break;//1
-		case dt100_A50:   PFUNC_blkRead(&drive2,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt100_A50_U: PFUNC_blkRead(&drive2,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDef[1])||(GrC->MaxTorque != MomMaxDef[1]))
+						  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefU[1])||(GrC->MaxTorque != MomMaxDef[1]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[0];
-								GrC->Inom = InomDef[1];
+								GrC->Inom = InomDefU[1];
 								GrC->MaxTorque = MomMaxDef[1];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }							  
 				break;//2
-		case dt400_B20:   PFUNC_blkRead(&drive3,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt400_B20_U:   PFUNC_blkRead(&drive3,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 					 		GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDef[2])||(GrC->MaxTorque != MomMaxDef[2]))
+						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[2])||(GrC->MaxTorque != MomMaxDef[2]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[1];
-								GrC->Inom = InomDef[2];
+								GrC->Inom = InomDefU[2];
 								GrC->MaxTorque = MomMaxDef[2];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }							 
 		 		break;//3
-		case dt400_B50:   PFUNC_blkRead(&drive4,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt400_B50_U:   PFUNC_blkRead(&drive4,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 					 		GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDef[3])||(GrC->MaxTorque != MomMaxDef[3]))
+						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[3])||(GrC->MaxTorque != MomMaxDef[3]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[1];
-								GrC->Inom = InomDef[3];
+								GrC->Inom = InomDefU[3];
 								GrC->MaxTorque = MomMaxDef[3];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }	
 				break;//4
-		case dt800_V40:   PFUNC_blkRead(&drive5,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt800_V40_U:   PFUNC_blkRead(&drive5,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDef[4])||(GrC->MaxTorque != MomMaxDef[4]))
+						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[4])||(GrC->MaxTorque != MomMaxDef[4]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[1];
-								GrC->Inom = InomDef[4];
+								GrC->Inom = InomDefU[4];
 								GrC->MaxTorque = MomMaxDef[4];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }			  
 				break;//5
-		case dt1000_V20 : PFUNC_blkRead(&drive6,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt1000_V20_U : PFUNC_blkRead(&drive6,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 					GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDef[5])||(GrC->MaxTorque != MomMaxDef[5]))
+						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[5])||(GrC->MaxTorque != MomMaxDef[5]))
 						  {
 						  	if (IsMemParReady()) 
 						  	{
 								GrC->GearRatio = GearRatioDef[1];
-								GrC->Inom = InomDef[5];
+								GrC->Inom = InomDefU[5];
 								GrC->MaxTorque = MomMaxDef[5];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }	  
 		 		break;//6
-		case dt4000_G9  : PFUNC_blkRead(&drive7,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt4000_G9_U  : PFUNC_blkRead(&drive7,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 					GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDef[6])||(GrC->MaxTorque != MomMaxDef[6]))
+						  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefU[6])||(GrC->MaxTorque != MomMaxDef[6]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[2];
-								GrC->Inom = InomDef[6];
+								GrC->Inom = InomDefU[6];
 								GrC->MaxTorque = MomMaxDef[6];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }						  
 				break;//7
-		case dt4000_G18 : PFUNC_blkRead(&drive8,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt4000_G18_U : PFUNC_blkRead(&drive8,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 					 	GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDef[7])||(GrC->MaxTorque != MomMaxDef[7]))
+						  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefU[7])||(GrC->MaxTorque != MomMaxDef[7]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[2];
-								GrC->Inom = InomDef[7];
+								GrC->Inom = InomDefU[7];
 								GrC->MaxTorque = MomMaxDef[7];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }			 				 
 				break;//8
-		case dt10000_D6 : PFUNC_blkRead(&drive9,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt10000_D6_U : PFUNC_blkRead(&drive9,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 					 	  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[3])||(GrC->Inom != InomDef[8])||(GrC->MaxTorque != MomMaxDef[8]))
+						  if ((GrC->GearRatio != GearRatioDef[3])||(GrC->Inom != InomDefU[8])||(GrC->MaxTorque != MomMaxDef[8]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[3];
-								GrC->Inom = InomDef[8];
+								GrC->Inom = InomDefU[8];
 								GrC->MaxTorque = MomMaxDef[8];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }	
 				break;//9
-		case dt10000_D12: PFUNC_blkRead(&drive10,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+		case dt10000_D12_U: PFUNC_blkRead(&drive10,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[4])||(GrC->Inom != InomDef[9])||(GrC->MaxTorque != MomMaxDef[9]))
+						  if ((GrC->GearRatio != GearRatioDef[4])||(GrC->Inom != InomDefU[9])||(GrC->MaxTorque != MomMaxDef[9]))
 						  {
 						  	if (IsMemParReady())
 						  	{
 								GrC->GearRatio = GearRatioDef[4];
-								GrC->Inom = InomDef[9];
+								GrC->Inom = InomDefU[9];
 								GrC->MaxTorque = MomMaxDef[9];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
 						  	}	
 						  }							  
 				break;//10
+//-----------------—арапульские------------------------------------------------------
+		case dt100_A25_S:   PFUNC_blkRead(&drive11,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+								  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+								  GrH->UporOnly = 0;
+
+								  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefS[0])||(GrC->MaxTorque != MomMaxDef[0]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[0];
+										GrC->Inom = InomDefS[0];
+										GrC->MaxTorque = MomMaxDef[0];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+				 		break;//11
+				case dt100_A50_S:   PFUNC_blkRead(&drive12,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+								  GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[0];
+										GrC->Inom = InomDefS[1];
+										GrC->MaxTorque = MomMaxDef[1];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//12
+				case dt400_B20_S:   PFUNC_blkRead(&drive13,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							 		GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[2])||(GrC->MaxTorque != MomMaxDef[2]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[1];
+										GrC->Inom = InomDefS[2];
+										GrC->MaxTorque = MomMaxDef[2];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+				 		break;//13
+				case dt400_B50_S:   PFUNC_blkRead(&drive14,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							 		GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[3])||(GrC->MaxTorque != MomMaxDef[3]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[1];
+										GrC->Inom = InomDefS[3];
+										GrC->MaxTorque = MomMaxDef[3];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//14
+				case dt800_V40_S:   PFUNC_blkRead(&drive15,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+								  GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[4])||(GrC->MaxTorque != MomMaxDef[4]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[1];
+										GrC->Inom = InomDefS[4];
+										GrC->MaxTorque = MomMaxDef[4];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//15
+				case dt1000_V20_S : PFUNC_blkRead(&drive16,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+								GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[5])||(GrC->MaxTorque != MomMaxDef[5]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[1];
+										GrC->Inom = InomDefS[5];
+										GrC->MaxTorque = MomMaxDef[5];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+				 		break;//16
+				case dt4000_G9_S  : PFUNC_blkRead(&drive17,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+								GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefS[6])||(GrC->MaxTorque != MomMaxDef[6]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[2];
+										GrC->Inom = InomDefS[6];
+										GrC->MaxTorque = MomMaxDef[6];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//17
+				case dt4000_G18_S : PFUNC_blkRead(&drive18,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							 	GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefS[7])||(GrC->MaxTorque != MomMaxDef[7]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[2];
+										GrC->Inom = InomDefS[7];
+										GrC->MaxTorque = MomMaxDef[7];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//18
+				case dt10000_D6_S : PFUNC_blkRead(&drive19,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							 	  GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[3])||(GrC->Inom != InomDefS[8])||(GrC->MaxTorque != MomMaxDef[8]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[3];
+										GrC->Inom = InomDefS[8];
+										GrC->MaxTorque = MomMaxDef[8];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//19
+				case dt10000_D12_S: PFUNC_blkRead(&drive20,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+								  GrH->UporOnly = 0;
+								  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  if ((GrC->GearRatio != GearRatioDef[4])||(GrC->Inom != InomDefS[9])||(GrC->MaxTorque != MomMaxDef[9]))
+								  {
+								  	if (IsMemParReady())
+								  	{
+										GrC->GearRatio = GearRatioDef[4];
+										GrC->Inom = InomDefS[9];
+										GrC->MaxTorque = MomMaxDef[9];
+								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+								  	}
+								  }
+						break;//20
 	}
 } 
 // -----------------------------------------------------------------

@@ -226,17 +226,27 @@ typedef enum {
 }TSettingPlace;
 
 typedef enum {
-	Empty 	  = 0,
-	dt100_A25 = 1,
-	dt100_A50 = 2,
-	dt400_B20 = 3,
-	dt400_B50 = 4,
-	dt800_V40 = 5,
-	dt1000_V20  = 6,
-	dt4000_G9   = 7,
-	dt4000_G18  = 8,
-	dt10000_D6  = 9,
-	dt10000_D12 = 10
+	Empty 	  		= 0,
+	dt100_A25_U 	= 1,// УФА
+	dt100_A50_U 	= 2,
+	dt400_B20_U 	= 3,
+	dt400_B50_U 	= 4,
+	dt800_V40_U 	= 5,
+	dt1000_V20_U  	= 6,
+	dt4000_G9_U   	= 7,
+	dt4000_G18_U  	= 8,
+	dt10000_D6_U  	= 9,
+	dt10000_D12_U 	= 10,
+	dt100_A25_S 	= 11,// Сарапуль
+	dt100_A50_S 	= 12,
+	dt400_B20_S 	= 13,
+	dt400_B50_S 	= 14,
+	dt800_V40_S 	= 15,
+	dt1000_V20_S  	= 16,
+	dt4000_G9_S   	= 17,
+	dt4000_G18_S  	= 18,
+	dt10000_D6_S  	= 19,
+	dt10000_D12_S 	= 20
 }TDriveType;
 
 // Маска дискретных входов
@@ -479,7 +489,7 @@ typedef struct {
 } TCubPoint;
 
 #define CUB_COUNT1		4
-#define CUB_COUNT2		5
+#define CUB_COUNT2		6
 typedef struct {
 	Int Data[CUB_COUNT1][CUB_COUNT2];
 } TCubArray;
