@@ -629,7 +629,8 @@ void ControlMode(void) // 200Hz
 void ProgonModeUpdate (void)	// 10 Гц
 {
 	static Uns progonDelay = 0,			// Задержка перед пуском, когда привод достигает крайней точки
-	           halfCycle = 0;			// Полцикла (открыто -> закрыто или закрыто -> открыто). Два полцикла равны 1 циклу
+	           halfCycle = 0,			// Полцикла (открыто -> закрыто или закрыто -> открыто). Два полцикла равны 1 циклу
+	   	   	   stopTimer = 0;			// Таймер задержки снятия режима прогона, если стоп
 	static Byte isComandDone = false;	// Флаг, подана ли команда. Команда должна подаваться только 1 раз из положения закрыто или открыто
 
 	if (!GrC->progonCycles) return; 
@@ -648,6 +649,7 @@ void ProgonModeUpdate (void)	// 10 Гц
 	{
 		if (IsClosed() || IsOpened())
 		{
+			stopTimer = 0;
 			if (!isComandDone)			// Если команда еще не была подана
 			{
 				if (progonDelay++ > 50)	// 50 = 5 сек на 10 Гц
@@ -673,8 +675,12 @@ void ProgonModeUpdate (void)	// 10 Гц
 			isComandDone = false;
 			if (IsStopped() ) // Если выполнилось это условие, то во время прогона поступила команда "стоп"
 			{
-				GrC->progonCycles = 0;
-				GrA->Faults.Proc.bit.CycleMode = 0;	
+				if (stopTimer++ > 20)	// Снимаем статус режима прогона с задержкой в 2 секунды
+				{
+					GrC->progonCycles = 0;
+					GrA->Faults.Proc.bit.CycleMode = 0;
+					stopTimer = 0;
+				}
 			}
 		}
 	}
