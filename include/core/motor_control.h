@@ -25,7 +25,7 @@
 #define TORQ_MAX_PR		110	// Максимальное значение в процентах
 #define TQ_VOLT_MIN		120	// Минимальное напряжение для расчета момента
 #define TQ_VOLT_MAX		260	// Максимальное напряжение для расчета момента
-#define LENGTH_TRQ		60	// Размер буфера коэффициентов расчета момента
+#define LENGTH_TRQ		72	// Размер буфера коэффициентов расчета момента
 
 #define OPEN_MASK  0x2
 #define CLOSE_MASK 0x8
