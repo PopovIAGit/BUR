@@ -900,8 +900,8 @@ void CalibStop(void)	// остановка по данным калибровки
 	
 	if (IsStopped() || GrG->TestCamera) return; // если остановленно то выходим
 	
-	if ((Dmc.RequestDir < 0) && (Dmc.TargetPos <= 0)) StopFlag = True; // если направление вращения закрытие целевое положение достигнуто или привышено то ставим флаг стопа
-	if ((Dmc.RequestDir > 0) && (Dmc.TargetPos >= 0)) StopFlag = True; // если направление вращение открытие
+	if ((Dmc.RequestDir < 0) && (Dmc.TargetPos <= GrC->BrakeZone)) StopFlag = True; // если направление вращения закрытие целевое положение достигнуто или привышено то ставим флаг стопа
+	if ((Dmc.RequestDir > 0) && (Dmc.TargetPos >= -(Int)GrC->BrakeZone)) StopFlag = True; // если направление вращение открытие
 	
 	if (StopFlag)	// если нужно останавливаться
 	{

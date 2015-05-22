@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Table DeviceId="4003" DeviceName="БУР-T" FirmwareVersion="1115">
+<Table DeviceId="4503" DeviceName="БУР-M" FirmwareVersion="1115">
   <Group Name="Группа A" Type="Show" Description="Индикация">
     <Parameter Index="А0" Name="Статус работы">
       <Address>400</Address>
@@ -192,14 +192,17 @@
         <Type>Union</Type>
         <Fields>
           <Field BitValue="0" Description="Нет сигналов" />
-          <Field BitValue="1" Description="Авария" />
-          <Field BitValue="2" Description="Закрыто" />
-          <Field BitValue="3" Description="Открыто" />
-          <Field BitValue="4" Description="Муфта" />
-          <Field BitValue="5" Description="Закрывается" />
-          <Field BitValue="6" Description="Открывается" />
-          <Field BitValue="7" Description="МУ/ДУ" />
-          <Field BitValue="8" Description="Неисправность" />
+          <Field BitValue="1" Description="Резерв" />
+          <Field BitValue="2" Description="Резерв" />
+          <Field BitValue="3" Description="Муфта" />
+          <Field BitValue="4" Description="Авария" />
+          <Field BitValue="5" Description="Резерв" />
+          <Field BitValue="6" Description="Включено питание" />
+          <Field BitValue="7" Description="Закрыто" />
+          <Field BitValue="8" Description="Открыто" />
+          <Field BitValue="9" Description="Неисправность" />
+          <Field BitValue="10" Description="КВЗ" />
+          <Field BitValue="11" Description="КВО" />
         </Fields>
       </ValueDescription>
       <Info>
@@ -1886,6 +1889,29 @@
         <Type>Uns</Type>
         <Unit>с</Unit>
         <Coefficient>0,1</Coefficient>
+      </ValueDescription>
+      <Info>
+        <Description />
+      </Info>
+    </Parameter>
+    <Parameter Index="C71" Name="Защита чередование фаз сети">
+      <Address>161</Address>
+      <Configuration>
+        <Type>Factory</Type>
+        <Appointment>Regular</Appointment>
+        <CanEdit>True</CanEdit>
+      </Configuration>
+      <ValueDescription>
+        <Minimum>0</Minimum>
+        <Maximum>3</Maximum>
+        <Default>0</Default>
+        <Type>Enum</Type>
+        <Fields>
+          <Field BitValue="0" Description="Выключена" />
+          <Field BitValue="1" Description="Сигнализация на блоке" />
+          <Field BitValue="2" Description="Сигнализация на блоке и ТС" />
+          <Field BitValue="3" Description="Сигнализация и останов" />
+        </Fields>
       </ValueDescription>
       <Info>
         <Description />
@@ -4624,14 +4650,17 @@
         <Type>Union</Type>
         <Fields>
           <Field BitValue="0" Description="Нет сигналов" />
-          <Field BitValue="1" Description="Авария" />
-          <Field BitValue="2" Description="Закрыто" />
-          <Field BitValue="3" Description="Открыто" />
-          <Field BitValue="4" Description="Муфта" />
-          <Field BitValue="5" Description="Закрывается" />
-          <Field BitValue="6" Description="Открывается" />
-          <Field BitValue="7" Description="МУ/ДУ" />
-          <Field BitValue="8" Description="Неисправность" />
+          <Field BitValue="1" Description="Резерв" />
+          <Field BitValue="2" Description="Резерв" />
+          <Field BitValue="3" Description="Муфта" />
+          <Field BitValue="4" Description="Авария" />
+          <Field BitValue="5" Description="Резерв" />
+          <Field BitValue="6" Description="Включено питание" />
+          <Field BitValue="7" Description="Закрыто" />
+          <Field BitValue="8" Description="Открыто" />
+          <Field BitValue="9" Description="Неисправность" />
+          <Field BitValue="10" Description="КВО" />
+          <Field BitValue="11" Description="КВЗ" />
         </Fields>
       </ValueDescription>
       <Info>
