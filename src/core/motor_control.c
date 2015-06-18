@@ -633,7 +633,7 @@ void ProgonModeUpdate (void)	// 10 Гц
 	   	   	   stopTimer = 0;			// Таймер задержки снятия режима прогона, если стоп
 	static Byte isComandDone = false;	// Флаг, подана ли команда. Команда должна подаваться только 1 раз из положения закрыто или открыто
 
-	if (!GrC->progonCycles) return; 
+	if (GrC->progonCycles == 0) return;
 	
 	if (IsFaulted() || IsNoCalib() ) 	// Без калибровки режим тестового прогона не работает
 	{
@@ -654,14 +654,17 @@ void ProgonModeUpdate (void)	// 10 Гц
 			{
 				if (progonDelay++ > 50)	// 50 = 5 сек на 10 Гц
 				{
-					GrD->ControlWord = IsClosed() ? vcwOpen : vcwClose;
+					if(GrC->progonCycles != 0)
+					{
+						GrD->ControlWord = IsClosed() ? vcwOpen : vcwClose;
+					}
 					isComandDone = true;
 					progonDelay = 0;
 					if (++halfCycle == 2) // Два полцикла = один полный цикл
 					{
 						halfCycle = 0;
 						GrC->progonCycles--;
-						if (!GrC->progonCycles)
+						if (GrC->progonCycles == 0)
 						{
 							progonDelay = 0;
 							GrA->Faults.Proc.bit.CycleMode = 0;
