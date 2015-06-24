@@ -1125,7 +1125,7 @@ void BlkSignalization(void)	// Сигнализация на блоке
 		else{Reg->bit.Pdu = !LED_ACTIVE;}
 	}
 
-	Reg->bit.Defect  = IsBlockDefect();   // наличие неисправности
+	Reg->bit.Defect = IsBlockDefect();   // наличие неисправности
 
 	Reg->bit.MuDu  = IsLocalControl();	// как в ТЗ не проканает
 
