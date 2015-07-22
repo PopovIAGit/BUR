@@ -247,6 +247,11 @@ inline void ModBusRecieve(TMbPort *Port)
 					{Port->Frame.Exception = EX_ILLEGAL_DATA_VALUE; break;}
 	// !
 				Res = 1;
+
+				if (GrC->MbOffsetMode && (Addr >= TEK_MB_START_ADDR))
+				{
+					Addr = Addr - TEK_MB_START_ADDR;
+				}
 				//if (Tmp <= (RAM_DATA_SIZE + 5)) {Res = 1;}
 				//else if (CHECK_TEK_MB_ADDR(Addr))	{Res = 5;}
 	//			else if ((Addr >= LOG_EV_RAM_DATA_ADR) && (Tmp <= LOG_EV_RAM_DATA_LADR))      
