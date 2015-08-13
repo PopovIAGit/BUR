@@ -482,7 +482,7 @@ extern TGroupT *GrT;
 #define CMD_PAR_CHANGE		0x0200	// Изменение параметров
 #define CMD_DEFAULTS_FACT 	0x0400	// Заводские параметры по умолчанию
 
-#define TS_SIGNAL_MASK_M 	511		// Маска для отсекания лишних сигналов ри увеличении колличества ТСов поменять
+#define TS_SIGNAL_MASK_M 	2047		// Маска для отсекания лишних сигналов ри увеличении колличества ТСов поменять
 #define TS_SIGNAL_MASK_T 	255		// 
 
 #if BUR_M

@@ -67,6 +67,9 @@ Uns DbgLog = 0;
 Uns TempMuDu = 0;
 Uns MuDuDefTimer = 0;
 
+Uns kbo = 0;
+Uns kbz = 0;
+
 __inline void CheckParams(void);
 __inline void DefParamsSet(Uns Code);
 static   void PutAddData(Uns Addr, Uns *Value);
@@ -88,6 +91,8 @@ void InterfaceInit(void)
 	GrC->SetDefaults = 0;
 	GrG->DisplShow = 0;
 	GrT->ComReg.all = 0;
+
+	GrH->LogReset = 0;
 //!!!!!!!!!!!!!!!!
 
 	PrevLogAddr[PREV_LEV_INDEX]   = GrH->LogEvAddr;
@@ -1166,8 +1171,10 @@ void TsSignalization(void) //ÒÑ
 		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Çàêðûòî
 		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Îòêðûòî
 		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Íåèñïðàâíîñòü 
-		Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  ÊÂÇ 
-		Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  ÊÂÎ 
+		//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  ÊÂÇ
+		//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  ÊÂÎ
+		Reg->bit.Dout9 =  !(IsOpened() 	||		(!IsOpened()&& !IsClosed()));		//  ÊÂÇ
+		Reg->bit.Dout10 = !(IsClosed() 	||		(!IsOpened()&& !IsClosed()));		//  ÊÂÎ
 	#else 
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	òñ àëàðì
 		Reg->bit.Dout1 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//	çàêðûòî
@@ -1186,7 +1193,7 @@ void TsSignalization(void) //ÒÑ
 	if (PowerEnable || (!PowerEnable && (GrH->FaultsLoad.all & LOAD_SHC_MASK)))
 	{
 		PiData.DiscrOut = (Byte)(Reg->all & 0xFF);
-		PiData.DiscrOut2 = (Byte)((Reg->all >> 8) & 0x1);
+		PiData.DiscrOut2 = (Byte)((Reg->all >> 8) & 0x7);
 	}
 	#else
 	if (PowerEnable)
