@@ -270,6 +270,7 @@ extern Uns   UtTime;
 extern Int   HighTemper;
 extern Uns   DrvTTout;
 
+
 // Прототипы функций
 void ProtectionsInit(void);
 void ProtectionsUpdate(void);

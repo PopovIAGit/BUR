@@ -66,9 +66,7 @@ Uns PduKeyFlag = 0;
 Uns DbgLog = 0;
 Uns TempMuDu = 0;
 Uns MuDuDefTimer = 0;
-
-Uns kbo = 0;
-Uns kbz = 0;
+Uns LedTestTimer = 0;
 
 __inline void CheckParams(void);
 __inline void DefParamsSet(Uns Code);
@@ -853,7 +851,12 @@ static void UpdateCode(Uns Addr, Uns *Code, Uns Def)
 	
 	if (*Password != 0)
 	{
-		if ((*Code == *Password) || (*Code == Def))
+		if (*Code == *Password)
+		{
+			*Code = 0; *Password = 0;
+			//WriteFlag = True;
+		}
+		if (*Code == Def)
 		{
 			*Code = 0; *Password = 0;
 			WriteFlag = True;
@@ -1043,7 +1046,7 @@ void RemoteControl(void) //24 - 220 + маски,
 					{
 						if(!GrH->Inputs.bit.Mu      && !GrH->Inputs.bit.Du)
 						{	 	
-								if (++MuDuDefTimer > (1 * PRD_50HZ))
+								if (++MuDuDefTimer > (2 * PRD_50HZ))
 								{
 									Mcu.MuDuInput = 0;
 									GrA->Faults.Proc.bit.MuDuDef = 1;
@@ -1112,6 +1115,17 @@ void BlkSignalization(void)	// Сигнализация на блоке
 
 	if (IsTestMode()) {Reg->all = GrG->LedsReg.all; return;} // если тест то заменяем реальные сигналы светодиодов тестовыми и выходим
 	
+	if (GrC->LedTestMode)
+	{
+		Reg->all = 255;
+		if(++LedTestTimer >= LED_TEST_TIMEOUT)
+		{
+			GrC->LedTestMode = 0;
+			LedTestTimer = 0;
+		}
+		return;
+	}
+
 	if (IsClosed()) Reg->bit.Closed = LED_ACTIVE;	// 
 	else if (IsClosing()) Reg->bit.Closed = !Reg->bit.Closed;
 	else Reg->bit.Closed = !LED_ACTIVE;

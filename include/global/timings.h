@@ -36,6 +36,7 @@ timings.h
 #define PULT_LED_TOUT			(0.200 * PRD_10HZ)		// Время горения светодиода ПДУ
 #define SLEEP_SCALE				(1.000 * PRD_10HZ)		// Дежурный режим меню
 #define IM_TIMEOUT				(10.00 * PRD_10HZ)		// Таймаут информационного модуля
+#define LED_TEST_TIMEOUT		(2.000 * PRD_10HZ)		// Таймаут на тест светодиодов блока
 
 // motor_control				 
 #define START_DELAY_TIME		(2.000 * PRD_50HZ)		// Ограничение времени паузы между остановом и след. запуском

@@ -83,6 +83,8 @@ void ProtectionsInit(void)	// начальная инициализация для защит
  	PhOrdTimer = 0;
 	EngPhOrdValue  = 0;
 
+
+
 	//-------------Времятоковая перегрузка-------------------------------------------
 	i2tOverload.inputCurr 		= &Ram.GroupH.Imid;
 	i2tOverload.nominalCurr 	= &Ram.GroupC.Inom;

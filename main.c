@@ -6,8 +6,6 @@ Uint16 CpuTime1 = 0;
 Uint16 CpuTime2 = 0;
 Uint16 CpuTimeMax = 0;
 
-
-
 void main(void)
 {
 	InitHardware();
@@ -20,24 +18,12 @@ void main(void)
 	SerialCommunicationInit();
 	SerialCommRefresh();
 
-
-
-//!!!
 	GrA->Status.bit.Power = 1;			// Выставляем при наличии сервисного питания
 	DisplayRestartFlag = true;
-
-	//!!!
-	// Раскомментировать для старой платы (IRDA)
-//	GpioDataRegs.GPBDAT.bit.GPIO33 = 0;
-//	DelayUs(5);
-//	GpioDataRegs.GPADAT.bit.GPIO25 = 1;
-	
 
 	#if BUR_M
 	ContactorControl(cgStop);
 	#endif
-
-//	GrA->Status.bit.Stop = 1;
 
 	EnableInterrupts();
 	
@@ -48,9 +34,6 @@ void main(void)
 		ImUpdate(&Im);
 	}
 }
-
-
-
 
 interrupt void CpuTimer0IsrHandler(void)
 {
@@ -69,7 +52,6 @@ interrupt void CpuTimer0IsrHandler(void)
 
 	PieCtrlRegs.PIEACK.bit.ACK1 = 1;
 }
-
 
 interrupt void ScibRxIsrHandler(void)
 {

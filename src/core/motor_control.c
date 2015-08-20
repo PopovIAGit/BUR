@@ -72,7 +72,6 @@ extern Int	//типовые двигатели
 
 Uns TimerInterp = 0;
 Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time); 
-
 //-------------Монитор------------------
 Uns program   = 1;
 Uns mon_index = 0;
@@ -1048,6 +1047,7 @@ __inline void TorqueObsInit(void)
 								GrC->Inom = InomDefU[4];
 								GrC->MaxTorque = MomMaxDef[4];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
+						  	//	ProtectionI2T_Init(&Ram.GroupC.Inom, PRD_50HZ);
 						  	}	
 						  }			  
 				break;//5
@@ -1259,7 +1259,7 @@ __inline void TorqueObsInit(void)
 										GrC->Inom = InomDefS[8];
 										GrC->MaxTorque = MomMaxDef[8];
 								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
-								  	}
+								   	}
 								  }
 						break;//19
 				case dt10000_D12_S: PFUNC_blkRead(&drive20,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
@@ -1274,6 +1274,7 @@ __inline void TorqueObsInit(void)
 										GrC->Inom = InomDefS[9];
 										GrC->MaxTorque = MomMaxDef[9];
 								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+
 								  	}
 								  }
 						break;//20
@@ -1401,6 +1402,7 @@ Bool DmcControlRefresh(void) // это в RefreshData
 	{
 		case 2:
 			TorqueObsInit();		
+			ProtectionI2T_Init(&i2tOverload, PRD_50HZ);
 			break;
 		case 3:
 			URfltr.Tf = _IQdiv(GrC->CoefVoltFltr, 1E08); 		  			ApFilter3Init(&URfltr); //

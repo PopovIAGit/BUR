@@ -1,0 +1,30 @@
+[Creator]
+Version=1
+[General]
+DeviceName=БУР-М,Т Томзэл
+SoftVersion=01.120
+Description=БУР-М,Т первая группа исполнений
+Photo=0
+Manual=0
+PDU=1
+Regulators=0
+[EvLog]
+AddressStart=15000
+NumberRecords=500
+NumberParameters=20
+[DataLog]
+Ch1_StartAddress=1328
+Ch2_StartAddress=5424
+BufferSize=128
+AddressSetScreen=451
+AddressSetPeriod=453
+AddressRefreshBuffer=452
+NumberOfScreens=4
+Scr[0.0]=Индекс задачи (*100)
+Scr[0.1]=Время выполнения
+Scr[1.0]=Сигнал АЦП для тока в фазе V
+Scr[1.1]=Сигнал АЦП для тока в фазе W
+Scr[2.0]=Ток фазы V (A)
+Scr[2.1]=Ток фазы W (A)
+Scr[3.0]=Ток фазы V (о.е.)
+Scr[3.1]=Ток фазы W (о.е.)
