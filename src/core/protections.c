@@ -352,14 +352,10 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 
 __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 {
-		Uns MufEnable;
+	Uns MufEnable;
 	
-	if (IsFaultExist(pmSignStop)) 		// если произошла срабатывание защиты и она включена
-		GrA->Status.bit.Fault = 1;		// выставляем в статус работы ошибку
-
-	if (IsDefectExist(pmSignStop))
-		GrA->Status.bit.Defect = 1;		// выставляем в статус работы неисправность
-	
+	GrA->Status.bit.Fault = IsFaultExist(pmSignStop);	// если произошла срабатывание защиты и она включена
+	GrA->Status.bit.Defect = IsDefectExist(pmSignStop); // выставляем в статус работы ошибку
 
 	if (!IsStopped())					// если не остановленно
 	{
