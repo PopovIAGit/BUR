@@ -20,12 +20,12 @@ void ProtectionI2T_Init(TAlarmI2T *p, Uns Freq)
 //--------------------------------------------------------
 void ProtectionI2T_Update(TAlarmI2T *p)
 {
-/*	if (!p->enable)						// Если "разрешение работы"=0, то есть "выкл", то
+	if (!p->enable)						// Если "разрешение работы"=0, то есть "выкл", то
 	{
 		p->timer = 0;
 		return;							// Выходим из функции
 	}
-	*/
+
 	if (!p->isFault)					// Если аварии нет 
 	{
 		if (*p->inputCurr < p->maxLowCurrent)	// если ток ниже величины, при которой время-токовая защита не ведется

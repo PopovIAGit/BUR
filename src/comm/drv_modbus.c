@@ -220,16 +220,9 @@ inline void ModBusRecieve(TMbPort *Port)
 	Func  = Port->Frame.Buf[1];
 	Addr  = (Port->Frame.Buf[2] << 8) | Port->Frame.Buf[3];
 	Count = (Port->Frame.Buf[4] << 8) | Port->Frame.Buf[5];
-	//Tmp   = Addr + Count - 1;
 	
 	Port->Frame.Exception = 0;
-	/*
-	if (Port->UartID == SCIB)
-	{
-		
-	}
-	else
-	*/
+
 	{
 		switch(Func)
 		{

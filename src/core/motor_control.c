@@ -235,8 +235,8 @@ void DmcIndication1(void)
 //	GrC->OpenAngle = Sifu.OpenAngle;
 
 	// средний действующий ток
-	if (GrB->IIndicMode == imRms)     GrH->Imid = Imid;//	выбор индикации среднего тока, в А или %
-	if (GrB->IIndicMode == imPercent) GrH->Imid = Imidpr;
+/*	if (GrB->IIndicMode == imRms) */    GrH->Imid = Imid;//	выбор индикации среднего тока, в А или %
+//	if (GrB->IIndicMode == imPercent) GrH->Imid = Imidpr;
 	
 	// угол между током и напряжением
 	ApFilter1Calc(&Phifltr);
