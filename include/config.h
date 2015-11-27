@@ -6,7 +6,7 @@
 #define SUBVERSION				15		// Подверсия проекта*/
 
 #define DEVICE_GROUP			1 
-#define VERSION					121
+#define VERSION					122
 #define MODULE_VERSION			70
 #define SUBVERSION				01
 

@@ -137,11 +137,8 @@ typedef union _TLoadReg {
 #define DEV_ERR_MASK		0x009F
 #define DEV_TMP_MASK		0x0060
 #define DEV_RSC_MASK		0x0800
-#if BUR_M
-#define DEV_EVLOG_MASK		0x0000
-#else
 #define DEV_EVLOG_MASK		0x0961
-#endif
+
 typedef union _TDeviceReg {
 	Uns all;
   struct {
