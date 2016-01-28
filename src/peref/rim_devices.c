@@ -184,11 +184,20 @@ void RtcControl(void)
 	
 	if (RtcStart)
 	{
-		if (DevTime->all != PrevTime) 
-			{RTC_SetTime(&Rtc, DevTime, 0); Ds3234.Flag = True;}
-		if (DevDate->all != PrevDate) 
-			{RTC_SetDate(&Rtc, DevDate, 1); Ds3234.Flag = True;}
-		if (RTC_TimeCorr(&Rtc, GrB->TimeCorrection)) Ds3234.Flag = True;
+		if (DevTime->all != PrevTime)
+		{
+			RTC_SetTime(&Rtc, DevTime, 0);
+			Ds3234.Flag = True;
+		}
+		if (DevDate->all != PrevDate)
+		{
+			RTC_SetDate(&Rtc, DevDate, 1);
+			Ds3234.Flag = True;
+		}
+		if (RTC_TimeCorr(&Rtc, GrB->TimeCorrection))
+		{
+			Ds3234.Flag = True;
+		}
 	}
 
 //	if (!Ds1305.Flag) 

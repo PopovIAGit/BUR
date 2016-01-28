@@ -141,10 +141,10 @@ Byte RTC_TimeCorr(void *p, Int Corr)
 	Byte Hour = Obj->Hour & (~AM_PM_MASK);
 	Int  Tmp;
 	
-	if (Hour == 1)
+	if (Hour == 2)
 	{
-		if (!(Mode & RTC_AM_PM_MODE)) Tmp = 0;
-		else if (!(Mode & RTC_AM_PM)) Tmp = 12;
+		if (!(Mode & RTC_AM_PM_MODE)) Tmp = 1;
+		else if (!(Mode & RTC_AM_PM)) Tmp = 13;
 		else return 0;
 
 		if (Obj->PrevHour == (Byte)Tmp)
@@ -154,7 +154,7 @@ Byte RTC_TimeCorr(void *p, Int Corr)
 				Obj->Min = Tmp / 60;
 				Obj->Sec = Tmp - (Int)Obj->Min * 60;
 				
-				Obj->PrevHour = 1;
+				Obj->PrevHour = 2;
 				return 1;
 			}
 		}
