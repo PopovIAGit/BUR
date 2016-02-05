@@ -73,7 +73,8 @@ typedef struct _TGroupB
 	Uns             RsStation;          // 25.Адрес станции
 	TParityMode		RsMode;				// 26.Режим связи
 	TSettingPlace	SettingPlace;		// 27.Место установки БУР
-	Uns 			Rsvd2[4];			// 28-31. 
+	Uns				ReversMove;			// B28. 68 Реверс хода. 0 - Реверс выключен; 1 - Реверс включен.
+	Uns 			Rsvd2[3];			// 29-31.
 	Uns				NoMoveTime;		   	// 32.Время отсутствия движения
 	Uns				OverwayZone;		// 33.Макси
 	Uns 			Rsvd3;				// 34.

@@ -571,8 +571,17 @@ register Uns Tmp;
 	#if BUR_M
 	ReqDirection = SIFU_UP;
 	#else
-	if (Dmc.RequestDir != PhEl.Direction) ReqDirection = SIFU_DOWN;//Sifu.Direction = SIFU_DOWN;	// если необходимое чередование фаз не соответсвует данному то меняем задание на сифу
-	else ReqDirection = SIFU_UP;//Sifu.Direction = SIFU_UP; 
+	// определения открываемой группы тиристоров
+	if (( (Dmc.RequestDir != PhEl.Direction) && !GrB->ReversMove)|| 	// если необходимое чередование фаз не соответсвует данному то меняем задание на сифу
+		( (Dmc.RequestDir == PhEl.Direction) && GrB->ReversMove) )
+	{
+		ReqDirection  = SIFU_DOWN;
+	}
+	else if (( (Dmc.RequestDir != PhEl.Direction) && GrB->ReversMove)|| 	// если необходимое чередование фаз не соответсвует данному то меняем задание на сифу
+			 ( (Dmc.RequestDir == PhEl.Direction) && !GrB->ReversMove) )
+	{
+		ReqDirection  = SIFU_UP;
+	}
 	#endif
 
 	// сигнализация о движении и установка параметров
