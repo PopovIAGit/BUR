@@ -185,7 +185,7 @@ typedef struct _TGroupC
 	Int				Corr60Trq;			// 115 Параметр для корректировки индикации больших моментов (больше 60%)
 	Int				Corr80Trq;			// 116
 	Int				Corr110Trq;			// 117
-	Uns       	    Rsvd17;          	// 118.Резерв
+	Uns       	    UporAddOpen;        // 118. Дополнительная корректировка лоя упора в "Открытие"
 	Uns       	    Rsvd18;          	// 119.Резерв
 } TGroupC;
 

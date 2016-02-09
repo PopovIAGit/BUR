@@ -977,6 +977,9 @@ else if (Dmc.TorqueSetPr < 80)
 else if	(Dmc.TorqueSetPr < 110)	
 			UporAdd = GrC->Upor100;
 
+	if (Dmc.RequestDir > 0)						// Если направление "Открытие"
+		UporAdd = UporAdd + GrC->UporAddOpen;	// Добавляем дополнительную корректировку упора на открытие
+
 	Torq.SetAngle   = Torq.Cub3.Output - UporAdd; // забираем задание для сифу (Упор)
 }
 // -----------------------------------------------------------------
