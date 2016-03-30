@@ -1291,10 +1291,16 @@ void ClbControl(void)	// управление калибровками
 	}
 
 	if (GrG->TestCamera)
+	{
+		BT_ON_OFF = 1;
 		GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+	}
 	else
-		GrA->Position      = Encoder.Revolution;		
-	
+	{
+		BT_ON_OFF = 0;
+		GrA->Position      = Encoder.Revolution;
+	}
+
 	if (GrD->CycleReset != 0)							// если подана команда на сброс счетчка колличества полных циклов
 	{
 		if (!IsStopped()) 									// если не остановленно то 

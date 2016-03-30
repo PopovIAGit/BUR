@@ -20,6 +20,7 @@
 #define IR_IN			GpioDataRegs.GPADAT.bit.GPIO26
 #define TEN_OFF			GpioDataRegs.GPADAT.bit.GPIO27
 #define TEN_ON_STATUS	GpioDataRegs.GPADAT.bit.GPIO13
+#define BT_ON_OFF		GpioDataRegs.GPADAT.bit.GPIO25 // 0-on
 
 #define CS_PORT			GpioDataRegs.GPADAT.all
 #define CS0				(1UL<<31)
