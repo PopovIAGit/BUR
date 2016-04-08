@@ -8,7 +8,9 @@ __inline void ResetCapture(TPult *);
 
 void PultImpulseCapture(TPult *p)
 {
-	if (ECap3Regs.ECFLG.bit.CEVT1)													// Проверяем флаг "захвата" фронта импульса
+	IrDA_NoiseFilter(p);
+
+	if ((ECap3Regs.ECFLG.bit.CEVT1)&&(p->ReadyToRecieve))							// Проверяем флаг "захвата" фронта импульса
 	{
 		if (!p->CapComplete)
 		{
@@ -23,7 +25,7 @@ void PultImpulseCapture(TPult *p)
 			{				
 				if (++p->SyncPulsesCounter >= SYNC_PULSES_NUM)
 				{
-					p->CapComplete = true;											// Завершение приема посылки
+					p->isFrameRecieved = true;										// Выставляем флаг получения 11 битов данных
 				}
 
 				// Складываем полученные биты в код
@@ -40,8 +42,51 @@ void PultImpulseCapture(TPult *p)
 		ECap3Regs.ECCLR.bit.CEVT1  = 1;
 	}
 }
+//===========================================================================================================
+// Функция фильтрации шумов ИК-приемника
+// Условия фильтря:
+// 1) Сигнал команды управления должен состоять из 11 битов
+// 2) Сигнал ПДУ должен иметь форму миандра, т.е. после приема 11 бит данных фронт сигнала не должен меняться
+//    и уровень сигнала должен держаться в "1" в течение заданного времени
+void IrDA_NoiseFilter(TPult *p)
+{
+	//--- 1 Часть функции --- проверка на изменение фронта сигнала перед приемом фрейма данных
+	if (p->ReadyToRecieve == false)						// Если флаг готовности приема еще не выставлен
+	{
+		if ((ECap3Regs.ECFLG.bit.CEVT1 == 0)&&			// Если изменениия фронта сигнала не происходит
+			(ECap3Regs.ECCTL1.bit.CAP1POL == 1))		// и уровень сигнала держится в "1"
+		{
+			if (p->preFrameTimer++ >= PRE_FRAME_TIMEOUT)// Если таймер успешно досчитал до таймаута 50 мс
+			{
+				p->preFrameTimer = 0;
+				p->ReadyToRecieve = true;				// Считаем, что блок готов к приему сигнала
+			}
+		}
+		else											// Если фронт сигнала изменился
+			p->preFrameTimer = 0;						// Таймер сбрасываем. А значит к приему сигнала не готовы
+	}
+	//--- 2 Часть функции --- проверка на изменение фронта сигнала после приема пакета данных
+	if (p->isFrameRecieved)						// Если получен пакет данных
+	{
+		p->postFrameTimer++;					// начинаем отсчитывать таймер
 
+		if ((ECap3Regs.ECFLG.bit.CEVT1 == 1)||		// Если произошло изменение фронта сигнала
+		    (ECap3Regs.ECCTL1.bit.CAP1POL == 0))	// или уровень сигнала равен "0" ...
+		{											// то считаем принятый пакет данных "шумом"
+			p->postFrameTimer = 0;					// сбрасываем все флаги и выходим из функции
+			ResetCapture(p);
+			p->ReadyToRecieve = false;				// Выставляем флаг, что мы не готовы к приему новых данных, пока сигнал не "выровняется"
+			return;
+		}
 
+		if (p->postFrameTimer >= POST_FRAME_TIMEOUT)// Если таймер успешно досчитал до таймаута
+		{
+			p->isFrameRecieved = false;
+			p->CapComplete = true;					// Выставляем флаг завершения приема
+		}
+	}
+}
+//===========================================================================================================
 
 void PultTimer(TPult *p)
 {
@@ -89,12 +134,14 @@ void PultKeyExecute(TPult *p)
 	p->KeyCode = 0;
 
 	ResetCapture(p);
+	p->ReadyToRecieve = false;									// Выставляем флаг, что мы не готовы к приему новых данных, пока сигнал не "выровняется"
 }
 
 __inline void ResetCapture(TPult *p)
 {
 		p->FirstPulse 		 = true;
 		p->CapComplete 		 = false;
+		p->isFrameRecieved   = false;
 		p->CapCode 			 = 0;
 		p->CapCounter 		 = 0;
 		p->SyncPulsesCounter = 0;

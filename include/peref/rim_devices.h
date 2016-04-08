@@ -197,7 +197,7 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 
 
 #define PULT_DEFAULTS		{	\
-		false, false, 0, 0, 0, 0, 0 	\
+		false, false, false, false, 0, 0, 0, 0, 0, 0, 0 	\
 }
 
 
