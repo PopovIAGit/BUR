@@ -12,7 +12,7 @@ void PultImpulseCapture(TPult *p)
 
 	if ((ECap3Regs.ECFLG.bit.CEVT1)&&(p->ReadyToRecieve))							// Проверяем флаг "захвата" фронта импульса
 	{
-		if (!p->CapComplete)
+		if (!p->isFrameRecieved)
 		{
 			if (p->FirstPulse)														// Для первого импульса
 			{
