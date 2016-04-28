@@ -7,8 +7,8 @@
 #define SYNC_PULSES_NUM				11		// 11 бит
 #define SYNC_PULSE_VALUE			85e3
 #define BUR_IR_ADDRESS				0
-#define POST_FRAME_TIMEOUT			899		// 100 мс (18 к√ц)
-#define PRE_FRAME_TIMEOUT			450		// 50 мс
+#define POST_FRAME_TIMEOUT			1500	// 83 мс (18 к√ц)
+#define PRE_FRAME_TIMEOUT			900		// 50 мс
 
 typedef struct _TPult 
 {
