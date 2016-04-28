@@ -96,8 +96,6 @@ void PultTimer(TPult *p)
 	}
 }
 
-
-
 void PultKeyExecute(TPult *p)
 {
 	if (!p->CapComplete)

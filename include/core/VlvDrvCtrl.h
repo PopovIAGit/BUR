@@ -149,7 +149,7 @@ typedef union {
 #define CMD_DISCRIN_TEST		0x2000	// Тест дискретных входов
 
 // Источник команды управления
-#define CMD_SRC_BLOCK		0x0400	// Аналогвый интерфейс
+#define CMD_SRC_BLOCK		0x0400	// подача блоком управления
 #define CMD_SRC_PDU			0x0800	// Пульт дистанционного управления
 #define CMD_SRC_MPU			0x1000	// Местный пост управления
 #define CMD_SRC_DIGITAL		0x2000	// Дискретный интерфейс

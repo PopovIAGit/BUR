@@ -522,6 +522,7 @@ void GetCurrentCmd(void)
 		if (!Mcu.EvLog.Source) Mcu.EvLog.Source = CMD_SRC_BLOCK;
 
 		LogControlWord = LogControlWord | Mcu.EvLog.Source;
+		Ram.GroupH.CmdSource  = Mcu.EvLog.Source;
 		Mcu.EvLog.Source = 0;
 	}
 	Mcu.EvLog.Value = 0;
