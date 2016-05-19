@@ -959,6 +959,11 @@ void TorqueCalc(void)	// расчет момента по кубу
 	ApFilter3Calc(&Trqfltr);				// 
 	Tmp =(_IQtoIQ16(Trqfltr.Output)) + Add; 
 
+	if(Dmc.RequestDir > 0)
+	{
+		Tmp = Tmp + GrC->UporAddOpen;
+	}
+
 	if (Tmp < TORQ_MIN_PR) Tmp = TORQ_MIN_PR;	// проверяем на вхождение в зону от 
 	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 10 до 110 %
 	
@@ -978,8 +983,8 @@ else if (Dmc.TorqueSetPr < 80)
 else if	(Dmc.TorqueSetPr < 110)	
 			UporAdd = GrC->Upor100;
 
-	if (Dmc.RequestDir > 0)						// Если направление "Открытие"
-		UporAdd = UporAdd + GrC->UporAddOpen;	// Добавляем дополнительную корректировку упора на открытие
+	/*if (Dmc.RequestDir > 0)						// Если направление "Открытие"
+		UporAdd = UporAdd + GrC->UporAddOpen;	// Добавляем дополнительную корректировку упора на открытие*/
 
 	Torq.SetAngle   = Torq.Cub3.Output - UporAdd; // забираем задание для сифу (Упор)
 }
