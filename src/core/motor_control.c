@@ -949,7 +949,7 @@ void TorqueCalc(void)	// расчет момента по кубу
 	
 #if !TORQ_TEST
 
-	if (Dmc.TorqueSetPr < 25)		  Add = GrC->Corr40Trq;
+	if (Dmc.TorqueSetPr < 25)		  Add = GrC->Corr25Trq;
 	else if (Dmc.TorqueSetPr < 40) 	  Add = GrC->Corr40Trq;		// Добавил PIA 09.10.2012
 	else if (Dmc.TorqueSetPr < 60)	  Add = GrC->Corr60Trq;		// корректировка индикации момента для +- изменения времени перехода на поверхность упора			
 	else if (Dmc.TorqueSetPr < 80)	  Add = GrC->Corr80Trq;

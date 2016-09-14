@@ -895,7 +895,7 @@ const struct MENU_STRING AddStr[] = {
 Int VoltArray[CUB_COUNT1] = {160, 190,  220,  250};
 Int CurrArray[CUB_COUNT2] = {400, 800, 1200, 1600, 2000, 3000};	// добавил 3000 PIA 19.05.15
 Int AnUIArray[CUB_COUNT2] = { 25,  35,   50,   65, 70,   80};	// добавил 70 	PIA 19.05.15
-Int TorqArray[CUB_COUNT2] = { 25,  30,   50,   75,  100, 120};	// добавил 120 	PIA 19.05.15
+Int TorqArray[CUB_COUNT2] = { 25,  35,   50,   75,  100, 120};	// добавил 120 	PIA 19.05.15
 
 #if !TORQ_TEST
 TCubConfig TqCurr  = {(Int *)&Ram.GroupH.Umid, VoltArray, (Int *)&Imidpr, CurrArray};
