@@ -1632,7 +1632,7 @@ void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись м
 //---------------------Проверка питания источника-------------------------------
 void PowerCheck(void)			// 200 Hz 
 {
-	if(POWER_CONTROL)			// если питание отключено
+	if(!POWER_CONTROL)			// если питание отключено
 	{
 		PowerSupplyCnt++;		// задержка на выключение
 		if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
