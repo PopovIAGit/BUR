@@ -42,7 +42,7 @@
 	&UR.CurAngle, \
 	&US.CurAngle, \
 	&UT.CurAngle, \
-	&US.Polarity,  \
+	&US.Polarity, \
 	SIFU_NONE, SIFU_CLOSE_ANG, 0, SIFU_MAX_ANG, SIFU_MAX_ANG, 0, 0 \
 }
 

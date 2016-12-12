@@ -100,7 +100,6 @@ void InterfaceInit(void)
 	PrevLogCount[PREV_LCMD_INDEX] = GrH->LogCmdCount;
 	PrevLogCount[PREV_LPAR_INDEX] = GrH->LogParamCount;
 
-
 	memset(LogParam.MbBuffer, 0, MB_PARAM_BUF_COUNT);
 	memset(ImReadBuf, 0, (IM_READ_BUF_SIZE * 2));
 
@@ -120,7 +119,6 @@ void InterfaceInit(void)
 		LogEvBuffer[i].LogOutputs 	 = 0;
 	}
 	
-		
 
 	GrA->Status.all = 0x01;
 	GrA->CalibState = GrH->CalibState;

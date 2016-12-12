@@ -9,7 +9,7 @@ timings.h
 
 
 // rim_devices
-#define EEPROM_RETRY			(5)					// Количество попыток перезаписи в EEPROM
+#define EEPROM_RETRY			(5)						// Количество попыток перезаписи в EEPROM
 #define DISPL_SCALE				(1.000 * PRD_2KHZ)		// Масштабный коэф. индикатора
 #define LOG_START_TOUT			(3.000 * PRD_200HZ)		// Таймаут записи в журнал
 #define LOG_BUF_START_TOUT		(1.000 * PRD_200HZ)		// Таймаут записи в журнал
@@ -59,7 +59,7 @@ timings.h
 #define NET_MON_START_TIME		(1.000 * PRD_50HZ)		// Задержка перед пуском по наличию напряжения
 #define NET_MON_STOP_TIME2 		(0.500 * PRD_50HZ)		// Задержка перед перед стопом при пропаже напряжения
 #define NET_MON_STOP_TIME 		(1.000 * PRD_50HZ)		// Задержка перед перед стопом при пропаже напряжения
-#define CONECTOR_TIME			(0.700 * PRD_50HZ)		// Время выдачи сигнала на конекторы
+#define CONECTOR_TIME			(1.300 * PRD_50HZ)		// Время выдачи сигнала на конекторы
 #define CONECTOR_STOP_TIME		(1.000 * PRD_50HZ)		// Время выдачи сигнала на конекторы
 // protection
 #define PRT_SCALE				(0.100 * PRD_50HZ)	// Масштибировка для защит (1 = 0.1 с)

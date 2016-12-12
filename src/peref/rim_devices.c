@@ -107,7 +107,6 @@ void EEPROM_Update(AT25XXX *Eeprom)
 	AT25XXX_Update(Eeprom);
 }
 
-
 void EEPROM_Func(Byte Memory, Byte Func, 
 	Uns Addr, Uns *Data, Uns Count)
 {
@@ -144,7 +143,7 @@ void SetPlisData(void)
 
 void RimIndication(void)//	Проверить для нас
 {
-		//if (Encoder.Error && !IsNoCalib()) // если ошибка энкодера и откалиброванно
+	//if (Encoder.Error && !IsNoCalib()) // если ошибка энкодера и откалиброванно
 	//	{Mcu.EvLog.Source = 0; GrD->CalibReset = 1;} // сбросили источник команд для журнала и выставляем сброс калибровок
 	
 	Dac.Mode = DAC7513_PR_4_20;
