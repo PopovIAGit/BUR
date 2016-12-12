@@ -89,8 +89,8 @@ Bool RimDevicesRefresh(void)
 	TuMu.Level    = DIN_LEVEL(SBEXT_MU,    (Uns)GrB->InputMask.bit.Mu);
 	TuDu.Level    = DIN_LEVEL(SBEXT_DU,    (Uns)GrB->InputMask.bit.Du);
 #endif
-	Dac.Gain   = GrH->Dac_Mpy;
-	Dac.Offset = GrH->Dac_Offset;
+	Dac.Gain   = GrC->Dac_Mpy;
+	Dac.Offset = GrC->Dac_Offset;
 
 	RimRefrState = 0;
 	return (!RimRefrState);
