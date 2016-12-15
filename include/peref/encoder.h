@@ -27,19 +27,24 @@ typedef struct ENCODER {
 	Byte   State;			// Состояние опроса датчика
 	LgUns  RevData;			// Считываемое положение
 	Byte   RevMisc;			// Контрольная сумма/Значение максимальной разницы
-	Uns    RevErrCount;		// Счетчик ошибок
+	Uns    errorCounter;	// Счетчик ошибок
 	Uns    RevTimer;		// Счетчик для расчета ошибки
 	Uns    ResetCounter;	// Счетчик сброса энкодера
+	Uns    goodPosition;	// Последнее хорошее сохраненное положение
 	Bool   ResetDelay;		// Флаг задержки сброса энкодера
 	Bool   Error;           // Признак сбоя
+	Byte   skipDefectFl;	// Флаг, означающий, что произошел "перескок" данных
 	Bool   TmpError;		// Признак временного сбоя, который сбрасывается автоматически
 	void (*CsFunc)(Byte);   // Функция выбора микросхемы
 } ENCODER;
 
 // Прототипы функций
+void EncoderUpdate(void);
 void FrabaEncoderCalc(ENCODER *);
 void EleSyEncoderCalc(ENCODER *);
 void AvagoEncoderCalc(ENCODER *);
+void AtMegaAvagoEncoderUpdate(ENCODER *);	// Новый метод рассчета ошибки энкодера + обработка энкодера
+void EncoderProtectionUpdate(ENCODER *);
 void AtMegaAvagoEncoderCalc(ENCODER *);
 
 #ifdef __cplusplus
