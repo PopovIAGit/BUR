@@ -191,7 +191,7 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 	14, 0, REV_MAX, 0UL, \
 	&Ram.GroupC.RevErrValue, \
 	&Ram.GroupC.RevErrLevel, \
-	0, 0UL, 5, 3, 0, 0, 0, false, false, \
+	0, 0UL, 15, 0, 0, 0, 0, 0, false, false, false, \
 	EncCsSet \
 }
 

@@ -51,7 +51,7 @@ TPrdElem List1[] = {
 	PrdElemInit(ClbControl,				NULL, 				1),	//	2
 	PrdElemInit(CalibStop,				NULL, 				1),	//	3
 	PrdElemInit(ControlMode,			NULL, 				1),	//	4
-	PrdElemInit(AtMegaAvagoEncoderCalc,	&Encoder,			1),	//	5
+	PrdElemInit(EncoderUpdate,			NULL,				1),	//	5
 //	PrdElemInit(FrabaEncoderCalc,	    &Encoder,			1),	//	5
 	PrdElemInit(DataBufferPre,			NULL, 				1),	//	6
 	PrdElemInit(LogEvControl,			NULL, 				1),	//	7
@@ -121,7 +121,8 @@ TPrdElem List3[] = {
 	PrdElemInit(DiscrInOutTestObserver,	NULL,				1),	//	23
 	PrdElemInit(ShowDriveType,			NULL,				1),	//	24
 	PrdElemInit(ProgonModeUpdate,		NULL,				1),	//	25
-	PrdElemInit(TekModbusParamsUpdate,	NULL,				1)	//	26
+	PrdElemInit(TekModbusParamsUpdate,	NULL,				1),	//	26
+	PrdElemInit(EncoderProtectionUpdate,&Encoder,			1)	//	26
 };
 
 // 50 Hz (max = 2000/50 = 40)
