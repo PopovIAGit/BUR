@@ -18,7 +18,7 @@ timings.h
 #define BLINK_HI_TOUT			(0.500 * PRD_10HZ)		// Время отображения при редактировании
 #define BLINK_LO_TOUT			(0.300 * PRD_10HZ)		// Время скрытия при редактировании
 #define BIT_TOUT				(1.000 * PRD_10HZ)		// Пауза при выводе бита
-#define TSENS_RETRY				(5)					// Количество сбоев датчика до выставления ошибки
+#define TSENS_RETRY				(5)						// Количество сбоев датчика до выставления ошибки
 #define BTN_TIME				(0.100 * PRD_50HZ)		// Время удержании ручки в положении
 #define TU_SCALE				(0.100 * PRD_50HZ)		// Масштабировка для ТУ (1 = 0.1 с)
 #define TEMP_EN_TOUT			(5.000 * PRD_10HZ)		// Задержка включения тена
@@ -51,7 +51,7 @@ timings.h
 #define SP_CALC_TOUT			(1.000 * PRD_10HZ)		// Интервал расчета скорости
 #define CTRLMODE_SCALE			(0.100 * PRD_200HZ)		// Масшаб для частоты сети
 #define DMC_FLTR_TS				(1.000 / PRD_50HZ)		// Постоянная дискретизации фильтров рмс
-#define DMC_TS					(1.000 / HZ)		// Постоянная дискретизации модуля управления двигателем
+#define DMC_TS					(1.000 / HZ)			// Постоянная дискретизации модуля управления двигателем
 #define DMC_TORQF_TS			(1.000 / PRD_200HZ)		// Постоянная дискретизации фильтра расчета момента
 #define START_PAUSE				(2.000 * PRD_200HZ)		// тест линейного КЗ
 #define DEBUG_START_TIME		(2.000 * PRD_200HZ)      // таймер для повторного включения ПП без источника
@@ -60,7 +60,7 @@ timings.h
 #define NET_MON_STOP_TIME2 		(0.500 * PRD_50HZ)		// Задержка перед перед стопом при пропаже напряжения
 #define NET_MON_STOP_TIME 		(1.000 * PRD_50HZ)		// Задержка перед перед стопом при пропаже напряжения
 #define CONECTOR_TIME			(1.300 * PRD_50HZ)		// Время выдачи сигнала на конекторы
-#define CONECTOR_STOP_TIME		(1.000 * PRD_50HZ)		// Время выдачи сигнала на конекторы
+#define CONECTOR_STOP_TIME		(1.500 * PRD_50HZ)		// Время выдачи сигнала на конекторы
 // protection
 #define PRT_SCALE				(0.100 * PRD_50HZ)	// Масштибировка для защит (1 = 0.1 с)
 #define TB_SCALE				(60.00 * PRD_50HZ)	// Масштабировка для защиты от перегрева/переохлождения блока

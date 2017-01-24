@@ -26,6 +26,7 @@ LOG_INPUT TuStop  = TU_DEFAULT(&ExtReg,  SBEXT_STOP,   2);
 LOG_INPUT TuMu    = TU_DEFAULT2(&ExtReg, SBEXT_MU,     3);
 LOG_INPUT TuDu    = TU_DEFAULT2(&ExtReg, SBEXT_DU,     4);
 
+
 //управление
 Uns BtnStatus = 0;
 Uns BtnTout   = (Uns)BTN_TIME;

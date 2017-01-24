@@ -1154,6 +1154,8 @@ void BlkSignalization(void)	// Сигнализация на блоке
 
 void TsSignalization(void) //ТС
 {
+	//if(Fault_Delay > 0) return;
+
 	TOutputReg *Reg = &GrH->Outputs;
 	
 	GrA->Status.bit.TsIndic  = IsFaultExist(pmBlkTsSign);// в статус о работе индикации ТУ
@@ -1175,19 +1177,40 @@ void TsSignalization(void) //ТС
 	else	
 	{ 
 	#if BUR_M
-//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
-//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
-		Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта
-		Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
-//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
-		Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.powerOn;	//  Питание
-		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
-		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
-		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность 
-		//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  КВЗ
-		//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  КВО
-		Reg->bit.Dout9 =  !(IsOpened() 	||		(!IsOpened()&& !IsClosed()));		//  КВЗ
-		Reg->bit.Dout10 = !(IsClosed() 	||		(!IsOpened()&& !IsClosed()));		//  КВО
+
+		if(Fault_Delay > 0)
+		{
+				//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
+				//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
+						Reg->bit.Dout2 = 0;	//  Муфта
+						Reg->bit.Dout3 = 0;//	тс аларм
+				//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
+						Reg->bit.Dout5 = 0;//  Питание
+						Reg->bit.Dout6 = 0;//  Закрыто
+						Reg->bit.Dout7 = 0;//  Открыто
+						Reg->bit.Dout8 = 0;//  Неисправность
+						//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  КВЗ
+						//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  КВО
+						Reg->bit.Dout9 =  1;	//  КВЗ
+						Reg->bit.Dout10 = 1;		//  КВО
+		}
+		else
+		{
+
+	//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
+	//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
+			Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта
+			Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
+	//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
+			Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.powerOn;	//  Питание
+			Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
+			Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
+			Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
+			//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  КВЗ
+			//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  КВО
+			Reg->bit.Dout9 =  !(IsOpened() 	||		(!IsOpened()&& !IsClosed()));		//  КВЗ
+			Reg->bit.Dout10 = !(IsClosed() 	||		(!IsOpened()&& !IsClosed()));		//  КВО
+		}
 	#else 
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
 		Reg->bit.Dout1 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//	закрыто

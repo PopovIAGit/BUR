@@ -242,6 +242,7 @@ void ProtectionsClear(void)	// полная отчистка ошибок (включая ошибки энкодера и
 
 	IsShcReset = true;
 	i2tOverload.isFault = false;
+	Encoder.skipDefectFl = 0;
 
 }
 

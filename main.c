@@ -8,7 +8,7 @@ Uint16 CpuTimeMax = 0;
 
 void main(void)
 {
-	InitHardware();
+ 	InitHardware();
 	SystemInit();
 	RimDevicesInit();
 	MotorControlInit();

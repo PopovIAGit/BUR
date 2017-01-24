@@ -269,6 +269,7 @@ extern Uns   OtTime;
 extern Uns   UtTime;
 extern Int   HighTemper;
 extern Uns   DrvTTout;
+extern Uns   Fault_Delay;
 
 
 // Прототипы функций
