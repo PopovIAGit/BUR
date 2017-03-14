@@ -16,7 +16,7 @@ APFILTER3  IWfltr;
 APFILTER1  Umfltr  	= RMS_FLTR_DEFAULT;
 APFILTER3  Imfltr  	= IMID_FLTR_DEFAULT;
 APFILTER1  Phifltr  = URMSF_DEFAULT;
-APFILTER3  Trqfltr 	= TORQ_FLTR_DEFAULT;
+APFILTER3  Trqfltr	= TORQ_FLTR_DEFAULT;
 
 ILEG_TRN   UR;
 ILEG_TRN   US;
@@ -79,6 +79,8 @@ Uns dot       = 0;
 Uns dot_max   = 10;
 Int buffer1[256];
 Int buffer2[256];
+
+Uns TrqTimer = 0;
 
 __inline void ADC_Aquisition(void);
 __inline void DmcPrepare(void);
@@ -280,7 +282,12 @@ void DmcIndication2(void)
 	else GrH->PhOrdValue = 1; 
 	
 	// копии в диагностику
-	GrA->Torque  = GrH->Torque;
+	if(TrqTimer++ >(5 * GrC->TrqViewTime))
+	{
+		GrA->Torque  = GrH->Torque;
+		TrqTimer = 0;
+	}
+
 	GrA->Speed   = GrH->Speed;
 }
 // -----------------------------------------------------------------
@@ -991,7 +998,7 @@ else if	(Dmc.TorqueSetPr < 110)
 // -----------------------------------------------------------------
 __inline void TorqueObsInit(void)
 {	
-	switch (GrC->DriveType) 
+	switch (GrB->DriveType)
 	{
 		case dt100_A25_U: PFUNC_blkRead(&drive1,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);

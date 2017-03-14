@@ -81,7 +81,7 @@ typedef struct _TGroupB
 	Uns 			Rsvd2[3];			// 29-31.
 	Uns				NoMoveTime;		   	// 32.Время отсутствия движения
 	Uns				OverwayZone;		// 33.Макси
-	Uns 			Rsvd3;				// 34.
+	TDriveType      DriveType;          // 34.Тип привода
  	Uns             SleepTime;          // 35.Дежурный режим
 	Uns 			Rsvd[14];
 } TGroupB;
@@ -91,7 +91,7 @@ typedef struct _TGroupC
 {
 //-----------------------Настройки привода------------------------
 	Uns             FactCode;           // 0.Код доступа
-	TDriveType      DriveType;          // 1.Тип привода
+	Uns				Rsvd3;				// 1.Reserv
     Uns        		ProductYear;        // 2.Год изготовления блока
   	Uns             FactoryNumber;      // 3.Заводской номер блока
   	Uns             MaxTorque;          // 4.Максимальный момент привода
@@ -121,12 +121,14 @@ typedef struct _TGroupC
 	Uns             Rsvd7;       		// 37.резерв
 	Uns			    CoefVoltFltr;		// 38.Коэффициент фильтрации входного напряжения
 	Uns			    CoefCurrFltr;		// 39.Коэффициент фильтрации тока нагрузки 
-	Uns             Rsvd8[5];       	// 40-44.резерв
+	Uns				TrqViewTime;		// 40.Коэффициент фильтрации момента
+	Uns             Rsvd8[4];       	// 41-44.резерв
 	Uns				MbOffsetMode;		// 45.Режим сдвига адреов для лбщих регистров на 40000
 	Uns				LedTestMode;		// 46.Включение всех светодиодов на 2 секунды
 	Uns			    Dac_Mpy;			// 47.Корректировка ЦАП
 	Int			    Dac_Offset;			// 48.Смещение ЦАП
-	Uns             Rsvd16[5];       	// 49-53.резерв
+	Uns				IndicatorType;		// 49.Тип индикатора
+	Uns             Rsvd16[4];       	// 50-53.резерв
 //----------------------Конфигурация защит(Напряжение)----------------------
 	TPrtMode        Ov;					// 54.Защита от превышения напряжения
 	Uns             OvLevel_max;        // 55.Уровень превышения напряжения при 47% превышения (320В)
@@ -278,7 +280,7 @@ typedef struct _TGroupH
 	Uns             UT_Offset;           // H109. Смещение напряжения фазы T
 	Uns				Rsvd110;
 	Uns				Rsvd111;
-	Uns				IndicatorType;		 // 112.Тип индикатора
+	Uns				Rsvd112;
 	TDeviceReg      FaultsDev;           // 113.Диагностика устройства
 	Uns             StartIndic;			 // 114.Индикация в старте
  	Uns             SleepTime;           // 115.Дежурный режим  

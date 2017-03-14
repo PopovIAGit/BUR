@@ -149,7 +149,7 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 #define DISPLAY_DEFAULT { \
 	PLIS_SPI, SPI_BRR(4000), \
 	False, False, False, 0, 0, 0, \
-	0, 0, 0, "", "", Null, WINSTAR_RusTable, &Ram.GroupH.IndicatorType,\
+	0, 0, 0, "", "", Null, WINSTAR_RusTable, &Ram.GroupC.IndicatorType,\
 	IO_INIT(LCD_PORT, LCD_EN), \
 	IO_INIT(LCD_PORT, LCD_RS), \
 	IO_INIT(LCD_PORT, LCD_RW), \

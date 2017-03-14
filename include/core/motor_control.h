@@ -22,7 +22,7 @@
 #define MIN_FREQ_RPM	600	// Минимальная скорость в об/мин перехода между режимами
 #define POWER_LOST		100	// Минимальное напряжение
 #define SP_POS_LIMIT	400	// Ограничение на изменение положения при расчете скорости
-#define TORQ_MIN_PR		10	// Минимальное значение в процентах
+#define TORQ_MIN_PR		0	// Минимальное значение в процентах
 #define TORQ_MAX_PR		111	// Максимальное значение в процентах
 #define TQ_VOLT_MIN		120	// Минимальное напряжение для расчета момента
 #define TQ_VOLT_MAX		260	// Максимальное напряжение для расчета момента
@@ -51,7 +51,7 @@
 // Значение инициализации для структур
 #define URMSF_DEFAULT 	  { 0,0,0,_IQ(1.0/PRD_200HZ),_IQ(0.05),0,0 }		// tf 0.02
 #define RMS_FLTR_DEFAULT  { 0, 0, 0, _IQ(DMC_FLTR_TS), _IQ(0.05), 0, 0 }
-#define TORQ_FLTR_DEFAULT { 0, 0, 0, 0, 0, 0, _IQ(DMC_TORQF_TS), _IQ(0.02), 0, 0, 0}
+#define TORQ_FLTR_DEFAULT { 0, 0, 0, 0, 0, 0, _IQ(DMC_TORQF_TS), _IQ(0.02), 0, 0, 0} // править тут!!!
 #define IMID_FLTR_DEFAULT { 0, 0, 0, 0, 0, 0, _IQ(DMC_TORQF_TS), _IQ(0.02), 0, 0, 0}
 
 // Глобальные переменные модуля

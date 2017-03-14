@@ -283,11 +283,11 @@ Bool InterfaceRefresh(void)
 {
 	static Uns prevIndType = 123;			// Предыдущий тип индикатора
 
-	if (prevIndType != GrH->IndicatorType)	// Если тип индикатора был изменен
+	if (prevIndType != GrC->IndicatorType)	// Если тип индикатора был изменен
 	{
-		prevIndType = GrH->IndicatorType;	// Пересбрасываем дисплей
-		DisplayReset(&Display, (Uns)Ram.GroupH.IndicatorType);
-		WritePar(GetAdr(GroupH.IndicatorType), &Ram.GroupH.IndicatorType, 1);
+		prevIndType = GrC->IndicatorType;	// Пересбрасываем дисплей
+		DisplayReset(&Display, (Uns)Ram.GroupC.IndicatorType);
+		WritePar(GetAdr(GroupC.IndicatorType), &Ram.GroupC.IndicatorType, 1);
 	}
 
 	if (!InterfRefrState) return true;
@@ -640,7 +640,7 @@ void ShowDriveType(void)
 		{
 			ShowDriveTypeTimer++;
 			Menu.State = MS_DRIVE_TYPE;
-			ReadValuesStr(Menu.HiString, 229 + GrC->DriveType);
+			ReadValuesStr(Menu.HiString, 229 + GrB->DriveType);
 			Menu.LoString[11]=' ';
 			if (BUR_M) Menu.LoString[10]='M';
 			else Menu.LoString[10]='T';
