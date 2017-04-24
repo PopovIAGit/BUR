@@ -272,8 +272,10 @@ void DmcIndication2(void)
 				DebugStartDelayCnt2 = 0;
 			}
 		}	
-		else {memset(&GrA->Ur, 1, 3); 
-			}
+		else
+		{
+			//memset(&GrA->Ur, 1, 3);
+		}
 		#endif
 
 			
@@ -289,6 +291,8 @@ void DmcIndication2(void)
 	}
 
 	GrA->Speed   = GrH->Speed;
+
+	GrC->Drive_Type = GrB->DriveType;					//  опируем тип привода в группу C чисто дл€ индикации
 }
 // -----------------------------------------------------------------
 void DefineCtrlParams(void) // задачи контролируемых параметров в 

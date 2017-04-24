@@ -91,7 +91,7 @@ typedef struct _TGroupC
 {
 //-----------------------Настройки привода------------------------
 	Uns             FactCode;           // 0.Код доступа
-	Uns				Rsvd3;				// 1.Reserv
+	Uns 			Drive_Type;			// 1.Как бы тип привода
     Uns        		ProductYear;        // 2.Год изготовления блока
   	Uns             FactoryNumber;      // 3.Заводской номер блока
   	Uns             MaxTorque;          // 4.Максимальный момент привода
