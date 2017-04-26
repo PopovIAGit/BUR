@@ -208,8 +208,15 @@ void DataSetting(void)	//???
 	if (DefAddr < RAM_DATA_SIZE)
 	{
 		GetDcr(DefAddr, &Dcr);
-		if ((Dcr.Config.all & DefCode) == DefCode)
+		if (((Dcr.Config.all & DefCode) == DefCode)
+			&&(DefAddr != REG_PRODUCT_YEAR)		// Не год изготовления
+			&&(DefAddr != REG_FACT_NUM)			// Не заводской номер
+			&&(DefAddr != REG_MAX_TORQUE)		// Не максимальный момент
+			&&(DefAddr != REG_I_NOM)			// Не номинальный ток
+			&&(DefAddr != REG_GEAR_RATIO) )		// Не КП редуктора
+		{
 	 		*(ToUnsPtr(&Ram) + DefAddr) = Dcr.Def;
+		}
 		DefAddr++;
 		return;
 	}

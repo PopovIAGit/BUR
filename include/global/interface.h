@@ -476,6 +476,11 @@ extern TGroupT *GrT;
 #define REG_FCODE				GetAdr(GroupC.FactCode)
 #define REG_PASSW1				GetAdr(GroupH.Password1)
 #define REG_PASSW2				GetAdr(GroupH.Password2)
+#define REG_PRODUCT_YEAR		GetAdr(GroupC.ProductYear)
+#define REG_FACT_NUM			GetAdr(GroupC.FactoryNumber)
+#define REG_MAX_TORQUE			GetAdr(GroupC.MaxTorque)
+#define REG_I_NOM				GetAdr(GroupC.Inom)
+#define REG_GEAR_RATIO			GetAdr(GroupC.GearRatio)
 
 #define REG_CYCLE_CNT			GetAdr(GroupH.CycleCnt)
 #define REG_CONTROL				GetAdr(GroupD.ControlWord)
