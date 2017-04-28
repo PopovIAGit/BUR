@@ -245,6 +245,10 @@ inline void ModBusRecieve(TMbPort *Port)
 				{
 					Addr = Addr - TEK_MB_START_ADDR;
 				}
+				if (GrC->ModbusConfiguration && (Addr <= 39))		// 39 - это размер группы T или A
+				{
+					Addr = Addr + 400;						// 400 - это адрес группы A
+				}
 				//if (Tmp <= (RAM_DATA_SIZE + 5)) {Res = 1;}
 				//else if (CHECK_TEK_MB_ADDR(Addr))	{Res = 5;}
 	//			else if ((Addr >= LOG_EV_RAM_DATA_ADR) && (Tmp <= LOG_EV_RAM_DATA_LADR))      

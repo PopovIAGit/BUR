@@ -6,9 +6,9 @@
 #define SUBVERSION				15		// Подверсия проекта*/
 
 #define DEVICE_GROUP			1 
-#define VERSION					127
+#define VERSION					128
 #define MODULE_VERSION			70
-#define SUBVERSION				01
+#define SUBVERSION				02
 
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)

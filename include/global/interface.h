@@ -91,7 +91,7 @@ typedef struct _TGroupC
 {
 //-----------------------Настройки привода------------------------
 	Uns             FactCode;           // 0.Код доступа
-	Uns				Rsvd3;				// 1.Reserv
+	Uns 			Drive_Type;			// 1.Как бы тип привода
     Uns        		ProductYear;        // 2.Год изготовления блока
   	Uns             FactoryNumber;      // 3.Заводской номер блока
   	Uns             MaxTorque;          // 4.Максимальный момент привода
@@ -122,7 +122,8 @@ typedef struct _TGroupC
 	Uns			    CoefVoltFltr;		// 38.Коэффициент фильтрации входного напряжения
 	Uns			    CoefCurrFltr;		// 39.Коэффициент фильтрации тока нагрузки 
 	Uns				TrqViewTime;		// 40.Коэффициент фильтрации момента
-	Uns             Rsvd8[4];       	// 41-44.резерв
+	Uns             Rsvd8[3];       	// 41-43.резерв
+	Uns				ModbusConfiguration;// 44 Конфигурация модбас ДЛЯ ВЕРСИИ 1.112
 	Uns				MbOffsetMode;		// 45.Режим сдвига адреов для лбщих регистров на 40000
 	Uns				LedTestMode;		// 46.Включение всех светодиодов на 2 секунды
 	Uns			    Dac_Mpy;			// 47.Корректировка ЦАП
@@ -476,6 +477,11 @@ extern TGroupT *GrT;
 #define REG_FCODE				GetAdr(GroupC.FactCode)
 #define REG_PASSW1				GetAdr(GroupH.Password1)
 #define REG_PASSW2				GetAdr(GroupH.Password2)
+#define REG_PRODUCT_YEAR		GetAdr(GroupC.ProductYear)
+#define REG_FACT_NUM			GetAdr(GroupC.FactoryNumber)
+#define REG_MAX_TORQUE			GetAdr(GroupC.MaxTorque)
+#define REG_I_NOM				GetAdr(GroupC.Inom)
+#define REG_GEAR_RATIO			GetAdr(GroupC.GearRatio)
 
 #define REG_CYCLE_CNT			GetAdr(GroupH.CycleCnt)
 #define REG_CONTROL				GetAdr(GroupD.ControlWord)
