@@ -972,7 +972,7 @@ void TorqueCalc(void)	// расчет момента по кубу
 	}
 
 	if (Tmp < TORQ_MIN_PR) Tmp = TORQ_MIN_PR;	// проверяем на вхождение в зону от 
-	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 10 до 110 %
+	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 0 до 110 %
 	
 	Torq.Indication = PU0ToValue(Tmp, GrC->MaxTorque * 10);// переводим проценты в Нм относительно максимального М
 #else
