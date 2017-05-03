@@ -1,7 +1,7 @@
 #include "config.h"
 #include "protectionI2T.h"
 
-DIFF_INPUT Muf = MUF_DEFAULT(&Encoder.Revolution, 0); 	// Защита по перемещению
+DIFF_INPUT Muf = MUF_DEFAULT(&Revolution, 0); 	// Защита по перемещению
 
 TPrtElem UvR = UV_DEFAULT(&Ram.GroupA.Ur, 0); 			// пониженное напряжение 
 TPrtElem UvS = UV_DEFAULT(&Ram.GroupA.Us, 1);
@@ -236,6 +236,7 @@ void ProtectionsClear(void)	// полная отчистка ошибок (включая ошибки энкодера и
 	GrH->FaultsDev.all     	= 0;					//сбросили ошибки устройства
 	
 	Encoder.Error  = False;
+	enDPMA15.Error = false;
 	Eeprom1.Error  = False;
 	Eeprom2.Error  = False; 
 	TempSens.Error = False;
@@ -330,7 +331,16 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 
 	if (GrC->ErrIndic != pmOff)							// если индикация ошибок не выключина
 	{
-		GrH->FaultsDev.bit.PosSens = Encoder.Error;			// энкодер
+
+		if(GrC->EncoderType == 0)
+		{
+			GrH->FaultsDev.bit.PosSens = Encoder.Error;			// энкодер
+		}
+		else
+		{
+			GrH->FaultsDev.bit.PosSens = enDPMA15.Error;			// энкодер
+		}
+
 		GrH->FaultsDev.bit.Memory1 = Eeprom1.Error;			// еепром 1 
 		GrH->FaultsDev.bit.Memory2 = Eeprom2.Error;			// eeprom 2
 		if(!GrC->RTCErrOff)
@@ -578,7 +588,7 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 	if (IsStopped())	// если стоим то выходим, всегда включена
 	{
 		FlagEngPhOrd = False;					// сбросили флаг если выключали останавливали или откалибравали на данное чередование
-		StartPos = Encoder.Revolution;	// стартовое положение это текущее положение с энкодера
+		StartPos = Revolution;	// стартовое положение это текущее положение с энкодера
 		Timer = 0;						// сбросили таймер
 		PhOrdTimer = 0;
 		return;							// вышли
@@ -597,10 +607,10 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 	if (Timer < (GrC->PhOrdTime * (Uns)PRT_SCALE)) Timer++;	// привели таймаут к 0.1 с и если таймер меньше инкрементировали	
 	else if (!FlagEngPhOrd && !ZazorTimer)								// если не флаг и таймер зазора = 0 то
 	{												// где REV_MAX максимальное численное значение энкодера
-		Delta = Encoder.Revolution - StartPos;				// посчитали дельту смещения как текущее положение минус запомненое начальное положение
+		Delta = Revolution - StartPos;				// посчитали дельту смещения как текущее положение минус запомненое начальное положение
 
-		if (Delta >  ((REV_MAX+1)/2)) Delta -= (REV_MAX+1);		// если дельта больше 2000 то декрементируем дельту на 4000 
-		if (Delta < -((REV_MAX+1)/2)) Delta += (REV_MAX+1);		// если дельта меньше -2000 то инкрементируем дельту на 4000
+		if (Delta >  ((RevMax+1)/2)) Delta -= (RevMax+1);		// если дельта больше 2000 то декрементируем дельту на 4000
+		if (Delta < -((RevMax+1)/2)) Delta += (RevMax+1);		// если дельта меньше -2000 то инкрементируем дельту на 4000
 
 		EngPhOrdValue = 0;	// сбрасываем чередование фаз, останется нулем если вращения небыло
 	

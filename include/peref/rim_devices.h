@@ -7,6 +7,7 @@
 #include "dac7513.h"
 #include "encoder.h"
 #include "adt7301.h"
+#include "peref_drv_DPMA15.h"
 //#include "ds1305.h" // Заменено на ds3234
 #include "ds3234.h"
 #include "pult.h"
@@ -83,7 +84,7 @@
 // Глобальные константы
 #define PLIS_SPI			SPIA
 #define PLIS_BRR			SPI_BRR(4000)
-#define REV_MAX				0x3FFF
+//#define REV_MAX				0x3FFF
 
 // Дискретные входы
 #define DIN_REVERS		0
@@ -188,7 +189,7 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 
 #define ENCODER_DEFAULT { \
 	PLIS_SPI, SPI_BRR(1000), \
-	14, 0, REV_MAX, 0UL, \
+	14, 0, 0, 0UL, \
 	&Ram.GroupC.RevErrValue, \
 	&Ram.GroupC.RevErrLevel, \
 	0, 0UL, 15, 0, 0, 0, 0, 0, false, false, false, \
@@ -235,6 +236,7 @@ extern AT25XXX 		Eeprom1;
 extern AT25XXX		Eeprom2;
 extern ADT7301		TempSens;
 extern ENCODER		Encoder;
+extern EN_DPMA15	enDPMA15;
 extern DAC7513  	Dac;
 extern TDisplay 	Display;
 //extern DS1305		Ds1305;
@@ -262,6 +264,7 @@ extern Uns 			Test_Open;
 extern Uns 			Test_Close;
 extern Uns 			Test_Stop1;
 extern Uns 			Test_Stop2;
+extern Uns			RevMax;
 
 // Прототипы функций
 void RimDevicesInit(void);

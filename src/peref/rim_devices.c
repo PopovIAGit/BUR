@@ -11,6 +11,7 @@ AT25XXX  Eeprom2   = AT25XXX_DEFAULT2;
 TDisplay Display   = DISPLAY_DEFAULT;
 DAC7513  Dac       = DAC7513_DEFAULT;
 ENCODER  Encoder   = ENCODER_DEFAULT;
+EN_DPMA15	enDPMA15;
 ADT7301  TempSens  = ADT7301_DEFAULT;
 //DS1305   Ds1305    = DS1305_DEFAULT;
 DS3234   Ds3234    = DS3234_DEFAULT;
@@ -44,6 +45,8 @@ Uns ContTest = 0;
 Uns ContTestTimer = 0;
 Uns ContStopErrTimer = 0;
 
+Uns	RevMax = 0x3FFF;
+
 Byte DisplTesNum = 0;
 
 __inline void DisplTest(void);
@@ -61,6 +64,10 @@ void RimDevicesInit(void)
 	AT25XXX_Init(&Eeprom2);
 //	DS1305_Init(&Ds1305);
 	DS3234_Init(&Ds3234);
+
+    enDPMA15.CsFunc = &EncCsSet;
+    encoderDPMA15_Init(&enDPMA15);
+
 
 	DISPL_AddSymb(&Display,0,ToPtr(Icons), NUM_ICONS);
 

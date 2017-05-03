@@ -1294,7 +1294,7 @@ void ClbControl(void)	// управление калибровками
 	GrA->Status.bit.Closed = IsStopped() && ((Calib.Zone & CLB_CLOSE) != 0);	// закрытие - если в стопе и откалиброванно "закрыто"
 	GrA->Status.bit.Opened = IsStopped() && ((Calib.Zone & CLB_OPEN)  != 0);	// открытие - если в стопе и откалиброванно "открытие"
 						
-    GrH->Position      = Encoder.Revolution;						// забираем текущее положение (пока с теста)
+    GrH->Position      = Revolution;								// забираем текущее положение (пока с теста)
 //	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
 //	GrC->OpenPosition  = IndicPos(Calib.Indication->OpenPos);				// забираем положение открыто
 //	GrC->Position 	   = GrH->Position;										// копируем текущее положение в гр.С
@@ -1322,12 +1322,20 @@ void ClbControl(void)	// управление калибровками
 	if (GrG->TestCamera)
 	{
 		BT_ON_OFF = 1;
-		GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+		if(GrC->EncoderType == 0)
+		{
+			GrA->Position      = !Encoder.Error ? GrH->Position : 65535;
+		}
+		else
+		{
+			GrA->Position      = !enDPMA15.Error ? GrH->Position : 65535;
+		}
+
 	}
 	else
 	{
 		BT_ON_OFF = 0;
-		GrA->Position      = Encoder.Revolution;
+		GrA->Position      = Revolution;
 	}
 
 	if (GrD->CycleReset != 0)							// если подана команда на сброс счетчка колличества полных циклов

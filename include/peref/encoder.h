@@ -47,6 +47,8 @@ void AtMegaAvagoEncoderUpdate(ENCODER *);	// Новый метод рассчета ошибки энкодер
 void EncoderProtectionUpdate(ENCODER *);
 void AtMegaAvagoEncoderCalc(ENCODER *);
 
+extern LgUns Revolution;
+
 #ifdef __cplusplus
 }
 #endif // extern "C"

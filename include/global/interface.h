@@ -129,7 +129,8 @@ typedef struct _TGroupC
 	Uns			    Dac_Mpy;			// 47.Корректировка ЦАП
 	Int			    Dac_Offset;			// 48.Смещение ЦАП
 	Uns				IndicatorType;		// 49.Тип индикатора
-	Uns             Rsvd16[4];       	// 50-53.резерв
+	Uns				EncoderType;		// 50.Тип энкодера
+	Uns             Rsvd16[3];       	// 51-53.резерв
 //----------------------Конфигурация защит(Напряжение)----------------------
 	TPrtMode        Ov;					// 54.Защита от превышения напряжения
 	Uns             OvLevel_max;        // 55.Уровень превышения напряжения при 47% превышения (320В)
@@ -607,12 +608,12 @@ extern TGroupT *GrT;
 }
 
 #define CALIBS_DEFAULT { \
-	False, False, 0, 0, REV_MAX, 0, 0, 0, 0, \
+	False, False, 0, 0, 0, 0, 0, 0, 0, \
 	MUFF_CLB_TIME, 0, 0, 0, 0, 0, 0, 0, \
 	&Ram.GroupC.PosSensPow, \
 	&Ram.GroupB.PositionAcc, \
 	ToPtr(&Ram.GroupB.RodType), \
-	&Encoder.Revolution, \
+	&Revolution, \
 	&Ram.GroupA.PositionPr, \
 	&Ram.GroupA.FullWay, \
 	&Ram.GroupA.CurWay, \

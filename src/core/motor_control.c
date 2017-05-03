@@ -1008,7 +1008,7 @@ __inline void TorqueObsInit(void)
 						  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 						  GrH->UporOnly = 1;
 
-						  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefU[0])||(GrC->MaxTorque != MomMaxDef[0]))
+						  if ((GrC->Inom != InomDefU[0])||(GrC->MaxTorque != MomMaxDef[0]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1023,7 +1023,7 @@ __inline void TorqueObsInit(void)
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefU[1])||(GrC->MaxTorque != MomMaxDef[1]))
+						  if ((GrC->Inom != InomDefU[1])||(GrC->MaxTorque != MomMaxDef[1]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1038,7 +1038,7 @@ __inline void TorqueObsInit(void)
 					 		GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[2])||(GrC->MaxTorque != MomMaxDef[2]))
+						  if ((GrC->Inom != InomDefU[2])||(GrC->MaxTorque != MomMaxDef[2]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1053,7 +1053,7 @@ __inline void TorqueObsInit(void)
 					 		GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[3])||(GrC->MaxTorque != MomMaxDef[3]))
+						  if ((GrC->Inom != InomDefU[3])||(GrC->MaxTorque != MomMaxDef[3]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1068,7 +1068,7 @@ __inline void TorqueObsInit(void)
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[4])||(GrC->MaxTorque != MomMaxDef[4]))
+						  if ((GrC->Inom != InomDefU[4])||(GrC->MaxTorque != MomMaxDef[4]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1084,7 +1084,7 @@ __inline void TorqueObsInit(void)
 					GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefU[5])||(GrC->MaxTorque != MomMaxDef[5]))
+						  if ((GrC->Inom != InomDefU[5])||(GrC->MaxTorque != MomMaxDef[5]))
 						  {
 						  	if (IsMemParReady()) 
 						  	{
@@ -1099,7 +1099,7 @@ __inline void TorqueObsInit(void)
 					GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefU[6])||(GrC->MaxTorque != MomMaxDef[6]))
+						  if ((GrC->Inom != InomDefU[6])||(GrC->MaxTorque != MomMaxDef[6]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1114,7 +1114,7 @@ __inline void TorqueObsInit(void)
 					 	GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefU[7])||(GrC->MaxTorque != MomMaxDef[7]))
+						  if ((GrC->Inom != InomDefU[7])||(GrC->MaxTorque != MomMaxDef[7]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1129,7 +1129,7 @@ __inline void TorqueObsInit(void)
 					 	  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[3])||(GrC->Inom != InomDefU[8])||(GrC->MaxTorque != MomMaxDef[8]))
+						  if ((GrC->Inom != InomDefU[8])||(GrC->MaxTorque != MomMaxDef[8]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1144,7 +1144,7 @@ __inline void TorqueObsInit(void)
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-						  if ((GrC->GearRatio != GearRatioDef[4])||(GrC->Inom != InomDefU[9])||(GrC->MaxTorque != MomMaxDef[9]))
+						  if ((GrC->Inom != InomDefU[9])||(GrC->MaxTorque != MomMaxDef[9]))
 						  {
 						  	if (IsMemParReady())
 						  	{
@@ -1160,7 +1160,7 @@ __inline void TorqueObsInit(void)
 								  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 								  GrH->UporOnly = 0;
 
-								  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefS[0])||(GrC->MaxTorque != MomMaxDef[0]))
+								  if ((GrC->Inom != InomDefS[0])||(GrC->MaxTorque != MomMaxDef[0]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1175,7 +1175,7 @@ __inline void TorqueObsInit(void)
 								  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[0])||(GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
+								  if ((GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1190,7 +1190,7 @@ __inline void TorqueObsInit(void)
 							 		GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[2])||(GrC->MaxTorque != MomMaxDef[2]))
+								  if ((GrC->Inom != InomDefS[2])||(GrC->MaxTorque != MomMaxDef[2]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1205,7 +1205,7 @@ __inline void TorqueObsInit(void)
 							 		GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[3])||(GrC->MaxTorque != MomMaxDef[3]))
+								  if ((GrC->Inom != InomDefS[3])||(GrC->MaxTorque != MomMaxDef[3]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1220,7 +1220,7 @@ __inline void TorqueObsInit(void)
 								  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[4])||(GrC->MaxTorque != MomMaxDef[4]))
+								  if ((GrC->Inom != InomDefS[4])||(GrC->MaxTorque != MomMaxDef[4]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1235,7 +1235,7 @@ __inline void TorqueObsInit(void)
 								GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[1])||(GrC->Inom != InomDefS[5])||(GrC->MaxTorque != MomMaxDef[5]))
+								  if ((GrC->Inom != InomDefS[5])||(GrC->MaxTorque != MomMaxDef[5]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1250,7 +1250,7 @@ __inline void TorqueObsInit(void)
 								GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefS[6])||(GrC->MaxTorque != MomMaxDef[6]))
+								  if ((GrC->Inom != InomDefS[6])||(GrC->MaxTorque != MomMaxDef[6]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1265,7 +1265,7 @@ __inline void TorqueObsInit(void)
 							 	GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[2])||(GrC->Inom != InomDefS[7])||(GrC->MaxTorque != MomMaxDef[7]))
+								  if ((GrC->Inom != InomDefS[7])||(GrC->MaxTorque != MomMaxDef[7]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1280,7 +1280,7 @@ __inline void TorqueObsInit(void)
 							 	  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[3])||(GrC->Inom != InomDefS[8])||(GrC->MaxTorque != MomMaxDef[8]))
+								  if ((GrC->Inom != InomDefS[8])||(GrC->MaxTorque != MomMaxDef[8]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1295,7 +1295,7 @@ __inline void TorqueObsInit(void)
 								  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  if ((GrC->GearRatio != GearRatioDef[4])||(GrC->Inom != InomDefS[9])||(GrC->MaxTorque != MomMaxDef[9]))
+								  if ((GrC->Inom != InomDefS[9])||(GrC->MaxTorque != MomMaxDef[9]))
 								  {
 								  	if (IsMemParReady())
 								  	{
@@ -1332,11 +1332,11 @@ void SpeedCalc(void) // расчет скорости
 			Delta = 0;				 // дельту в 0
 		else
 		{
-			Delta = Encoder.Revolution - RevPrev; // дельта = новое значение - предидущие
-			if (Delta >  SP_POS_LIMIT) Delta -= (REV_MAX+1); // если перешли через ноль сдвигаем на половину
-			if (Delta < -SP_POS_LIMIT) Delta += (REV_MAX+1);
+			Delta = Revolution - RevPrev; // дельта = новое значение - предидущие
+			if (Delta >  SP_POS_LIMIT) Delta -= (RevMax+1); // если перешли через ноль сдвигаем на половину
+			if (Delta < -SP_POS_LIMIT) Delta += (RevMax+1);
 		}
-		RevPrev = Encoder.Revolution; // запоминаем предидущие значение
+		RevPrev = Revolution; // запоминаем предидущие значение
 
 		GrH->Speed = (Delta * (LgInt)GrC->BlockToGearRatio) >> 2; // считаем скорость. изменение положение по времени * на передаточное число = скорость выходного звена
 		AbsSpeed = abs(GrH->Speed);	//абсолютная скорость

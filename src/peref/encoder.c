@@ -9,17 +9,36 @@
 
 Uns initTimer = 100;	// Таймер инициализации энкодера, 0.5 секунд. Пока он не равен 0,
 						//положение в core не передается и защита от сбоя энкодера не работает
+LgUns Revolution = 0;
 
 // Функция обработки энкодера
 void EncoderUpdate(void)			// 200 Hz
 {
-	if (!GrC->EncoderCalcMethod)	// Если выбран метод рассчета ошибки энкодера № 1 (скачки)
+	if (GrC->EncoderType == 0)		// encoder Avago
 	{
-		AtMegaAvagoEncoderUpdate(&Encoder);
+		RevMax = 0x3FFF;
+		Calib.RevMax = RevMax;
+		Encoder.RevMax = RevMax;
+
+		if (!GrC->EncoderCalcMethod)	// Если выбран метод рассчета ошибки энкодера № 1 (скачки)
+		{
+			AtMegaAvagoEncoderUpdate(&Encoder);
+		}
+		else							// Если выбран классический метод рассчета ошибки энкодера
+		{
+			AtMegaAvagoEncoderCalc(&Encoder);
+		}
+
+		Revolution = Encoder.Revolution;
 	}
-	else							// Если выбран классический метод рассчета ошибки энкодера
+	else if (GrC->EncoderType == 1)  // Encoder SKB IS
 	{
-		AtMegaAvagoEncoderCalc(&Encoder);
+		RevMax = 0x7FFF;
+		Calib.RevMax = RevMax;
+		Encoder.RevMax = RevMax;
+
+		encoder_DPMA15_GetData(&enDPMA15);
+		Revolution = enDPMA15.revolution;
 	}
 }
 
@@ -34,8 +53,9 @@ void AtMegaAvagoEncoderUpdate(ENCODER *p)	// 200 Гц
 	// Запрос данных с энкодера
 	SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
 	SetCs(); 												// Запрос данных с энкодера
-	Data  = SPI_send(p->SpiId, 0x00) << 8;
 	DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+	Data  = SPI_send(p->SpiId, 0x00) << 8;
+
 	Data |= SPI_send(p->SpiId, 0x00);
 	ClrCs();
 
