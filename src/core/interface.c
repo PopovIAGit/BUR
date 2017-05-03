@@ -213,6 +213,7 @@ void DataSetting(void)	//???
 			&&(DefAddr != REG_FACT_NUM)			// Не заводской номер
 			&&(DefAddr != REG_MAX_TORQUE)		// Не максимальный момент
 			&&(DefAddr != REG_I_NOM)			// Не номинальный ток
+			&&(DefAddr != REG_DRIVE_TYPE)		// Не тип электропривода
 			&&(DefAddr != REG_GEAR_RATIO) )		// Не КП редуктора
 		{
 	 		*(ToUnsPtr(&Ram) + DefAddr) = Dcr.Def;
