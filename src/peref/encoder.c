@@ -92,9 +92,9 @@ void AtMegaAvagoEncoderUpdate(ENCODER *p)	// 200 Гц
 				 p->Revolution  = p->goodPosition;
 			 }
 			 else
-				 {
-				 	 p->errorCounter++;							// Если просто скачок данных то не в счет, увеличиваем счетчик ошибок
-				 }
+			{
+				p->errorCounter++;							// Если просто скачок данных то не в счет, увеличиваем счетчик ошибок
+			}
 
 			if (( (Int)(p->goodPosition - p->RevMisc - 2) < (Int)Data)\
 			  &&(Data < p->goodPosition + p->RevMisc + 2))	// Если произошел скачок обратно в goodposition - сбрасываем флаг

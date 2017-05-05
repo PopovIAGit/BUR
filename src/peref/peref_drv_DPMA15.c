@@ -13,44 +13,65 @@
 void encoderDPMA15_Init(EN_DPMA15 *p)
 {
 	p->SpiId = PLIS_SPI;              // Идентификатор SPI-порта (0-SPIA, 1-SPIB, ...)
-	p->SpiBaud 	= SPI_BRR(1000);  // Частота синхроимпульсов (расчитанная для конктретного чипа)
-	p->bitCount=0;        		  // Количество байт/бит данных
-	p->RevMax=0;			      // Ограничение значения положения
-	p->revolution=0;              // Значение положения с датчика в формате 16 разрядов
-	p->EncoderData=0;		      // Данные, получаемые от энкодера
-	p->prevRevolution=0;	      // Предыдущее значение энкодера
-	p->RevMisc=0;			      // Контрольная сумма/Значение максимальной разницы
-	p->RevErrCount=0;		      // Счетчик ошибок
-	p->RevTimer=0;		          // Счетчик для расчета ошибки
-	p->ResetCounter=0;	          // Счетчик сброса энкодера
-	p->ResetDelay=0;		      // Флаг задержки сброса энкодера
-	p->Error=0;                   // Признак сбоя
-	p->TmpError=0;		          // Признак временного сбоя, который сбрасывается автоматически
+	p->SpiBaud = SPI_BRR(1000);  // Частота синхроимпульсов (расчитанная для конктретного чипа)
+	p->bitCount = 0;        		  // Количество байт/бит данных
+	p->RevMax = RevMax;			      // Ограничение значения положения
+	p->revolution = 0;              // Значение положения с датчика в формате 16 разрядов
+	p->EncoderData = 0;		      // Данные, получаемые от энкодера
+	p->prevRevolution = 0;	      // Предыдущее значение энкодера
+	p->RevMisc = 5;			      // Контрольная сумма/Значение максимальной разницы
+	p->RevErrCount = 0;		      // Счетчик ошибок
+	p->RevTimer = 0;		          // Счетчик для расчета ошибки
+	p->ResetCounter = 0;	          // Счетчик сброса энкодера
+	p->ResetDelay = 0;		      // Флаг задержки сброса энкодера
+	p->Error = 0;                   // Признак сбоя
+	p->TmpError = 0;		          // Признак временного сбоя, который сбрасывается автоматически
 	p->CsFunc(0);                 // Функция выбора микросхемы
+
+	p->RevErrValue = &GrC->RevErrValue;
+	p->RevErrLevel = &GrC->RevErrLevel;
 
 }
 
 // Функция считывания данных с датчика положения ДПМА-15
 void encoder_DPMA15_GetData(EN_DPMA15 *p) // 50 Hz
 {
-	Byte	Data1, Data2;				// две посылки данных по 8 бит
-
-	//if (Eeprom.  != 0) return; //проверяем не занята ли линия SPI
+	Uns Delta, Data, DataWithMask;				// величина изменения, принятые данные, маскированные данные.
+	Uns ConnFlag;
 
 	SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
 
 	SetCs();
-	//DelayUs(); 			// Задержка t1 = 10.4 мкСек
-	// Получение данных энкодера
 
-	Data1 = SPI_send(p->SpiId, 0x00);
-	DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	Data2 = SPI_send(p->SpiId, 0x00);
+	Data = SPI_send(p->SpiId, 0x00) << 8;	// Особенность посылки: есть всегда старший бит
+	Data |= SPI_send(p->SpiId, 0x00);
 	ClrCs();
-												// Три части по байту склеиваем в одну переменную long
-	p->EncoderData  = (Data1 << 8);
-	p->EncoderData  |= Data2;
-	p->revolution = p->EncoderData & 0x7fff;
+
+	DataWithMask = Data & 0x7fff;
+	ConnFlag = Data >> 15;
+
+	if (ConnFlag == 0)
+	{
+		p->Error = True;
+	}
+	else
+	{
+		p->Error = false;
+	}
+
+	Delta = abs(DataWithMask - p->EncoderData);
+
+	if ((p->RevMisc <= Delta)\
+			&& (Delta <= p->RevMax - p->RevMisc))			// 3) Если 5 < Delta < 16383-5 - "скачок данных")
+	{
+		p->RevErrCount++;
+	}
+	else
+	{
+		p->revolution = DataWithMask;			    // 4) Нормальные условия работы энкодера
+	}
+
+	p->EncoderData = DataWithMask;
 }
 
 
