@@ -37,7 +37,7 @@ typedef struct EN_DPMA15 {
 	Byte       bitCount;        // Количество байт/бит данных
 	Uns        RevMax;			// Ограничение значения положения
 	Uns        revolution;      // Значение положения с датчика в формате 16 разрядов
-	Uns      	EncoderData;		// Данные, получаемые от энкодера
+	Uns        EncoderData;		// Данные, получаемые от энкодера
 	Uns       *RevErrValue;		// Значение процента ошибки/Количество ошибок
 	Uns       *RevErrLevel;		// Уровень сбоя датчика
 	Uns        prevRevolution;	// Предыдущее значение энкодера
@@ -53,6 +53,8 @@ typedef struct EN_DPMA15 {
 
 // Прототипы функций
 void encoder_DPMA15_GetData(EN_DPMA15 *);
+
+void EncoderTitanUpdate(EN_DPMA15 *);
 //void LIR_DA237T_PositionCalc(ENCODER *);
 
 #ifdef __cplusplus

@@ -114,7 +114,18 @@ typedef struct _TGroupC
 	Uns             BrakeTime;          // 20.Время торможения 
 	Uns 			NoCurrPause;		// 21.Время безтоковой паузы перед торможением
 	Uns 			BrakeZone;			// 22.Превентивное торможение
-	Uns       	    Rsvd5[12];          // 23-34.Резерв
+#if BUR_90
+	Uns				DevOn;				// 23.ТИП схемы измерения токов 0-малые 1-большие
+#else
+	Uns				Rsvd23;				// 23
+#endif
+	Uns  			ADCUr;				// 24
+	Uns  			ADCUs;				// 25
+	Uns  			ADCUt;				// 26
+	Uns  			ADCIu;				// 27
+	Uns  			ADCIv;				// 28
+	Uns  			ADCIw;				// 29
+	Uns       	    Rsvd5[5];           // 30-34.Резерв
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока
 	Uns             Rsvd6;       		// 36.резерв
@@ -300,7 +311,7 @@ typedef struct _TGroupH
 	TBurCmd 		LogControlWord;		 // 127. Команды БУР
 	Uns				LogReset;			 // 128. Сброс журналов
 	TNetReg         DefectsNet;          // 129.Диагностика сети (для неисправностей)
-	Uns             Rsvd7;         	 	 // 130. Резерв
+	TPP90Reg        PP90Reg;         	 // 130. Регистр для передачи через плис, для ПП БУР90
 	TLoadReg        FaultsLoad;          // 131.Диагностика нагрузки
 	Uns				ADC_iu;				 // 132.АЦП IU
 	Uns				ADC_iv;				 // 133.АЦП IV
@@ -467,7 +478,7 @@ extern TGroupT *GrT;
 
 #define IM_READ_BUF_SIZE		((LOG_EV_DATA_CNT * LOG_EV_DATA_CELL) + (LOG_EV_BUF_DATA_CNT * LOG_EV_BUF_DATA_CELL))
 
-#define REG_TORQUE_ADDR		GetAdr(GroupA.Torque)
+#define REG_TORQUE_ADDR			GetAdr(GroupA.Torque)
 #define REG_START_IND			GetAdr(GroupH.StartIndic)
 //#define REG_START_IND			GetAdr(GroupA.Torque)
 #define REG_LOG_ADDR			GetAdr(GroupH.LogEvAddr)

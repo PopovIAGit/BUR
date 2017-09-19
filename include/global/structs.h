@@ -137,7 +137,7 @@ typedef union _TLoadReg {
 #define DEV_ERR_MASK		0x009F
 #define DEV_TMP_MASK		0x0060
 #define DEV_RSC_MASK		0x0800
-#define DEV_EVLOG_MASK		0x0961
+#define DEV_EVLOG_MASK		0x09FB
 
 typedef union _TDeviceReg {
 	Uns all;
@@ -408,6 +408,18 @@ typedef union _TLedsReg {	// МОИ
 		Uns Rsvd:8;      	// 6-15  Резерв
 	} bit;
 } TLedsReg;
+
+
+// Регистр для работы ПП БУР90
+typedef union _TPP90Reg {	// М
+	Uns all;
+	struct {
+		Uns LcdEnable:1;     	// 0     Включение Дисплея
+		Uns DevOn:1;      		// 1     Переключение малые/большие токи
+		Uns EncOn:1;       		// 2     Выключение Энкодера
+		Uns Rsvd:13;      		// 6-15  Резерв
+	} bit;
+} TPP90Reg;
 
 // Состояние датчиков холла блока
 typedef union _THallBlock {

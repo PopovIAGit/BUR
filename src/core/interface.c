@@ -12,7 +12,7 @@ interface.c
 
 
 TLogEv			LogEv = LOG_EV_DEFAULTS;				// Экземпляр структуры журнала событий
-TLogEvBuffer	LogEvBuffer[LOG_EV_BUF_CELL_COUNT];		// Буфер параметров, которое записываются до наступления события
+TLogEvBuffer	        LogEvBuffer[LOG_EV_BUF_CELL_COUNT];		// Буфер параметров, которое записываются до наступления события
 TLogCmd			LogCmd = LOG_CMD_DEFAULTS;				// Экземпляр структуры журнала команд
 TLogParam 		LogParam = LOG_PARAM_DEFAULTS;			// Экземпляр структуры журнала изменения параметров
 
@@ -176,7 +176,7 @@ void InterfIndication(void)
 	GrA->Faults.Dev.all  = GrH->FaultsDev.all;
 	GrA->Inputs.all      = GrH->Inputs.all;
 	GrA->Outputs.all     = GrH->Outputs.all;
-	GrA->CycleCnt 		 = GrH->CycleCnt;
+	GrA->CycleCnt 	     = GrH->CycleCnt;
 }
 
 void RefreshData(void)
@@ -234,8 +234,11 @@ void PowerOn(void)
 {
 	static Bool DisplShcFlag = true;
 
+#if BUR_90
+	Ram.GroupH.PP90Reg.bit.LcdEnable = 0; // Включает 0
+#else
 	LcdEnable = 1;
-
+#endif
 // 1) Display.Restart = 5;		
 // 2) Подождали
 // 3) Display.Restart = 0;
@@ -265,7 +268,11 @@ void PowerOn(void)
 
 void PowerOff(void)
 {
+#if BUR_90
+	Ram.GroupH.PP90Reg.bit.LcdEnable = 1; // Включает 0
+#else
 	LcdEnable = 0;
+#endif
  	Display.Enable = False;
 	GrH->LedsReg.all = 0x00;
 	PowerEnable = False;
@@ -335,26 +342,28 @@ void DataBufferPre(void)
 
 //	if (Timer > 0) {	Timer--;	return;		}
 
-	if ((++PreTimer >= PRD_200HZ) && !LogEv.EventFlag)						// Запись по секунде	
-	{			
+	if ((++PreTimer >= PRD_200HZ) && !LogEv.EventFlag)	// Запись по секунде
+	{
 		PreTimer = 0;
 
-		LogEvBuffer[LogEvBufIndex].LogStatus 	 = GrA->Status;
+		LogEvBuffer[LogEvBufIndex].LogStatus = GrA->Status;
 		LogEvBuffer[LogEvBufIndex].LogPositionPr = GrA->PositionPr;
-		LogEvBuffer[LogEvBufIndex].LogTorque	 = GrA->Torque;
-		LogEvBuffer[LogEvBufIndex].LogUr		 = GrA->Ur;
-		LogEvBuffer[LogEvBufIndex].LogUs		 = GrA->Us;
-		LogEvBuffer[LogEvBufIndex].LogUt		 = GrA->Ut;
-		LogEvBuffer[LogEvBufIndex].LogIu		 = GrA->Iu;
-		LogEvBuffer[LogEvBufIndex].LogIv		 = GrA->Iv;
-		LogEvBuffer[LogEvBufIndex].LogIw		 = GrA->Iw;
-		LogEvBuffer[LogEvBufIndex].LogTemper	 = GrA->Temper;
-		LogEvBuffer[LogEvBufIndex].LogInputs	 = GrA->Inputs.all;
-		LogEvBuffer[LogEvBufIndex].LogOutputs 	 = GrA->Outputs.all;
+		LogEvBuffer[LogEvBufIndex].LogTorque = GrA->Torque;
+		LogEvBuffer[LogEvBufIndex].LogUr = GrA->Ur;
+		LogEvBuffer[LogEvBufIndex].LogUs = GrA->Us;
+		LogEvBuffer[LogEvBufIndex].LogUt = GrA->Ut;
+		LogEvBuffer[LogEvBufIndex].LogIu = GrA->Iu;
+		LogEvBuffer[LogEvBufIndex].LogIv = GrA->Iv;
+		LogEvBuffer[LogEvBufIndex].LogIw = GrA->Iw;
+		LogEvBuffer[LogEvBufIndex].LogTemper = GrA->Temper;
+		LogEvBuffer[LogEvBufIndex].LogInputs = GrA->Inputs.all;
+		LogEvBuffer[LogEvBufIndex].LogOutputs = GrA->Outputs.all;
 
 		// Инкрементируем текущий индекс в буфере. Предыдущие накопленные данные не удаляем.
-		if (++LogEvBufIndex >= LOG_EV_BUF_CELL_COUNT)	
-			{ LogEvBufIndex = 0; }
+		if (++LogEvBufIndex >= LOG_EV_BUF_CELL_COUNT)
+		{
+			LogEvBufIndex = 0;
+		}
 	}
 }
 
@@ -1110,8 +1119,12 @@ void BlkSignalization(void)	// Сигнализация на блоке
 		DspTimer = 0;
 		if (PowerEnable)
 		{
+		#if BUR_90
+			CPU_LED = !CPU_LED;
+		#else
 			Reg->bit.DspOn = !Reg->bit.DspOn;
 			Reg->bit.Pdu = !Reg->bit.Pdu;
+		#endif
 		}
 	}
 	

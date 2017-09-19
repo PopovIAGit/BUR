@@ -71,7 +71,6 @@
 								<option id="com.ti.ccstudio.buildDefinitions.C2000_6.2.linkerID.LIBRARY.823652590" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.C2000_6.2.linkerID.LIBRARY" valueType="libs">
 									<listOptionValue builtIn="false" value="&quot;ApFilter1_v01.00.l28&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;ApFilter3_v01.00.l28&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;Calibs_v01.02.l28&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;csl_v01.03.l280x&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;Inputs_v01.01.l28&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;iqDMC_v01.02.l28&quot;"/>

@@ -1,7 +1,11 @@
 #ifndef _RIM_DEVICES_H_
 #define _RIM_DEVICES_H_
 
+#if BUR_90
+#include "fm25v10.h"
+#else
 #include "at25xxx.h"
+#endif
 #include "display.h"
 #include "displhal.h"
 #include "dac7513.h"
@@ -22,6 +26,7 @@
 #define TEN_OFF			GpioDataRegs.GPADAT.bit.GPIO27
 #define TEN_ON_STATUS	GpioDataRegs.GPADAT.bit.GPIO13
 #define BT_ON_OFF		GpioDataRegs.GPADAT.bit.GPIO25 // 0-on
+#define CPU_LED			GpioDataRegs.GPADAT.bit.GPIO10
 
 #define CS_PORT			GpioDataRegs.GPADAT.all
 #define CS0				(1UL<<31)
@@ -32,7 +37,11 @@
 
 
 #define LCD_PORT		GpioDataRegs.GPADAT.all
+#if BUR_90
+#define LCD_RW			11
+#else
 #define LCD_RW			7
+#endif
 #define LCD_EN			9
 #define LCD_RS			19
 //#define LCD_ON			GpioDataRegs.GPBDAT.bit.GPIO???
@@ -131,6 +140,25 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 
 // Значения инициализации для структур
 
+
+
+#if BUR_90
+#define FM25V10_DEFAULT1 { \
+	PLIS_SPI, SPI_BRR(4000), \
+	0, 0, 0, Null, 0, 0, 0, False, \
+	0, EEPROM_RETRY,\
+	0, WRITE_TIME,\
+	Eeprom1CsSet\
+}
+
+#define FM25V10_DEFAULT2 { \
+	PLIS_SPI, SPI_BRR(4000), \
+	0, 0, 0, Null, 0, 0, 0, False, \
+	0, EEPROM_RETRY,\
+	0, WRITE_TIME,\
+	Eeprom2CsSet\
+}
+#else
 #define AT25XXX_DEFAULT1 { \
 	PLIS_SPI, SPI_BRR(4000), \
 	0, 0, 0, Null, 0, 0, 0, False, \
@@ -146,6 +174,12 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 	0, WRITE_TIME,\
 	Eeprom2CsSet\
 }
+#endif
+
+
+
+
+
 
 #define DISPLAY_DEFAULT { \
 	PLIS_SPI, SPI_BRR(4000), \
@@ -189,7 +223,7 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 
 #define ENCODER_DEFAULT { \
 	PLIS_SPI, SPI_BRR(1000), \
-	14, 0, 0, 0UL, \
+	14, 0x3FFF, 0, 0UL, \
 	&Ram.GroupC.RevErrValue, \
 	&Ram.GroupC.RevErrLevel, \
 	0, 0UL, 15, 0, 0, 0, 0, 0, false, false, false, \
@@ -232,8 +266,15 @@ __inline void AtCsSet(Byte Lev)		 	{CS_AT = Lev;}
 
 
 // Глобальные структуры
+
+#if BUR_90
+extern TFM25V10 	Eeprom1;
+extern TFM25V10		Eeprom2;
+#else
 extern AT25XXX 		Eeprom1;
-extern AT25XXX		Eeprom2;
+extern AT25XXX		Eeprom2
+#endif
+
 extern ADT7301		TempSens;
 extern ENCODER		Encoder;
 extern EN_DPMA15	enDPMA15;
@@ -271,7 +312,10 @@ void RimDevicesInit(void);
 Bool RimDevicesRefresh(void);
 void ReadParams(void);
 void RtcControl(void);
-void EEPROM_Update(AT25XXX *Eeprom);
+//void EEPROM_Update(AT25XXX *Eeprom);
+
+void EEPROM_Update(TFM25V10 *Eeprom);
+
 void EEPROM_Func(Byte Memory, Byte Func, 
 	Uns Addr, Uns *Data, Uns Count);
 void RimIndication(void);

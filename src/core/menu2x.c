@@ -718,6 +718,23 @@ static void ShowGroup(MENU *p)
 			if (p->Level == 2) GroupTbl = &p->SubGroups[p->SubGroup.Position + p->SubGroup.Addr];
 			PFUNC_blkRead((Int *)GroupTbl->HiString, (Int *)p->HiString, 16);
 			PFUNC_blkRead((Int *)GroupTbl->LoString, (Int *)p->LoString, 16);
+
+			if (p->Group.Position == 2)
+			  {
+			    if (IsPassword2()) Menu.HiString[15] = CODEON_ICO;
+			    else Menu.HiString[15] = CODEOFF_ICO;
+			  }
+                        if (p->Group.Position == 1)
+                          {
+                            if (IsPassword1()) Menu.HiString[15] = CODEON_ICO;
+                            else Menu.HiString[15] = CODEOFF_ICO;
+                          }
+
+                        if (p->Group.Position == 3)
+                          {
+                            if (IsPassword1()) Menu.HiString[15] = CODEON_ICO;
+                            else Menu.HiString[15] = CODEOFF_ICO;
+                          }
 		}
 	}
 }

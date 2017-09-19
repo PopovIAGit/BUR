@@ -5,27 +5,33 @@
 --------------------------*/
 
 #include "config.h"
+#if BUR_90
+TFM25V10  Eeprom1   	= FM25V10_DEFAULT1;
+TFM25V10  Eeprom2   	= FM25V10_DEFAULT2;
+#else
+AT25XXX  Eeprom1        = AT25XXX_DEFAULT1;
+AT25XXX  Eeprom2        = AT25XXX_DEFAULT2;
+#endif
 
-AT25XXX  Eeprom1   = AT25XXX_DEFAULT1;
-AT25XXX  Eeprom2   = AT25XXX_DEFAULT2;
-TDisplay Display   = DISPLAY_DEFAULT;
-DAC7513  Dac       = DAC7513_DEFAULT;
-ENCODER  Encoder   = ENCODER_DEFAULT;
-EN_DPMA15	enDPMA15;
-ADT7301  TempSens  = ADT7301_DEFAULT;
-//DS1305   Ds1305    = DS1305_DEFAULT;
-DS3234   Ds3234    = DS3234_DEFAULT;
-RTC_Obj  Rtc       = RTC_DEFAULT;
-TPult 	 Pult 	   = PULT_DEFAULTS;
+
+TDisplay Display        = DISPLAY_DEFAULT;
+DAC7513  Dac            = DAC7513_DEFAULT;
+ENCODER  Encoder        = ENCODER_DEFAULT;
+EN_DPMA15	   enDPMA15;
+ADT7301  TempSens       = ADT7301_DEFAULT;
+//DS1305   Ds1305       = DS1305_DEFAULT;
+DS3234   Ds3234         = DS3234_DEFAULT;
+RTC_Obj  Rtc            = RTC_DEFAULT;
+TPult 	 Pult 	        = PULT_DEFAULTS;
 LOG_INPUT BtnOpen   	= BTN_DEFAULT(0, False);	// было true
 LOG_INPUT BtnClose  	= BTN_DEFAULT(1, False);	// было true
 LOG_INPUT BtnStop_MU    = BTN_DEFAULT(2, False);// возможно надо поменять на тру
 LOG_INPUT BtnStop_DU    = BTN_DEFAULT(3, False);
-LOG_INPUT TuOpen  = TU_DEFAULT(&ExtReg,  SBEXT_OPEN,   0);
-LOG_INPUT TuClose = TU_DEFAULT(&ExtReg,  SBEXT_CLOSE,  1);
-LOG_INPUT TuStop  = TU_DEFAULT(&ExtReg,  SBEXT_STOP,   2);
-LOG_INPUT TuMu    = TU_DEFAULT2(&ExtReg, SBEXT_MU,     3);
-LOG_INPUT TuDu    = TU_DEFAULT2(&ExtReg, SBEXT_DU,     4);
+LOG_INPUT TuOpen        = TU_DEFAULT(&ExtReg,  SBEXT_OPEN,   0);
+LOG_INPUT TuClose       = TU_DEFAULT(&ExtReg,  SBEXT_CLOSE,  1);
+LOG_INPUT TuStop        = TU_DEFAULT(&ExtReg,  SBEXT_STOP,   2);
+LOG_INPUT TuMu          = TU_DEFAULT2(&ExtReg, SBEXT_MU,     3);
+LOG_INPUT TuDu          = TU_DEFAULT2(&ExtReg, SBEXT_DU,     4);
 
 
 //управление
@@ -59,14 +65,20 @@ void RimDevicesInit(void)
 	SetPlisAddr(CS_RESET);
 	DelayUs(100);
 	SetPlisAddr(CS_NONE);
-
+#if BUR_90
+	FM25V10_Init(&Eeprom1);
+	FM25V10_Init(&Eeprom2);
+#else
 	AT25XXX_Init(&Eeprom1);
 	AT25XXX_Init(&Eeprom2);
+#endif
+
+
 //	DS1305_Init(&Ds1305);
 	DS3234_Init(&Ds3234);
 
-    enDPMA15.CsFunc = &EncCsSet;
-    encoderDPMA15_Init(&enDPMA15);
+        enDPMA15.CsFunc = &EncCsSet;
+        encoderDPMA15_Init(&enDPMA15);
 
 
 	DISPL_AddSymb(&Display,0,ToPtr(Icons), NUM_ICONS);
@@ -106,18 +118,41 @@ Bool RimDevicesRefresh(void)
 void ReadParams(void)
 {
 	ReadAllParams();
-	while (!IsMemParReady()) { AT25XXX_Update(&MemPar);}				// Ждем пока прочтет все параметры из памяти																	// Функция вызывается при инициализации, поэтому необходимо зациклить	
+
+#if BUR_90
+	while (!IsMemParReady()) { FM25V10_Update(&MemPar);}
+#else
+	while (!IsMemParReady()) { AT25XXX_Update(&MemPar);}				// Ждем пока прочтет все параметры из памяти																	// Функция вызывается при инициализации, поэтому необходимо зациклить
+#endif
+
+
+
 }
 
-void EEPROM_Update(AT25XXX *Eeprom)
+#if BUR_90
+void EEPROM_Update(TFM25V10 *Eeprom)
 {
+	FM25V10_Update(Eeprom);
+}
+#else
+void EEPROM_Update(AT25XXX *Eeprom)
+
 	AT25XXX_Update(Eeprom);
 }
+#endif
+
+
 
 void EEPROM_Func(Byte Memory, Byte Func, 
 	Uns Addr, Uns *Data, Uns Count)
 {
+
+#if BUR_90
+	TFM25V10 *Eeprom;
+#else
 	AT25XXX *Eeprom;
+#endif
+
 	
 	switch (Memory)
 	{
@@ -143,7 +178,13 @@ void SetPlisData(void)
 	SetPlisAddr(CS_NONE);
 
 	SetPlisAddr(CS_LCD_ON);
+
+#if BUR_90
+	SPI_send(PLIS_SPI, (Ram.GroupH.PP90Reg.all & 0x7));
+#else
 	SPI_send(PLIS_SPI, !LcdEnable);
+#endif
+
 	SetPlisAddr(CS_NONE);
 
 }

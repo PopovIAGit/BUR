@@ -2,29 +2,25 @@
 #define CONFIG_
 
 // Глобальные настройки
-/*#define VERSION					1114	// Версия проекта
-#define SUBVERSION				15		// Подверсия проекта*/
-
 #define DEVICE_GROUP			1 
 #define VERSION					129
 #define MODULE_VERSION			70
-#define SUBVERSION				03
+#define SUBVERSION				07
 
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)
 #define BT_AUTH_CODE_STRING		"5124"	// Строка с кодом авторизации Bluetooth
 
-
 #define SYSCLK				100e6		// Системная частота (кол-во операций в сек)
 #define CLKIN				50e6		// Частота кварца
-#define CLK_VS_TRN_FREQ		20000U	// Частота тактирования тиристоров
-#define CLK_VS_TRN_PERIOD	(SYSCLK / CLK_VS_TRN_FREQ)		// Период ШИМ
+#define CLK_VS_TRN_FREQ		        20000U	// Частота тактирования тиристоров
+#define CLK_VS_TRN_PERIOD	        (SYSCLK / CLK_VS_TRN_FREQ)		// Период ШИМ
 //#define IRDA_FREQ			((SYSCLK / 528e3) - 1)	// Частота IRDA
 #define IRDA_FREQ			((SYSCLK / 528e3) - 1)	// Частота IRDA
 
 // Конфигурация операционной системы
-#define HZ						18e3		// Частота основного прерывания RTOS
+#define HZ					18e3		// Частота основного прерывания RTOS
 #define PRD_2KHZ				2000		// Периодическая задача 2000 Гц
 #define PRD_200HZ				200			// Периодическая задача 200 Гц
 #define PRD_50HZ				50			// Периодическая задача 50 Гц

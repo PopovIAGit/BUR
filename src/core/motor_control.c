@@ -151,13 +151,20 @@ void MotorControlUpdate(void)
 // -----------------------------------------------------------------
 __inline void ADC_Aquisition(void){		//18kHz
 
+	GrC->ADCIu = ADC_IU;
+	GrC->ADCIv = ADC_IV;
+	GrC->ADCIw = ADC_IW;
+	GrC->ADCUr = ADC_UR;
+	GrC->ADCUs = ADC_US;
+	GrC->ADCUt = ADC_UT;
+
 	URfltr.Input = _IQ16toIQ(ADC_UR);
 	USfltr.Input = _IQ16toIQ(ADC_US);
 	UTfltr.Input = _IQ16toIQ(ADC_UT);
 
-		IUfltr.Input = _IQ16toIQ(ADC_IU);
-		IVfltr.Input = _IQ16toIQ(ADC_IV);
-		IWfltr.Input = _IQ16toIQ(ADC_IW);
+	IUfltr.Input = _IQ16toIQ(ADC_IU);
+	IVfltr.Input = _IQ16toIQ(ADC_IV);
+	IWfltr.Input = _IQ16toIQ(ADC_IW);
 
 
 	ApFilter3Calc(&URfltr);
@@ -173,6 +180,33 @@ __inline void DmcPrepare(void){	//18kHz
 		UR.Input = ADC_CONV(_IQtoIQ16(URfltr.Output), GrH->UR_Mpy, GrH->UR_Offset);
 		US.Input = ADC_CONV(_IQtoIQ16(USfltr.Output), GrH->US_Mpy, GrH->US_Offset);
 		UT.Input = ADC_CONV(_IQtoIQ16(UTfltr.Output), GrH->UT_Mpy, GrH->UT_Offset);
+
+#if BUR_90
+		// При выборе типа привода задаем коэффициент для датчиков тока в зависимости от нужной схемы
+		if (GrH->PP90Reg.bit.DevOn == 0 && GrH->IU_Mpy != 3800) // малые токи
+		{
+			if (IsMemParReady())
+			{
+				GrH->IU_Mpy = 3800;	//??? переснять, сейчас данные для старой платы
+				GrH->IV_Mpy = 3800;
+				GrH->IW_Mpy = 3800;
+				WritePar(GetAdr(GroupH.IU_Mpy), &GrH->IU_Mpy, 3);
+			}
+		}
+		else if (GrH->PP90Reg.bit.DevOn == 1 && GrH->IU_Mpy != 3800) // большие токи
+		{
+			if (IsMemParReady())
+			{
+				GrH->IU_Mpy = 3800;
+				GrH->IV_Mpy = 3800;
+				GrH->IW_Mpy = 3800;
+				WritePar(GetAdr(GroupH.IU_Mpy), &GrH->IU_Mpy, 3);
+			}
+		}
+
+		GrC->DevOn = GrH->PP90Reg.bit.DevOn;
+#endif
+
 		IU.Input = ADC_CONV(_IQtoIQ16(IUfltr.Output), GrH->IU_Mpy, GrH->IU_Offset);
 		IV.Input = ADC_CONV(_IQtoIQ16(IVfltr.Output), GrH->IV_Mpy, GrH->IV_Offset);
 		IW.Input = ADC_CONV(_IQtoIQ16(IWfltr.Output), GrH->IW_Mpy, GrH->IW_Offset);
@@ -1007,7 +1041,9 @@ __inline void TorqueObsInit(void)
 		case dt100_A25_U: PFUNC_blkRead(&drive1,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 						  GrH->UporOnly = 1;
-
+					      #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 						  if ((GrC->Inom != InomDefU[0])||(GrC->MaxTorque != MomMaxDef[0]))
 						  {
 						  	if (IsMemParReady())
@@ -1022,6 +1058,10 @@ __inline void TorqueObsInit(void)
 		case dt100_A50_U: PFUNC_blkRead(&drive2,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 
 						  if ((GrC->Inom != InomDefU[1])||(GrC->MaxTorque != MomMaxDef[1]))
 						  {
@@ -1038,6 +1078,9 @@ __inline void TorqueObsInit(void)
 					 		GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 						  if ((GrC->Inom != InomDefU[2])||(GrC->MaxTorque != MomMaxDef[2]))
 						  {
 						  	if (IsMemParReady())
@@ -1053,6 +1096,9 @@ __inline void TorqueObsInit(void)
 					 		GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 						  if ((GrC->Inom != InomDefU[3])||(GrC->MaxTorque != MomMaxDef[3]))
 						  {
 						  	if (IsMemParReady())
@@ -1068,6 +1114,9 @@ __inline void TorqueObsInit(void)
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 						  if ((GrC->Inom != InomDefU[4])||(GrC->MaxTorque != MomMaxDef[4]))
 						  {
 						  	if (IsMemParReady())
@@ -1084,6 +1133,9 @@ __inline void TorqueObsInit(void)
 					GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 						  if ((GrC->Inom != InomDefU[5])||(GrC->MaxTorque != MomMaxDef[5]))
 						  {
 						  	if (IsMemParReady()) 
@@ -1099,6 +1151,9 @@ __inline void TorqueObsInit(void)
 					GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 1;
+						  #endif
 						  if ((GrC->Inom != InomDefU[6])||(GrC->MaxTorque != MomMaxDef[6]))
 						  {
 						  	if (IsMemParReady())
@@ -1114,6 +1169,9 @@ __inline void TorqueObsInit(void)
 					 	GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 1;
+						  #endif
 						  if ((GrC->Inom != InomDefU[7])||(GrC->MaxTorque != MomMaxDef[7]))
 						  {
 						  	if (IsMemParReady())
@@ -1129,6 +1187,9 @@ __inline void TorqueObsInit(void)
 					 	  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 1;
+						  #endif
 						  if ((GrC->Inom != InomDefU[8])||(GrC->MaxTorque != MomMaxDef[8]))
 						  {
 						  	if (IsMemParReady())
@@ -1144,6 +1205,9 @@ __inline void TorqueObsInit(void)
 						  GrH->UporOnly = 0;
 						  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+						  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 1;
+						  #endif
 						  if ((GrC->Inom != InomDefU[9])||(GrC->MaxTorque != MomMaxDef[9]))
 						  {
 						  	if (IsMemParReady())
@@ -1160,6 +1224,9 @@ __inline void TorqueObsInit(void)
 								  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 								  GrH->UporOnly = 0;
 
+					      #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 								  if ((GrC->Inom != InomDefS[0])||(GrC->MaxTorque != MomMaxDef[0]))
 								  {
 								  	if (IsMemParReady())
@@ -1175,6 +1242,9 @@ __inline void TorqueObsInit(void)
 								  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+								  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 								  if ((GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
 								  {
 								  	if (IsMemParReady())
@@ -1190,6 +1260,9 @@ __inline void TorqueObsInit(void)
 							 		GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+								  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 								  if ((GrC->Inom != InomDefS[2])||(GrC->MaxTorque != MomMaxDef[2]))
 								  {
 								  	if (IsMemParReady())
@@ -1205,6 +1278,9 @@ __inline void TorqueObsInit(void)
 							 		GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+								  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 								  if ((GrC->Inom != InomDefS[3])||(GrC->MaxTorque != MomMaxDef[3]))
 								  {
 								  	if (IsMemParReady())
@@ -1220,6 +1296,9 @@ __inline void TorqueObsInit(void)
 								  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+								  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 0;
+						  #endif
 								  if ((GrC->Inom != InomDefS[4])||(GrC->MaxTorque != MomMaxDef[4]))
 								  {
 								  	if (IsMemParReady())
@@ -1250,6 +1329,9 @@ __inline void TorqueObsInit(void)
 								GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
+								  #if BUR_90
+						  GrH->PP90Reg.bit.DevOn = 1;
+						  #endif
 								  if ((GrC->Inom != InomDefS[6])||(GrC->MaxTorque != MomMaxDef[6]))
 								  {
 								  	if (IsMemParReady())
@@ -1264,7 +1346,9 @@ __inline void TorqueObsInit(void)
 				case dt4000_G18_S : PFUNC_blkRead(&drive18,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 							 	GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
-
+									#if BUR_90
+									GrH->PP90Reg.bit.DevOn = 1;
+									#endif
 								  if ((GrC->Inom != InomDefS[7])||(GrC->MaxTorque != MomMaxDef[7]))
 								  {
 								  	if (IsMemParReady())
@@ -1279,7 +1363,9 @@ __inline void TorqueObsInit(void)
 				case dt10000_D6_S : PFUNC_blkRead(&drive19,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 							 	  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
-
+									#if BUR_90
+									GrH->PP90Reg.bit.DevOn = 1;
+									#endif
 								  if ((GrC->Inom != InomDefS[8])||(GrC->MaxTorque != MomMaxDef[8]))
 								  {
 								  	if (IsMemParReady())
@@ -1294,6 +1380,10 @@ __inline void TorqueObsInit(void)
 				case dt10000_D12_S: PFUNC_blkRead(&drive20,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 								  GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+
+								  #if BUR_90
+								  GrH->PP90Reg.bit.DevOn = 1;
+								  #endif
 
 								  if ((GrC->Inom != InomDefS[9])||(GrC->MaxTorque != MomMaxDef[9]))
 								  {
@@ -1643,7 +1733,8 @@ void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись м
 //---------------------Проверка питания источника-------------------------------
 void PowerCheck(void)			// 200 Hz 
 {
-	if(!POWER_CONTROL)			// если питание отключено
+	PowerSupplyEnable = 1;
+	/*if(!POWER_CONTROL)			// если питание отключено
 	{
 		PowerSupplyCnt++;		// задержка на выключение
 		if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
@@ -1652,7 +1743,7 @@ void PowerCheck(void)			// 200 Hz
 	{
 		PowerSupplyEnable = 1;
 		PowerSupplyCnt = 0;
-	}				
+	}	*/
 }
 //----------Логика управления тиристорами для динамического торможения---------------------------
 void SifuControlForDynBrake (SIFU *p)

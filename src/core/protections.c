@@ -579,6 +579,7 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 	static LgUns StartPos;
 	static Uns   Timer = 0;
 	static Uns   PhOrdZone = 10;
+    LgInt data = (RevMax + 1)/2;
 	LgInt  Delta = 0;
 
 //	if(Fault_Delay>0) return;
@@ -609,8 +610,21 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 	{												// где REV_MAX максимальное численное значение энкодера
 		Delta = Revolution - StartPos;				// посчитали дельту смещения как текущее положение минус запомненое начальное положение
 
-		if (Delta >  ((RevMax+1)/2)) Delta -= (RevMax+1);		// если дельта больше 2000 то декрементируем дельту на 4000
-		if (Delta < -((RevMax+1)/2)) Delta += (RevMax+1);		// если дельта меньше -2000 то инкрементируем дельту на 4000
+		if (GrC->EncoderType == 0)
+		{
+			if (Delta > ((RevMax + 1) / 2))
+				Delta -= (RevMax + 1);// если дельта больше 2000 то декрементируем дельту на 4000
+			if (Delta < -((RevMax + 1) / 2))
+				Delta += (RevMax + 1);// если дельта меньше -2000 то инкрементируем дельту на 4000
+		}
+		else if (GrC->EncoderType == 1)
+		{
+			if (Delta > data)
+				Delta -= (RevMax + 1);// если дельта больше 2000 то декрементируем дельту на 4000
+			if (Delta < -data)
+				Delta += (RevMax + 1);// если дельта меньше -2000 то инкрементируем дельту на 4000
+		}
+
 
 		EngPhOrdValue = 0;	// сбрасываем чередование фаз, останется нулем если вращения небыло
 	
