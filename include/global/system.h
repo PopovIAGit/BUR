@@ -89,7 +89,9 @@ TPrdElem List2[] = {
 	PrdElemInit(PrtCalc,				&Th,				1),	//	25
 	PrdElemInit(PrtCalc,				&Th_Err,			1),	//	26
 	PrdElemInit(PrtCalc,				&Tl,				1),	//	27
+#if !BUR_90
 	PrdElemInit(PrtCalc,			    &DrvT,				1),	//	28
+#endif
 	PrdElemInit(DAC7513_Update,			&Dac, 				1) 	//	29
 };
 

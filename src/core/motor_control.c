@@ -29,6 +29,7 @@ PH_ORDER   PhEl 	= PH_EL_DEFAULT;
 TDmControl Dmc  	= DMC_DEFAULT;
 TTorqObs   Torq;
 
+Int  lastDirection	= 0;		// Последнее запомненное направление вращения. Необходим для выставления "муфты в открытие/закрытие"
 Uns  ZazorTimer 	= 0;
 Uns  Iload[3] 		= {0,0,0};	// действующие токи в А (токи нагрузки)
 Uns  Ipr[3]   		= {0,0,0};	// действующие токи в % от номинального
@@ -634,6 +635,8 @@ register Uns Tmp;
 	Dmc.TorqueSet = 0xFFFF;     // выставляем максимальный момент
 	if (Dmc.RequestDir < 0) GrA->Status.bit.Closing = 1; // выставлям состояни "закрытие"
 	if (Dmc.RequestDir > 0) GrA->Status.bit.Opening = 1; // выставлям состояни "открытие"
+
+	lastDirection = Dmc.RequestDir;					     // Запоминаем направление вращения в переменную lastDirection
 
 	Tmp = (GrA->Status.all & STATUS_MOVE_MASK);  // Записываем в темп 2 бита (открывается и закрывается, который есть тот и стоит)
 	if (RunStatus == Tmp) ZazorTimer = 0;		   // если направление не поменялось ничего
@@ -1733,8 +1736,7 @@ void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись м
 //---------------------Проверка питания источника-------------------------------
 void PowerCheck(void)			// 200 Hz 
 {
-	PowerSupplyEnable = 1;
-	/*if(!POWER_CONTROL)			// если питание отключено
+	if(!POWER_CONTROL)			// если питание отключено
 	{
 		PowerSupplyCnt++;		// задержка на выключение
 		if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
@@ -1743,7 +1745,7 @@ void PowerCheck(void)			// 200 Hz
 	{
 		PowerSupplyEnable = 1;
 		PowerSupplyCnt = 0;
-	}	*/
+	}
 }
 //----------Логика управления тиристорами для динамического торможения---------------------------
 void SifuControlForDynBrake (SIFU *p)

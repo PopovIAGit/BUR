@@ -31,6 +31,8 @@
 #define IsProgramming()				(Menu.State > 0)
 #define IsTested()					(GrA->Status.bit.Test)
 #define IsMuffActive()				(GrA->Status.bit.Mufta)
+#define IsMVOactive()				(GrA->Status.bit.Mufta & (lastDirection > 0))
+#define IsMVZactive()				(GrA->Status.bit.Mufta & (lastDirection < 0))
 #define IsLocalControl()			(GrA->Status.bit.MuDu)
 #define IsBlockFault()				(GrA->Status.bit.BlkIndic)
 #define IsTsFault()					(GrA->Status.bit.TsIndic)

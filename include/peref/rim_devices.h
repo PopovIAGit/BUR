@@ -102,6 +102,8 @@
 #define SBEXT_STOP		2
 #define SBEXT_MU		3
 #define SBEXT_DU		4
+#define SBEXT_DEBLOK	5
+#define SBEXT_TEMPER_M	6
 
 #define SBEXT_TEN		7
 

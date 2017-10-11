@@ -206,7 +206,8 @@ typedef union _TInputReg {
 		Uns Stop:1;       	// 2     Стоп
 		Uns Mu:1;			// 3	 Местное 
 		Uns Du:1;			// 4	 Дистанция
-		Uns Rsvd:11;      	// 5-15  Резерв
+		Uns Deblok:1;		// 5 	 Деблокировка
+		Uns Rsvd:10;      	// 6-15  Резерв
 	} bit;
 } TInputReg;
 
@@ -255,7 +256,8 @@ typedef union _TInputMask {
 		Uns Open:1;     // 2     Стоп
 		Uns Close:1;	// 3	 Му
 		Uns Stop:1;		// 4	 Ду
-		Uns Rsvd:11;    // 5-15  Резерв
+		Uns Deblok:1;	// 5	 Деблокировка
+		Uns Rsvd:10;    // 6-15  Резерв
 	 } bit;
 } TInputMask;
 
@@ -629,6 +631,13 @@ typedef union _TTEK_Discrete
 	} bit;
 } TTEK_Discrete;
 
+// Структура дискретного входа
+typedef struct _TDigitalInput {
+	Uns		 inputBit;					// Входной сигнал
+	Uns		 timeout;					// Время срабатывания
+	Uns		 timer;						// Таймер
+	Uns		 output;					// Выход
+} TDigitalInput;
 
 
 #ifdef __cplusplus

@@ -5,7 +5,7 @@
 #define DEVICE_GROUP			1 
 #define VERSION					129
 #define MODULE_VERSION			70
-#define SUBVERSION				07
+#define SUBVERSION				8
 
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)

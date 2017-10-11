@@ -63,11 +63,11 @@ typedef struct _TGroupB
 	Uns             TuLockSeal;         // 19.Блокировка залипани
 	Uns             TuTime;             // 20.Время команды
 	#if BUR_M
-	Uns 			Rsvd1[2];
+	Uns 			Rsvd1[1];
 	#else
 	TInputType 		InputType;			// 21.Тип входного сигнала 24/220
-	TInputMask	    InputMask;			// 22.Маска дискретных входов
 	#endif
+	TInputMask	    InputMask;			// 22.Маска дискретных входов
 	TOutputMask 	OutputMask;			// 23.Маска дискретных выходов
 	TBaudRate       RsBaudRate;         // 24.Скорость связи
 	Uns             RsStation;          // 25.Адрес станции
@@ -319,7 +319,8 @@ typedef struct _TGroupH
 	Uns             Imid;				 // 135.Средний ток
   	Uns             ISkewValue;          // 136.Асиметрия токов нагрузки
 	Uns             Position;            // 137.Положение
-	Uns 			Rsvd3[2];			 // 138-139.Резерв
+	Uns				initComplete;		 // 138.Флаг того, что инициализация завершена (или нет)
+	Uns 			Rsvd3;			 	 // 139.Резерв
 } TGroupH;
 
 // Группа E (Адрес 400, Количество 32)

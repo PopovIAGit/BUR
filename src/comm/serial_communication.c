@@ -17,6 +17,8 @@ char StrDev[] = {"BUR-T_000000"};
 
 Uns DbgDiscrIn = 0;
 
+extern Uns PowerSupplyEnable; 	// Наличие питания источника
+
 Uns PiCalcCRC(Byte *Buf, Byte Length);
 
 
@@ -98,6 +100,9 @@ void PiUpdate(void)
 {
 	register Uns CRC;
 
+	// Если инициализация еще не завершена, или питание потеряно, не связываемся с ПИ
+	if (!GrH->initComplete || !PowerSupplyEnable) return;
+
 	switch (PiData.State)
 	{
 		case 0:	{							// Заполняем буфер данными
@@ -140,8 +145,9 @@ void PiUpdate(void)
 			}
 			else	{
 				PiData.DiscrIn220 = PiData.RxFrame[2];
+				#if !BUR_90
 				PiData.DiscrIn24  = PiData.RxFrame[3];
-					
+				#endif
 				PiData.ConnTimer = 0;
 				PiData.Connect = TRUE;
 			}

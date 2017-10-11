@@ -307,6 +307,8 @@ void ProtectionsControl(void)	// для расчета ассиметрии
 
 void FaultIndication(void)				// индикация ошибок устройства и технологического процесса			
 {
+	static Uns 	tempMotorTimer = 0;
+
 	if(Fault_Delay > 0) {Fault_Delay--; return;}
 
 	GrA->Faults.Proc.bit.Overway = OverWayFlag;	// если уплотнение недастигнуто
@@ -328,6 +330,27 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 	#endif
 
 	GrH->FaultsDev.all &= ~DEV_ERR_MASK;					// сбросили ошибки устройства
+
+	#if BUR_90
+	// Обработка защиты от перегрева двигателя для БУР_90
+	if (!PiData.Connect)					// Если нет связи с ПИ
+	{
+		PrtCalc(&DrvT);						// Защита работает по классическому методу
+	}										// Иначе
+	else if ( (GrC->DriveTemper != pmOff) && !GrG->TestCamera )
+	{										// Смотрим на приходящий с ПИ сигнал
+		if (ExtReg >> SBEXT_TEMPER_M)		// Если с ПИ пришел сигнал о перегреве двигателя
+		{
+			if (tempMotorTimer++ > PRD_50HZ)
+			{								// .. то выставляем аварию при переполнении таймера
+				tempMotorTimer = 0;
+				GrA->Faults.Proc.bit.Drv_T = 1;
+			}
+		}
+		else tempMotorTimer = 0;
+	}
+	else GrA->Faults.Proc.bit.Drv_T = 0;
+	#endif
 
 	if (GrC->ErrIndic != pmOff)							// если индикация ошибок не выключина
 	{

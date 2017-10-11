@@ -12,7 +12,7 @@ interface.c
 
 
 TLogEv			LogEv = LOG_EV_DEFAULTS;				// Экземпляр структуры журнала событий
-TLogEvBuffer	        LogEvBuffer[LOG_EV_BUF_CELL_COUNT];		// Буфер параметров, которое записываются до наступления события
+TLogEvBuffer	LogEvBuffer[LOG_EV_BUF_CELL_COUNT];		// Буфер параметров, которое записываются до наступления события
 TLogCmd			LogCmd = LOG_CMD_DEFAULTS;				// Экземпляр структуры журнала команд
 TLogParam 		LogParam = LOG_PARAM_DEFAULTS;			// Экземпляр структуры журнала изменения параметров
 
@@ -68,10 +68,15 @@ Uns TempMuDu = 0;
 Uns MuDuDefTimer = 0;
 Uns LedTestTimer = 0;
 
+TDigitalInput dinDeblok;
+Uns		startTimer = PRD_10HZ*2;	// Таймер инициализации. Пока он не равен 0, идет инициализация. 2 секунды.
+extern  Int  lastDirection;
+
 __inline void CheckParams(void);
 __inline void DefParamsSet(Uns Code);
 static   void PutAddData(Uns Addr, Uns *Value);
 static   void UpdateCode(Uns Addr, Uns *Code, Uns Def);
+Uns	DigitalInputUpdate (TDigitalInput *);
 
 Uns PowerOffCnt = 0;
 Uns PowerOnCnt = 0;
@@ -127,6 +132,7 @@ void InterfaceInit(void)
 	GrA->MkuPoVersion = (DEVICE_GROUP * 1000) + VERSION; // 1*1000+114 = 1114
 	GrC->MkuPoSubVersion = (MODULE_VERSION * 100) + SUBVERSION;
 	GrG->SimulSpeedMode = 0;	// И всякий случай выключаем режим симуляции скорости
+	GrH->initComplete = false;	// Снимаем флаг завершения инициализации
 
 	if (GrH->ScFaults) LowPowerReset |= BIT0;
 
@@ -177,6 +183,15 @@ void InterfIndication(void)
 	GrA->Inputs.all      = GrH->Inputs.all;
 	GrA->Outputs.all     = GrH->Outputs.all;
 	GrA->CycleCnt 	     = GrH->CycleCnt;
+
+	// Выставление флага "завершения инициализации"
+	if (startTimer)					// Пока таймер больше 0
+	{
+		startTimer--;
+		GrH->initComplete = false;	// Считаем, что инициализация еще не завершена
+	}
+	else							// Если таймер опустился до нуля
+		GrH->initComplete = true;	// Считаем, что инициализация завершена
 }
 
 void RefreshData(void)
@@ -1039,11 +1054,11 @@ void RemoteControl(void) //24 - 220 + маски,
 
 	if(GrB->InputType == it24)		
 	{
-		ExtReg = ((Uns)(PiData.DiscrIn24 & 0x1F));
+		ExtReg = ((Uns)(PiData.DiscrIn24 & 0x7F));
 	}
 	else if(GrB->InputType == it220)	
 	{  	
-		ExtReg = ((Uns)(PiData.DiscrIn220 & 0x1F));
+		ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
 	}
 		
 	GrH->Inputs.bit.Open  = (Uns)TuOpen.Flag  ^ (Uns)GrB->InputMask.bit.Open;	
@@ -1051,6 +1066,11 @@ void RemoteControl(void) //24 - 220 + маски,
 	GrH->Inputs.bit.Stop  = (Uns)TuStop.Flag  ^ (Uns)GrB->InputMask.bit.Stop;  
 	GrH->Inputs.bit.Mu  = 	(Uns)TuMu.Flag    ^ (Uns)GrB->InputMask.bit.Mu; 
 	GrH->Inputs.bit.Du  = 	(Uns)TuDu.Flag    ^ (Uns)GrB->InputMask.bit.Du;  
+	#if BUR_90
+	dinDeblok.inputBit = ((ExtReg>>SBEXT_DEBLOK)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinDeblok.timeout = (PRD_50HZ * GrB->TuTime) / 10;
+	GrH->Inputs.bit.Deblok = DigitalInputUpdate (&dinDeblok);
+	#endif
 
 	switch(GrB->MuDuSetup)
 	{
@@ -1105,6 +1125,13 @@ void RemoteControl(void) //24 - 220 + маски,
 					}
 					break;
 	}
+
+	// Обработка дискретного входа "Деблокировка"
+	ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
+	dinDeblok.inputBit = ((ExtReg>>SBEXT_DEBLOK)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinDeblok.timeout = (PRD_50HZ * GrB->TuTime) / 10;
+	GrH->Inputs.bit.Deblok = DigitalInputUpdate (&dinDeblok);
+
 	#endif
 }
 
@@ -1128,6 +1155,13 @@ void BlkSignalization(void)	// Сигнализация на блоке
 		}
 	}
 	
+	// Если инициализация еще не завершена, не управляем светодиодами
+	if (!GrH->initComplete)
+	{
+		Reg->all = 0;
+		return;
+	}
+
 	GrA->Status.bit.BlkIndic = IsFaultExist(pmBlkSign); // индикация на блоке если есть ошибка любая, поидее можо  всегда
 	GrA->Status.bit.BlkDefect = IsDefectExist(pmBlkSign); // индикация на блоке если есть неисправность любая, поидее можо  всегда
 
@@ -1220,10 +1254,21 @@ void TsSignalization(void) //ТС
 
 	//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
 	//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
+
+
+
+			#if BUR_90
+			Reg->bit.Dout2 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
+			#else
 			Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта
+			#endif
 			Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
 	//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
+			#if BUR_90
+			Reg->bit.Dout5 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
+			#else
 			Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.powerOn;	//  Питание
+			#endif
 			Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
 			Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
 			Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
@@ -1264,6 +1309,7 @@ void TsSignalization(void) //ТС
 
 void AlgControl(void)
 {
+	static Uns prevDeblokState = 0;			// Предыдущее состояние бита "Деблокировка"
 	if (!DefFlag)
 	{
 		if (GrD->SetDefaults != 0)
@@ -1280,6 +1326,13 @@ void AlgControl(void)
 		}
 	}
 	
+	// Если обнаружен фронт дискретного входа деблокировка
+	if ((prevDeblokState != GrH->Inputs.bit.Deblok)&&(GrH->Inputs.bit.Deblok == 1))
+	{
+		GrD->PrtReset = 1;						// По нарастающему фронту сигнала Deblok аодаем команду "Сброс защит"
+	}
+	prevDeblokState = GrH->Inputs.bit.Deblok;
+
 	// Сброс защит
 	if (GrD->PrtReset != 0)
 	{	
@@ -1489,4 +1542,24 @@ void ImBufferReader(Byte LogType, Uns RecordNum)
 			}
 		}
 	}
+}
+
+// Функция обработки дискретного сигнала
+Uns	DigitalInputUpdate (TDigitalInput *p)
+{
+	if (p->inputBit)		// Если
+	{
+		if (p->timer++ >= p->timeout)
+		{
+			p->timer = p->timeout;
+			p->output = TRUE;
+		}
+	}
+	else
+	{
+		p->timer = 0;
+		p->output = FALSE;
+	}
+
+	return p->output;
 }
