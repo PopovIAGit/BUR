@@ -68,8 +68,13 @@ Uns TempMuDu = 0;
 Uns MuDuDefTimer = 0;
 Uns LedTestTimer = 0;
 
-TDigitalInput dinDeblok;
-Uns		startTimer = PRD_10HZ*2;	// Таймер инициализации. Пока он не равен 0, идет инициализация. 2 секунды.
+TDigitalInput 	dinDeblok,
+				dinStop,
+				dinClose,
+				dinOpen,
+				dinDU,
+				dinMU;
+Uns		startTimer = PRD_10HZ*1;	// Таймер инициализации. Пока он не равен 0, идет инициализация. 1 секунда.
 extern  Int  lastDirection;
 
 __inline void CheckParams(void);
@@ -1052,25 +1057,39 @@ void RemoteControl(void) //24 - 220 + маски,
 	if (!PiData.Connect) return;	// если нет связи с АВР то не обрабатывает сигналы ТУ
 	Mcu.Tu.Enable = (!IsTestMode()) && (!IsParamEditing() && !GrG->TestCamera);  // если тест то не включаем работу с ту
 
+#if !BUR_90
 	if(GrB->InputType == it24)		
 	{
-		ExtReg = ((Uns)(PiData.DiscrIn24 & 0x7F));
+		ExtReg = ((Uns)(PiData.DiscrIn24 & 0x1F));
 	}
 	else if(GrB->InputType == it220)	
 	{  	
-		ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
+		ExtReg = ((Uns)(PiData.DiscrIn220 & 0x1F));
 	}
-		
+
 	GrH->Inputs.bit.Open  = (Uns)TuOpen.Flag  ^ (Uns)GrB->InputMask.bit.Open;	
 	GrH->Inputs.bit.Close = (Uns)TuClose.Flag ^ (Uns)GrB->InputMask.bit.Close;	 
 	GrH->Inputs.bit.Stop  = (Uns)TuStop.Flag  ^ (Uns)GrB->InputMask.bit.Stop;  
 	GrH->Inputs.bit.Mu  = 	(Uns)TuMu.Flag    ^ (Uns)GrB->InputMask.bit.Mu; 
 	GrH->Inputs.bit.Du  = 	(Uns)TuDu.Flag    ^ (Uns)GrB->InputMask.bit.Du;  
-	#if BUR_90
+#else
+	ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
+
 	dinDeblok.inputBit = ((ExtReg>>SBEXT_DEBLOK)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinDeblok.timeout = (PRD_50HZ * GrB->TuTime) / 10;
+	dinStop.inputBit = ((ExtReg>>SBEXT_STOP)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinClose.inputBit = ((ExtReg>>SBEXT_CLOSE)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinOpen.inputBit = ((ExtReg>>SBEXT_OPEN)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinDU.inputBit = ((ExtReg>>SBEXT_DU)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinMU.inputBit = ((ExtReg>>SBEXT_MU)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+
 	GrH->Inputs.bit.Deblok = DigitalInputUpdate (&dinDeblok);
-	#endif
+	GrH->Inputs.bit.Open = DigitalInputUpdate (&dinOpen);
+	GrH->Inputs.bit.Close = DigitalInputUpdate (&dinClose);
+	GrH->Inputs.bit.Stop = DigitalInputUpdate (&dinStop);
+	GrH->Inputs.bit.Mu = DigitalInputUpdate (&dinMU);
+	GrH->Inputs.bit.Du = DigitalInputUpdate (&dinDU);
+#endif
+
 
 	switch(GrB->MuDuSetup)
 	{
@@ -1232,61 +1251,43 @@ void TsSignalization(void) //ТС
 	else	
 	{ 
 	#if BUR_M
+		#if BUR_90
+		Reg->bit.Dout2 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
+		#else
+		Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта
+		#endif
+		Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
+//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
+		#if BUR_90
+		Reg->bit.Dout5 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
+		#else
+		Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.powerOn;	//  Питание
+		#endif
+		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
+		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
+		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
+		//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  КВЗ
+		//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  КВО
+		Reg->bit.Dout9 =  !(IsOpened() 	||		(!IsOpened()&& !IsClosed()));		//  КВЗ
+		Reg->bit.Dout10 = !(IsClosed() 	||		(!IsOpened()&& !IsClosed()));		//  КВО
 
-		if(Fault_Delay > 0)
-		{
-				//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
-				//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
-						Reg->bit.Dout2 = 0;	//  Муфта
-						Reg->bit.Dout3 = 0;//	тс аларм
-				//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
-						Reg->bit.Dout5 = 0;//  Питание
-						Reg->bit.Dout6 = 0;//  Закрыто
-						Reg->bit.Dout7 = 0;//  Открыто
-						Reg->bit.Dout8 = 0;//  Неисправность
-						//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  КВЗ
-						//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  КВО
-						Reg->bit.Dout9 =  1;	//  КВЗ
-						Reg->bit.Dout10 = 1;		//  КВО
-		}
-		else
-		{
-
-	//		Reg->bit.Dout0 = ()	 			 ^ 		(Uns)GrB->OutputMask.bit.Dout0;		//  Ком.Закрыть
-	//		Reg->bit.Dout1 = () 			 ^ 		(Uns)GrB->OutputMask.bit.Dout1;		//  Ком.Открыть
-
-
-
-			#if BUR_90
-			Reg->bit.Dout2 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
-			#else
-			Reg->bit.Dout2 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта
-			#endif
-			Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
-	//		Reg->bit.Dout4 = ()				 ^ 		(Uns)GrB->OutputMask.bit.Dout4;		//  Ком.Стоп
-			#if BUR_90
-			Reg->bit.Dout5 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
-			#else
-			Reg->bit.Dout5 = 1 		     	 ^ 		(Uns)GrB->OutputMask.bit.powerOn;	//  Питание
-			#endif
-			Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
-			Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
-			Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
-			//Reg->bit.Dout9 = IsOpened() 	||		(!IsOpened()&& !IsClosed());		//  КВЗ
-			//Reg->bit.Dout10 =IsClosed() 	||		(!IsOpened()&& !IsClosed());		//  КВО
-			Reg->bit.Dout9 =  !(IsOpened() 	||		(!IsOpened()&& !IsClosed()));		//  КВЗ
-			Reg->bit.Dout10 = !(IsClosed() 	||		(!IsOpened()&& !IsClosed()));		//  КВО
-		}
 	#else 
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
 		Reg->bit.Dout1 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//	закрыто
 		Reg->bit.Dout2 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//	открыто 
+		#if BUR_90
+		Reg->bit.Dout3 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
+		#else
 		Reg->bit.Dout3 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//	муфта
+		#endif
 		Reg->bit.Dout4 = IsClosing()	 ^ 		(Uns)GrB->OutputMask.bit.closing;	//	закрывается
 		Reg->bit.Dout5 = IsOpening()	 ^ 		(Uns)GrB->OutputMask.bit.opening;	//	открывается
 		Reg->bit.Dout6 = !IsLocalControl()^ 	(Uns)GrB->OutputMask.bit.muDu; 		//	МУ/ДУ
-		Reg->bit.Dout7 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность 
-		
+		Reg->bit.Dout7 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
+		#if BUR_90
+		Reg->bit.Dout8 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
+		Reg->bit.Dout9 = !GrB->InputType;											// Тип входного сигнала
+		#endif
 	#endif
 	}
 
@@ -1301,7 +1302,11 @@ void TsSignalization(void) //ТС
 	if (PowerEnable)
 	{
 		PiData.DiscrOut = (Byte)(Reg->all & 0xFF);
+		#if BUR_90
+		PiData.DiscrOut2 = (Byte)((Reg->all >> 8) & 0x3);
+		#else
 		PiData.DiscrOut2 = (Byte)((Reg->all >> 8) & 0x1);
+		#endif
 	}
 	#endif
 
@@ -1549,7 +1554,7 @@ Uns	DigitalInputUpdate (TDigitalInput *p)
 {
 	if (p->inputBit)		// Если
 	{
-		if (p->timer++ >= p->timeout)
+		if (p->timer++ >= GrB->TuTime*5)
 		{
 			p->timer = p->timeout;
 			p->output = TRUE;

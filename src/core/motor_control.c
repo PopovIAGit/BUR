@@ -648,6 +648,10 @@ register Uns Tmp;
 	#else
 	DynBrakeEnable = True;	
 	#endif
+
+#if BUR_90
+	DRV_ON = 0;		// Разрешаем управление тиристорами
+#endif
 }
 
 //---state machine---------
@@ -753,6 +757,9 @@ __inline void StopMode(void)		// стм. стоп
 	GrH->Torque = 0;				// момент ноль
 	Dmc.RequestDir = 0;
 
+#if BUR_90
+	DRV_ON = 1;						// Отключаем управление тиристорами
+#endif
 	
 	ClkThyrControl(0);				// выключили тактирование тиристоров
 }

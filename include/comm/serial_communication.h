@@ -9,7 +9,7 @@
 #define PI_ID			SPIC
 #define PI_CONN_TOUT	(3.000 * PRD_2KHZ)
 #define PI_BAUD			1000		// „астота синхроимпульсов в √ц
-#if BUR_M	
+#if BUR_M|BUR_90
 	#define PI_FRAME_SIZE	5
 #else
 	#define PI_FRAME_SIZE	7

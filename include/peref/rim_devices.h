@@ -27,6 +27,7 @@
 #define TEN_ON_STATUS	GpioDataRegs.GPADAT.bit.GPIO13
 #define BT_ON_OFF		GpioDataRegs.GPADAT.bit.GPIO25 // 0-on
 #define CPU_LED			GpioDataRegs.GPADAT.bit.GPIO10
+#define DRV_ON			GpioDataRegs.GPBDAT.bit.GPIO34		// Разрешение работы драйвера (0 - разрешение, 1 - запрет)
 
 #define CS_PORT			GpioDataRegs.GPADAT.all
 #define CS0				(1UL<<31)
