@@ -114,18 +114,20 @@ typedef struct _TGroupC
 	Uns             BrakeTime;          // 20.Время торможения 
 	Uns 			NoCurrPause;		// 21.Время безтоковой паузы перед торможением
 	Uns 			BrakeZone;			// 22.Превентивное торможение
+	Uns				ReversKVOKVZ;		// 23. Реверс сигналов кво квз
+	Uns				ModbusPauseStart;	// 24. Время задержки на связь по интрефейсу RS-485
 #if BUR_90
-	Uns				DevOn;				// 23.ТИП схемы измерения токов 0-малые 1-большие
+	Uns				DevOn;				// 25. ТИП схемы измерения токов 0-малые 1-большие
+	Uns  			ADCUr;				// 26. АЦП напряжения R
+	Uns  			ADCUs;				// 27. АЦП напряжения S
+	Uns  			ADCUt;				// 28. АЦП напряжения T
+	Uns  			ADCIu;				// 29. АЦП тока U
+	Uns  			ADCIv;				// 30. АЦП тока V
+	Uns  			ADCIw;				// 31. АЦП тока W
 #else
-	Uns				Rsvd23;				// 23
+	Uns				Rsvd115[7];			// 25-31. Резерв
 #endif
-	Uns  			ADCUr;				// 24
-	Uns  			ADCUs;				// 25
-	Uns  			ADCUt;				// 26
-	Uns  			ADCIu;				// 27
-	Uns  			ADCIv;				// 28
-	Uns  			ADCIw;				// 29
-	Uns       	    Rsvd5[5];           // 30-34.Резерв
+	Uns       	    Rsvd5[3];           // 22-34.Резерв
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока
 	Uns             Rsvd6;       		// 36.резерв

@@ -54,7 +54,7 @@ Uns ContStopErrTimer = 0;
 Uns	RevMax = 0x3FFF;
 
 Byte DisplTesNum = 0;
-
+Uns PauseModbus = 0;
 __inline void DisplTest(void);
 __inline void TenControl(void);
 void SetPlisAddr(Uns Addr);
@@ -352,6 +352,11 @@ void TekModbusParamsUpdate(void)
 {
 	//TGroupT *tek = &Ram. Tek.MainGroup;
 	
+	if (PauseModbus > 0)
+	{
+	    PauseModbus--;
+	    return;
+	}
 	// Заполняем технологический регистр
 	GrT->TechReg.bit.Opened  = GrA->Status.bit.Opened;
 	GrT->TechReg.bit.Closed  = GrA->Status.bit.Closed;

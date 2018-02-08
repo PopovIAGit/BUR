@@ -58,6 +58,9 @@ Uns PowerSupplyCnt 		= 0;	// Задержка на выключение питания
 Uns ReqDirection 		= 0;
 Uns DebugStartDelayCnt2 = 10;
 Uns BreakVoltFlag 		= 0;
+TValveCmd SaveContGroup = vcwNone;
+Uns secflag = 0;
+Uns secpausetimer = 0;
 // ----------------------------------------	
 Int InomDefU[10]  	 = {13,11,18,52,52,47,56,110,85,148};					// default значения для Inom для разных приводов уфа
 Int InomDefS[10]	 = {11,9,13,32,32,33,73,85,95,150};						// Сарапуль
@@ -385,6 +388,10 @@ void StopPowerControl(void) // упровление при стопе
 		PhEl.Direction 	 = 0;
 		PowerLostTimer2  = 0;
 		Net_Mon_Timer = 0;
+
+		if (GrC->ReversKVOKVZ == 1 && secflag == 0)
+		    SaveContGroup = vcwNone;
+
 	#endif 
 
 	// если останов не по аварии и не по муфте, то
@@ -549,6 +556,12 @@ register Uns Tmp;
 			{
 				GrH->ContGroup = cgClose;
 			}
+			if (GrC->ReversKVOKVZ == 1)
+			{
+			    SaveContGroup = vcwClose;
+			}
+
+
 			#endif 
 			Mcu.EvLog.Value = CMD_CLOSE;
 			break;
@@ -559,6 +572,12 @@ register Uns Tmp;
 			if(!PhEl.Direction)
 			{
 				GrH->ContGroup = cgOpen;
+
+			}
+
+			if (GrC->ReversKVOKVZ == 1)
+			{
+			    SaveContGroup = vcwOpen;
 			}
 			#endif 
 			Mcu.EvLog.Value = CMD_OPEN;
@@ -667,6 +686,24 @@ void ControlMode(void) // 200Hz
 	if (IsTestMode()) {DmcTest(); return;}	// если тест запускаем тест и выходим
 
 	TorqueCalc();
+
+	if (GrC->ReversKVOKVZ == 1 && Dmc.WorkMode == wmStop && SaveContGroup != vcwNone && secflag == 1)
+	{
+
+	    if (secpausetimer-- == 1)
+	    {
+		    GrD->ControlWord = SaveContGroup;
+		    SaveContGroup = vcwNone;
+		    secflag = 0;
+		    secpausetimer = 0;
+	    }
+	}
+
+	if (secflag == 1 && secpausetimer > 0 && SaveContGroup == vcwNone)
+	{
+	    secflag = 0;
+	    secpausetimer = 0;
+	}
 
 
 	switch (Dmc.WorkMode) // стейт машина на основе управляющего слова
@@ -1494,6 +1531,12 @@ void LowPowerControl(void)		// управление при провале напряжения ???
 	{	
 		if (!PowerSupplyEnable)	// Если источник питания потерял потребление
 		{
+		    if (GrC->ReversKVOKVZ == 1)
+		    {
+
+			secflag = 1;
+		    }
+
 			ClkThyrControl(0);				
 			Sifu.Direction = SIFU_NONE; // выключели сифу
 			DisplayRestartFlag = true;
@@ -1506,7 +1549,21 @@ void LowPowerControl(void)		// управление при провале напряжения ???
 		{
 			InitSysCtrl(DSP28_PLLCR(SYSCLK, CLKIN), 0);						// Вернули частота на прежний уровень
 			PowerEnable = True;			
+#if BUR_M
+			if (GrC->ReversKVOKVZ == 1)
+			{
+			   /* GrD->ControlWord = SaveContGroup;
+			    GrH->ContGroup = cgOff;*/
+			    secflag = 1;
+			    secpausetimer = 3*PRD_200HZ;
+			}
+			else if  (GrC->ReversKVOKVZ == 0)
+			{
+			    Sifu.Direction = SaveDirection;
+			}
+#else
 			Sifu.Direction = SaveDirection; //SIFU_NONE; // // едим в том же направлении что и было
+#endif
 			ClkThyrControl(1);
 			DisplayRestartFlag = true;
 			PowerOn();					// включаем	
@@ -1746,13 +1803,16 @@ void PowerCheck(void)			// 200 Hz
 	if(!POWER_CONTROL)			// если питание отключено
 	{
 		PowerSupplyCnt++;		// задержка на выключение
-		if (PowerSupplyCnt == 5)	PowerSupplyEnable = 0;
+		if (PowerSupplyCnt == 5)
+		{
+		    PowerSupplyEnable = 0;
+		}
 	}
 	else 						// если питание включено
 	{
 		PowerSupplyEnable = 1;
 		PowerSupplyCnt = 0;
-	}
+	}				
 }
 //----------Логика управления тиристорами для динамического торможения---------------------------
 void SifuControlForDynBrake (SIFU *p)

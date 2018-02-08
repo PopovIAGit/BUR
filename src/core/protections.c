@@ -354,16 +354,6 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 
 	if (GrC->ErrIndic != pmOff)							// если индикация ошибок не выключина
 	{
-
-		if(GrC->EncoderType == 0)
-		{
-			GrH->FaultsDev.bit.PosSens = Encoder.Error;			// энкодер
-		}
-		else
-		{
-			GrH->FaultsDev.bit.PosSens = enDPMA15.Error;			// энкодер
-		}
-
 		GrH->FaultsDev.bit.Memory1 = Eeprom1.Error;			// еепром 1 
 		GrH->FaultsDev.bit.Memory2 = Eeprom2.Error;			// eeprom 2
 		if(!GrC->RTCErrOff)
@@ -377,6 +367,17 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 		GrH->FaultsDev.bit.LowPower = !PowerEnable;			// Включен режим сохранения энергии
 		#endif
 		*/
+	}
+	if (GrC->PosSensEnable != pmOff)
+	{
+		if(GrC->EncoderType == 0)
+		{
+			GrH->FaultsDev.bit.PosSens = Encoder.Error;			// энкодер
+		}
+		else
+		{
+			GrH->FaultsDev.bit.PosSens = enDPMA15.Error;			// энкодер
+		}
 	}
 
 //	#if !BUR_M
@@ -418,7 +419,7 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 
 		if (IsFaulted())
 		{
-			if (!onlyPosSens || !GrC->PosSensEnable)
+			if (!onlyPosSens || GrC->PosSensEnable == pmSignStop)
 			{
 				ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
 				if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;

@@ -1,8 +1,8 @@
 /*======================================================================
 Имя файла:          csl_dlog.h
-Автор:              Саидов В.С.
-Версия файла:       01.03
-Дата изменения:		16/02/10
+Автор:                     
+Версия файла:      	
+Дата изменения:		
 Описание:
 Графический монитор реального времени
 ======================================================================*/
@@ -28,7 +28,8 @@ typedef struct _TDataLog {
 	Uns   Delay;   
 	Uns   Counter;
 	Uns   Prescaller;
-	Uns	Timer;
+	Uns   Timer;
+	Uns   OutOfTrig;
 	Int   Trigger;
 	Int   DataPrev;
 	Int  *TriggerPtr;
@@ -38,6 +39,9 @@ typedef struct _TDataLog {
 	Int  *Graph2Ptr;
 } TDataLog;
 
+void MonitorInit(void);
+void MonitorUpdate(void);
+
 void DLOG_update(TDataLog *);
 
 #ifdef __cplusplus
@@ -45,4 +49,7 @@ void DLOG_update(TDataLog *);
 #endif // extern "C"
 
 #endif /* CSL_DLOG_ */
+
+
+
 

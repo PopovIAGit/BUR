@@ -308,6 +308,7 @@ extern Uns 			Test_Open;
 extern Uns 			Test_Close;
 extern Uns 			Test_Stop1;
 extern Uns 			Test_Stop2;
+extern Uns			PauseModbus;
 extern Uns			RevMax;
 
 // Прототипы функций

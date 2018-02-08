@@ -27,6 +27,9 @@ void main(void)
 
 	EnableInterrupts();
 	
+	PauseModbus = GrC->ModbusPauseStart;
+
+
 	while(1)
 	{
 		SerialCommUpdate(&Mb);
