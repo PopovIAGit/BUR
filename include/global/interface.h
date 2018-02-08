@@ -366,24 +366,27 @@ typedef struct _TLogEvBuffer
 // начальный адрес 4000
 typedef struct _TGroupT
 {
-	TTEK_TechReg 	TechReg;			// 1 Технологический регистр
-	TTEK_DefReg  	DefReg;				// 2 Регистр дефектов
-	Uns 		 	PositionPr;			// 3 Текущее положение %
-	TTEK_ComReg  	ComReg;				// 4 Регистр команд
-	Uns 		 	CycleCnt;			// 5 Счетчик циклов
-	Uns			 	Rsvd1;				// 6 Резерв
-	Uns 		 	Iu;					// 7 Ток фазы U
-	Uns 		 	Rsvd2[9];			// 8 - 16 Резерв
-	Uns 			Ur;					// 17 Напряжение входной сети
-	Uns				Rsvd3;				// 18 Резерв
-	Uns 		 	Speed;				// 19 Текущая скорость
-	Uns			 	Rsvd4;				// 20 Резерв
-	Uns 		 	Torque;				// 21 Текущий момент нагрузки Н*м
-	TTEK_Discrete 	TsTu;				// 22 ТС/ТУ
-	Uns				Rsvd6[4];			// 23 - 26 Резерв
-	Uns				RsStation;			// 27 Адрес станции (только для чтения)
-	Uns				Rsvd7;				// 28 Резерв
-	Uns				Rsvd8[12];			// 29 Резерв
+	TTEK_TechReg 		TechReg;		// 0 Технологический регистр
+	TTEK_DefReg  		DefReg;			// 1 Регистр дефектов
+	Uns 		 	PositionPr;		// 2 Текущее положение %
+	TTEK_ComReg  		ComReg;			// 3 Регистр команд
+	Uns 		 	CycleCnt;		// 4 Счетчик циклов
+	Uns			Rsvd1;			// 5 Резерв
+	Uns 		 	Iu;			// 6 Ток фазы U
+	Uns 		 	Rsvd2[9];		// 7 - 15 Резерв
+	Uns 			Ur;			// 16 Напряжение входной сети
+	Uns			Rsvd3;			// 17 Резерв
+	Uns 		 	Speed;			// 18 Текущая скорость
+	Uns			Rsvd4;			// 19 Резерв
+	Uns 		 	Torque;			// 20 Текущий момент нагрузки Н*м
+	TTEK_Discrete 		TsTu;			// 21 ТС/ТУ
+	Uns			Rsvd6[4];		// 22 - 25 Резерв
+	Uns			RsStation;		// 26 Адрес станции (только для чтения)
+	Uns			MuDu;			// 27 MU/DU
+	Uns			Rsvd28;			// 28 Резерв
+	Uns			Version;		// 29 Version
+	TTEK_FaultReg		FaultReg;		// 30 Регистр дефектов дополнительнй
+	Uns			Rsvd8[9];		// 31-39 Резерв
 } TGroupT;
 
 

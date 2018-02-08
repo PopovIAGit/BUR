@@ -350,8 +350,6 @@ void DiscrInOutTestObserver(void)
 
 void TekModbusParamsUpdate(void)
 {
-	//TGroupT *tek = &Ram. Tek.MainGroup;
-	
 	if (PauseModbus > 0)
 	{
 	    PauseModbus--;
@@ -361,28 +359,61 @@ void TekModbusParamsUpdate(void)
 	GrT->TechReg.bit.Opened  = GrA->Status.bit.Opened;
 	GrT->TechReg.bit.Closed  = GrA->Status.bit.Closed;
 	GrT->TechReg.bit.Mufta1  = GrA->Status.bit.Mufta;
-	GrT->TechReg.bit.Mufta2  = GrA->Status.bit.Mufta;
+	GrT->TechReg.bit.Mufta2  = 0;
 	GrT->TechReg.bit.MuDu    = !GrA->Status.bit.MuDu;
 	GrT->TechReg.bit.Opening = GrA->Status.bit.Opening;
 	GrT->TechReg.bit.Closing = GrA->Status.bit.Closing;
 	GrT->TechReg.bit.Stop    = GrA->Status.bit.Stop;
 	GrT->TechReg.bit.Ten     = GrA->Status.bit.Ten;
 	GrT->TechReg.bit.Ready   = !GrA->Status.bit.Fault;
+	GrT->TechReg.bit.Rsvd4   = 0;
+	GrT->TechReg.bit.Rsvd5   = 0;
+	GrT->TechReg.bit.Rsvd6   = 0;
+	GrT->TechReg.bit.Rsvd11  = 0;
+	GrT->TechReg.bit.Rsvd12  = 0;
+	GrT->TechReg.bit.Rsvd14  = 0;
+
 	
 	// Заполняем регистр дефектов
-	GrT->DefReg.bit.I2t = GrA->Faults.Load.bit.I2t;
-	GrT->DefReg.bit.ShC = (GrA->Faults.Load.bit.ShCU || GrA->Faults.Load.bit.ShCV || GrA->Faults.Load.bit.ShCW); 
-	GrT->DefReg.bit.Drv_T = GrA->Faults.Proc.bit.Drv_T;
-	GrT->DefReg.bit.Uv = (GrA->Faults.Net.bit.UvR || GrA->Faults.Net.bit.UvS || GrA->Faults.Net.bit.UvT);
-	GrT->DefReg.bit.Phl = (GrA->Faults.Load.bit.PhlU || GrA->Faults.Load.bit.PhlV || GrA->Faults.Load.bit.PhlW);
-	GrT->DefReg.bit.NoMove = GrA->Faults.Proc.bit.NoMove;
-	GrT->DefReg.bit.Ov = (GrA->Faults.Net.bit.OvR || GrA->Faults.Net.bit.OvS || GrA->Faults.Net.bit.OvT);
-	GrT->DefReg.bit.Bv = (GrA->Faults.Net.bit.BvR || GrA->Faults.Net.bit.BvS || GrA->Faults.Net.bit.BvT);
-	GrT->DefReg.bit.Th = GrA->Faults.Dev.bit.Th;
-	GrT->DefReg.bit.Tl = GrA->Faults.Dev.bit.Tl;
-	GrT->DefReg.bit.PhOrdU = GrA->Faults.Net.bit.PhOrd;
+	GrT->DefReg.bit.I2t 	 = GrA->Faults.Load.bit.I2t;
+	GrT->DefReg.bit.ShC 	 = (GrA->Faults.Load.bit.ShCU || GrA->Faults.Load.bit.ShCV || GrA->Faults.Load.bit.ShCW);
+	GrT->DefReg.bit.Drv_T 	 = GrA->Faults.Proc.bit.Drv_T;
+	GrT->DefReg.bit.Uv 	 = (GrA->Faults.Net.bit.UvR || GrA->Faults.Net.bit.UvS || GrA->Faults.Net.bit.UvT);
+	GrT->DefReg.bit.Rsvd4 	 = 0;
+	GrT->DefReg.bit.NoMove 	 = GrA->Faults.Proc.bit.NoMove;
+	GrT->DefReg.bit.Ov 	 = (GrA->Faults.Net.bit.OvR || GrA->Faults.Net.bit.OvS || GrA->Faults.Net.bit.OvT);
+	GrT->DefReg.bit.Bv 	 = (GrA->Faults.Net.bit.BvR || GrA->Faults.Net.bit.BvS || GrA->Faults.Net.bit.BvT);
+	GrT->DefReg.bit.Rsvd 	 = 0;
+	GrT->DefReg.bit.Th 	 = GrA->Faults.Dev.bit.Th;
+	GrT->DefReg.bit.Tl 	 = 0;
+	GrT->DefReg.bit.Rsvd11 	 = 0;
+	#if BUR_M
+	GrT->DefReg.bit.PhOrdU   = GrA->Faults.Net.bit.RST_Err;// 12   Неверное чередование фаз сети
+	#else
+	GrT->DefReg.bit.Rsvd12 	 = 0;		// 12   Неверное чередование фаз сети
+	#endif
 	GrT->DefReg.bit.PhOrdDrv = GrA->Faults.Proc.bit.PhOrd;
-	GrT->DefReg.bit.DevDef 	 = ((GrA->Faults.Dev.all & TEK_DEVICE_FAULT_MASK) != 0);
+	GrT->DefReg.bit.Rsvd14 	 = 0;
+	GrT->DefReg.bit.Rsvd15 	 = 0;
+
+
+	// регистр дефектов дополнительный
+	GrT->FaultReg.bit.NoCalib 	= GrA->Faults.Proc.bit.NoCalib;
+	GrT->FaultReg.bit.MuDu 		= GrA->Faults.Proc.bit.MuDuDef;
+	GrT->FaultReg.bit.Uv 		= (GrA->Faults.Net.bit.UvR || GrA->Faults.Net.bit.UvS || GrA->Faults.Net.bit.UvT);
+	GrT->FaultReg.bit.Ov 		= (GrA->Faults.Net.bit.OvR || GrA->Faults.Net.bit.OvS || GrA->Faults.Net.bit.OvT);
+	GrT->FaultReg.bit.Vsk 		= 0;
+	GrT->FaultReg.bit.Bv 		= (GrA->Faults.Load.bit.PhlV || GrA->Faults.Load.bit.PhlW || GrA->Faults.Load.bit.PhlU);
+	GrT->FaultReg.bit.ThErr 	= GrA->Faults.Dev.bit.Th_Err;
+	GrT->FaultReg.bit.Tl 		= GrA->Faults.Dev.bit.Tl;
+	GrT->FaultReg.bit.DevDef 	= (GrA->Faults.Dev.bit.AVRcon || GrA->Faults.Dev.bit.Memory1 || GrA->Faults.Dev.bit.Memory2 || GrA->Faults.Dev.bit.PosSens || GrA->Faults.Dev.bit.Rtc || GrA->Faults.Dev.bit.TSens );
+	GrT->FaultReg.bit.Rsvd1 = 0;
+	GrT->FaultReg.bit.Rsvd2 = 0;
+	GrT->FaultReg.bit.Rsvd3 = 0;
+	GrT->FaultReg.bit.Rsvd4 = 0;
+	GrT->FaultReg.bit.Rsvd5 = 0;
+	GrT->FaultReg.bit.Rsvd6 = 0;
+	GrT->FaultReg.bit.Rsvd7 = 0;
 
 	// Регистр команд
 	// При срабатывании одной команды, сбрасываем все
@@ -460,26 +491,42 @@ void TekModbusParamsUpdate(void)
 	if (GrT->ComReg.all != 0)
 		GrT->ComReg.all = 0;
 
-// Убрали переключение МУ/ДУ
-/*
-	if (tek->ComReg.bit.SetDu && IsStopped())
-		{	
-			Mcu.MuDuInput = 0;
-			tek->ComReg.bit.SetDu = 0;
-		}
-	else if (tek->ComReg.bit.SetMu && IsStopped())
-		{	
-			Mcu.MuDuInput = 1;
-			tek->ComReg.bit.SetMu = 0;	
-		}
-*/
-	GrT->PositionPr 	 = GrA->PositionPr;
-	GrT->CycleCnt 		 = GrH->CycleCnt;
-	GrT->Iu				 = GrA->Iu;
-	GrT->Ur				 = GrA->Ur;
-	GrT->Torque			 = GrA->Torque;
-	GrT->Speed			 = GrA->Speed;
-	GrT->RsStation		 = GrB->RsStation;
+
+	GrT->PositionPr 	 	= GrA->PositionPr;
+	GrT->CycleCnt 		 	= GrH->CycleCnt;
+	GrT->Rsvd1    	= 0;
+	GrT->Iu				= GrH->Imid;
+	GrT->Rsvd2[0] 	= 0;
+	GrT->Rsvd2[1] 	= 0;
+	GrT->Rsvd2[2] 	= 0;
+	GrT->Rsvd2[3] 	= 0;
+	GrT->Rsvd2[4] 	= 0;
+	GrT->Rsvd2[5] 	= 0;
+	GrT->Rsvd2[6] 	= 0;
+	GrT->Rsvd2[7] 	= 0;
+	GrT->Rsvd2[8] 	= 0;
+	GrT->Ur				= GrH->Umid;
+	GrT->Rsvd3 	= 0;
+	GrT->Rsvd4 	= 0;
+	GrT->Torque			= GrA->Torque;
+	GrT->Speed			= GrA->Speed;
+	GrT->RsStation		 	= GrB->RsStation;
+	GrT->Rsvd6[0] 	= 0;
+	GrT->Rsvd6[1]	= 0;
+	GrT->Rsvd6[2] 	= 0;
+	GrT->Rsvd6[3] 	= 0;
+	GrT->Rsvd28	= 0;
+	GrT->Rsvd8[0] 	= 0;
+	GrT->Rsvd8[1] 	= 0;
+	GrT->Rsvd8[2] 	= 0;
+	GrT->Rsvd8[3] 	= 0;
+	GrT->Rsvd8[4] 	= 0;
+	GrT->Rsvd8[5] 	= 0;
+	GrT->Rsvd8[6] 	= 0;
+	GrT->Rsvd8[7] 	= 0;
+	GrT->Rsvd8[8] 	= 0;
+	GrT->Version  	= GrA->MkuPoVersion;
+	GrT->MuDu 	= GrA->Status.bit.MuDu;
 
 	//Состояние дискретных входов и выходов
 	GrT->TsTu.bit.IsDiscrOutActive = (GrG->DiscrOutTest);
