@@ -136,7 +136,7 @@ void EEPROM_Update(TFM25V10 *Eeprom)
 }
 #else
 void EEPROM_Update(AT25XXX *Eeprom)
-
+{
 	AT25XXX_Update(Eeprom);
 }
 #endif

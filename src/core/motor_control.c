@@ -155,12 +155,14 @@ void MotorControlUpdate(void)
 // -----------------------------------------------------------------
 __inline void ADC_Aquisition(void){		//18kHz
 
+#if BUR_90
 	GrC->ADCIu = ADC_IU;
 	GrC->ADCIv = ADC_IV;
 	GrC->ADCIw = ADC_IW;
 	GrC->ADCUr = ADC_UR;
 	GrC->ADCUs = ADC_US;
 	GrC->ADCUt = ADC_UT;
+#endif
 
 	URfltr.Input = _IQ16toIQ(ADC_UR);
 	USfltr.Input = _IQ16toIQ(ADC_US);

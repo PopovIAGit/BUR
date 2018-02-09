@@ -275,7 +275,7 @@ extern TFM25V10 	Eeprom1;
 extern TFM25V10		Eeprom2;
 #else
 extern AT25XXX 		Eeprom1;
-extern AT25XXX		Eeprom2
+extern AT25XXX		Eeprom2;
 #endif
 
 extern ADT7301		TempSens;
@@ -316,9 +316,12 @@ void RimDevicesInit(void);
 Bool RimDevicesRefresh(void);
 void ReadParams(void);
 void RtcControl(void);
-//void EEPROM_Update(AT25XXX *Eeprom);
 
+#if BUR_90
 void EEPROM_Update(TFM25V10 *Eeprom);
+#else
+void EEPROM_Update(AT25XXX *Eeprom);
+#endif
 
 void EEPROM_Func(Byte Memory, Byte Func, 
 	Uns Addr, Uns *Data, Uns Count);
