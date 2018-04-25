@@ -21,7 +21,7 @@ void main(void)
 
 	GrA->Status.bit.Power = 1;			// Выставляем при наличии сервисного питания
 	DisplayRestartFlag = true;
-
+	MonitorInit();			// Инициализация графического монитора реального времени
 	#if BUR_M
 	ContactorControl(cgStop);
 	#endif

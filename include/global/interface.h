@@ -35,7 +35,10 @@ typedef struct _TGroupA
 	Uns             CycleCnt;           // 21.Счетчик циклов
 	Int             Temper;             // 22.Температура блока
 	Uns             MkuPoVersion;       // 23.Версия ПО
-	Uns Rsvd[16];
+	Uns loadAng1;
+	Uns loadAng2;
+	Uns loadAng3;
+	Uns Rsvd[13];
 } TGroupA;
 
 // Группа B (Адрес = 40, Количество = 50) - Параметры пользователя
@@ -83,7 +86,8 @@ typedef struct _TGroupB
 	Uns				OverwayZone;		// 33.Макси
 	TDriveType      DriveType;          // 34.Тип привода
  	Uns             SleepTime;          // 35.Дежурный режим
-	Uns 			Rsvd[14];
+ 	Uns 			key;
+	Uns 			Rsvd[13];
 } TGroupB;
 
 // Группа C (Адрес = 90, Количество = 120) - Заводские параметры
@@ -127,7 +131,8 @@ typedef struct _TGroupC
 #else
 	Uns				Rsvd115[7];			// 25-31. Резерв
 #endif
-	Uns       	    Rsvd5[3];           // 22-34.Резерв
+	Uns       	    Rsvd5[2];           // 32-33.Резерв
+	TReverseType	ReverseType;        // 34.Тип реверса
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока
 	Uns             Rsvd6;       		// 36.резерв
@@ -279,7 +284,7 @@ typedef struct _TGroupH
   	Uns     	    PhOrdValue;        	 // 93.Чередование фаз сети
 	TInputReg       Inputs;           	 // 94.Состояние дискретных входов
 	TOutputReg      Outputs;          	 // 95.Состояние дискретных выходов
-	TReverseType	ReverseType;         // 96.Тип реверса
+	Uns				Rsvd96;         	 // 96.Тип реверса
 	Uns             TuReleMode;          // 97.Релейный режим
 	Uns             IU_Mpy;              // H98.  Корректировка тока фазы U
 	Uns             IV_Mpy;              // H99.  Корректировка тока фазы V
@@ -608,7 +613,7 @@ extern TGroupT *GrT;
 	&Ram.GroupD.ControlWord, \
 	&Ram.GroupB.MuDuSetup, \
 	&Ram.GroupB.DuSource, \
-	&Ram.GroupH.ReverseType, \
+	&Ram.GroupC.ReverseType, \
 	True, 0, 0, False, \
 	True, False, 0, True, False, True,\
 	&Ram.GroupH.TuReleMode, \
@@ -667,6 +672,9 @@ extern Bool DisplayRestartFlag;
 
 extern TIM Im;
 extern Uns TempMuDu;
+
+extern Uns mudustatedefect;
+extern Uns mudustatefault;
 
 // Прототипы функций
 void InterfaceInit(void);

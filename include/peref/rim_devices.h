@@ -75,10 +75,6 @@
 #define ADC_US			AdcRegs.ADCRESULT4
 #define ADC_UT			AdcRegs.ADCRESULT5 
 
-#define ADC_IU_MIN		AdcRegs.ADCRESULT13
-#define ADC_IV_MIN		AdcRegs.ADCRESULT15
-#define ADC_IW_MIN		AdcRegs.ADCRESULT14
-
 #define HALL_SENS1		AdcRegs.ADCRESULT8
 #define HALL_SENS2		AdcRegs.ADCRESULT9
 #define HALL_SENS3		AdcRegs.ADCRESULT10
@@ -298,9 +294,11 @@ extern LOG_INPUT	BtnOpen;
 extern LOG_INPUT	BtnClose;
 extern LOG_INPUT	BtnStop_MU;
 extern LOG_INPUT	BtnStop_DU;
+#if !BUR_90
 extern LOG_INPUT	TuOpen;
 extern LOG_INPUT	TuClose;
 extern LOG_INPUT	TuStop;
+#endif
 extern LOG_INPUT	TuMu;
 extern LOG_INPUT	TuDu;
 //--- Тест ручек ---
@@ -317,12 +315,12 @@ Bool RimDevicesRefresh(void);
 void ReadParams(void);
 void RtcControl(void);
 
+//void EEPROM_Update(AT25XXX *Eeprom);
 #if BUR_90
 void EEPROM_Update(TFM25V10 *Eeprom);
 #else
 void EEPROM_Update(AT25XXX *Eeprom);
 #endif
-
 void EEPROM_Func(Byte Memory, Byte Func, 
 	Uns Addr, Uns *Data, Uns Count);
 void RimIndication(void);

@@ -58,6 +58,7 @@ Uns PowerSupplyCnt 		= 0;	// Задержка на выключение питания
 Uns ReqDirection 		= 0;
 Uns DebugStartDelayCnt2 = 10;
 Uns BreakVoltFlag 		= 0;
+Bool 	waitStartVoltageFlag = false;	// Флаг того, что блок ждет напряжение при старте
 TValveCmd SaveContGroup = vcwNone;
 Uns secflag = 0;
 Uns secpausetimer = 0;
@@ -72,7 +73,7 @@ extern Int	//типовые двигатели
 	drive1,  drive2,  drive3,	drive4,	drive5,	
 	drive6,  drive7,  drive8,  drive9,	drive10, 
 	drive11, drive12, drive13, drive14,	drive15, 
-	drive16, drive17, drive18, drive19, drive20;
+	drive16, drive17, drive18, drive19, drive20, drive21;
 
 Uns TimerInterp = 0;
 Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time); 
@@ -189,27 +190,27 @@ __inline void DmcPrepare(void){	//18kHz
 
 #if BUR_90
 		// При выборе типа привода задаем коэффициент для датчиков тока в зависимости от нужной схемы
-		if (GrH->PP90Reg.bit.DevOn == 0 && GrH->IU_Mpy != 3800) // малые токи
+/*		if (GrH->PP90Reg.bit.DevOn == 0 && GrH->IU_Mpy != 670) // малые токи
 		{
 			if (IsMemParReady())
 			{
-				GrH->IU_Mpy = 3800;	//??? переснять, сейчас данные для старой платы
-				GrH->IV_Mpy = 3800;
-				GrH->IW_Mpy = 3800;
+				GrH->IU_Mpy = 670;	//??? переснять, сейчас данные для старой платы
+				GrH->IV_Mpy = 670;
+				GrH->IW_Mpy = 670;
 				WritePar(GetAdr(GroupH.IU_Mpy), &GrH->IU_Mpy, 3);
 			}
 		}
-		else if (GrH->PP90Reg.bit.DevOn == 1 && GrH->IU_Mpy != 3800) // большие токи
+		else if (GrH->PP90Reg.bit.DevOn == 1 && GrH->IU_Mpy != 2100) // большие токи 3800
 		{
 			if (IsMemParReady())
 			{
-				GrH->IU_Mpy = 3800;
-				GrH->IV_Mpy = 3800;
-				GrH->IW_Mpy = 3800;
+				GrH->IU_Mpy = 2100;
+				GrH->IV_Mpy = 2100;
+				GrH->IW_Mpy = 2100;
 				WritePar(GetAdr(GroupH.IU_Mpy), &GrH->IU_Mpy, 3);
 			}
 		}
-
+*/
 		GrC->DevOn = GrH->PP90Reg.bit.DevOn;
 #endif
 
@@ -245,7 +246,32 @@ __inline void DmcPrepare(void){	//18kHz
 		ileg_trn_calc(&IV);
 		ileg_trn_calc(&IW);
 
-	if (!IV.CurAngle) Phifltr.Input = _IQ16toIQ(US.CurAngle); 
+    switch (GrB->key)
+    {
+	case 0:
+	    if (!IU.CurAngle) Phifltr.Input = _IQ16toIQ(UR.CurAngle);
+	    break;
+	case 1:
+	    if (!IV.CurAngle) Phifltr.Input = _IQ16toIQ(US.CurAngle);
+	    break;
+	case 2:
+	    if (!IW.CurAngle) Phifltr.Input = _IQ16toIQ(UT.CurAngle);
+	    break;
+
+	case 3:
+		if (!IV.CurAngle)
+		    GrA->loadAng1 = US.CurAngle;
+		if (!IU.CurAngle)
+		    GrA->loadAng2 = UR.CurAngle;
+		if (!IW.CurAngle)
+		    GrA->loadAng3 = UT.CurAngle;
+		Phifltr.Input = _IQ16toIQ(Mid3UnsValue(GrA->loadAng1, GrA->loadAng2, GrA->loadAng3));
+	    break;
+
+	case 4:
+	    if (!UR.CurAngle) Phifltr.Input = _IQ16toIQ(180 - IU.CurAngle);
+	    break;
+    }
 }
 // -----------------------------------------------------------------
 __inline void PulsePhaseControl(void){	//18kHz	
@@ -260,10 +286,23 @@ __inline void PulsePhaseControl(void){	//18kHz
 // -----------------------------------------------------------------
 void DmcIndication1(void)
 {
+	Uns koef1 = 1, koef2 = 1;
+#if BUR_90
+	if (GrC->Drive_Type == dt100_A50_S)
+	{
+		koef1 = 5;
+		koef2 = 1;
+	}
+	else if (GrC->Drive_Type == dt4000_G18_U)
+	{
+		koef1 = 5;
+		koef2 = 3;
+	}
+#endif
 	// токи нагрузки в А
-	Iload[0] = I_RMS_CALC(IU.Output);
-	Iload[1] = I_RMS_CALC(IV.Output);
-	Iload[2] = I_RMS_CALC(IW.Output);
+	Iload[0] = (I_RMS_CALC(IU.Output)*koef2)/koef1;
+	Iload[1] = (I_RMS_CALC(IV.Output)*koef2)/koef1;
+	Iload[2] = (I_RMS_CALC(IW.Output)*koef2)/koef1;
 	if (IsStopped() && !IsTestMode()) memset(Iload, 0, 3);		// если стоп и не тест то 0
 
 	// токи нагрузки в %
@@ -417,6 +456,11 @@ void NetMomitor(void)
 	if ((GrH->FaultsLoad.all & LOAD_SHC_MASK) && IsPowerOn())	
 		GrD->ControlWord = vcwStop;	
 
+	if (!IsPowerOff())
+	{
+	    waitStartVoltageFlag = false;	// Снимаем флаг ожидания напржения
+	}
+
 	if ((!IsPowerOff()) && (!IsTestMode())&& (Dmc.WorkMode == wmStop) && (GrH->CalibState == csCalib) && (!(GrH->FaultsLoad.all & LOAD_SHC_MASK))) // если есть напряжение, нету аварий по напряжению и находимся в стопе
 
 	{ 
@@ -446,7 +490,7 @@ void NetMomitor(void)
 	{
 		 PhEl.Direction = 0;
 	}
-	if (IsPowerOff()&&(Dmc.WorkMode != wmStop)) //  если нет  напряжения и мы едем то выключаем
+	if (IsPowerOff() && (Dmc.WorkMode != wmStop) && !waitStartVoltageFlag) //  если нет  напряжения и мы едем то выключаем
 	{
 		if(PowerLostTimer2 < NET_MON_STOP_TIME2) //ждем 1 с   (Uns)(GrC->BURM_Timer2 * PRD_50HZ) NET_MON_STOP_TIME2
 		{
@@ -673,6 +717,7 @@ register Uns Tmp;
 #if BUR_90
 	DRV_ON = 0;		// Разрешаем управление тиристорами
 #endif
+	waitStartVoltageFlag = true; 		// Выставляем флаг ожидания напряжения при старте
 }
 
 //---state machine---------
@@ -800,6 +845,8 @@ __inline void StopMode(void)		// стм. стоп
 	DRV_ON = 1;						// Отключаем управление тиристорами
 #endif
 	
+	waitStartVoltageFlag = false;	// Снимаем флаг ожидания напржения
+
 	ClkThyrControl(0);				// выключили тактирование тиристоров
 }
 // -----------------------------------------------------------------
@@ -1287,13 +1334,16 @@ __inline void TorqueObsInit(void)
 								  	}
 								  }
 				 		break;//11
-				case dt100_A50_S:   PFUNC_blkRead(&drive12,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								  GrH->UporOnly = 0;
+				case dt100_A50_S:
+							#if BUR_90
+							    PFUNC_blkRead(&drive21,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							    GrH->PP90Reg.bit.DevOn = 0;
+							#else
+							    PFUNC_blkRead(&drive12,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							#endif
+							    GrH->UporOnly = 0;
 								  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
-								  #if BUR_90
-						  GrH->PP90Reg.bit.DevOn = 0;
-						  #endif
 								  if ((GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
 								  {
 								  	if (IsMemParReady())

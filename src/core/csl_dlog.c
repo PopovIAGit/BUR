@@ -76,10 +76,10 @@ void MonitorUpdate(void)
 			 DlogCh2 = (Int)UR.Output;		break;
 
 		 case 12:DlogCh1 = (Int)AdcRegs.ADCRESULT3;
-			 DlogCh2 = (Int)AdcRegs.ADCRESULT3 - 32767;break;
+			 DlogCh2 = (Int)AdcRegs.ADCRESULT4;break;
 
-		 case 13:DlogCh1 = (Int)Torq.Indication;
-			 DlogCh2 = (Int)Dmc.WorkMode;		break;
+		 case 13:DlogCh1 = (Int)AdcRegs.ADCRESULT3;
+			 DlogCh2 = (Int)AdcRegs.ADCRESULT5;		break;
 
 		 case 14:DlogCh1 = (Int)IU.CurAngle;
 			 DlogCh2 = (Int)UR.CurAngle;		break;

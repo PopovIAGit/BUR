@@ -2,9 +2,6 @@
 #define CONFIG_
 
 // Глобальные настройки
-/*#define VERSION					1114	// Версия проекта
-#define SUBVERSION				15		// Подверсия проекта*/
-
 #define DEVICE_GROUP			1 
 #define VERSION				130
 #define MODULE_VERSION			70

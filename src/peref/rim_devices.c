@@ -27,9 +27,11 @@ LOG_INPUT BtnOpen   	= BTN_DEFAULT(0, False);	// было true
 LOG_INPUT BtnClose  	= BTN_DEFAULT(1, False);	// было true
 LOG_INPUT BtnStop_MU    = BTN_DEFAULT(2, False);// возможно надо поменять на тру
 LOG_INPUT BtnStop_DU    = BTN_DEFAULT(3, False);
+#if !BUR_90
 LOG_INPUT TuOpen        = TU_DEFAULT(&ExtReg,  SBEXT_OPEN,   0);
 LOG_INPUT TuClose       = TU_DEFAULT(&ExtReg,  SBEXT_CLOSE,  1);
 LOG_INPUT TuStop        = TU_DEFAULT(&ExtReg,  SBEXT_STOP,   2);
+#endif
 LOG_INPUT TuMu          = TU_DEFAULT2(&ExtReg, SBEXT_MU,     3);
 LOG_INPUT TuDu          = TU_DEFAULT2(&ExtReg, SBEXT_DU,     4);
 
@@ -100,7 +102,7 @@ Bool RimDevicesRefresh(void)
 	BtnStop_MU.Input= ToPtr(&HALL_SENS4);
 	BtnStop_DU.Input= ToPtr(&HALL_SENS3);
 
-#if !BUR_M
+#if !BUR_M & !BUR_90
 	// Все входа не реверсивные
 	TuOpen.Level  = DIN_LEVEL(SBEXT_OPEN,  (Uns)GrB->InputMask.bit.Open);	// забираем данные для обработки входов ТУ, 220/24 не влияет 
 	TuClose.Level = DIN_LEVEL(SBEXT_CLOSE, (Uns)GrB->InputMask.bit.Close);	// приходит 0/1. уровень формируется в зависимости от типа входа - реверсивнй/нереверсивный
@@ -206,6 +208,10 @@ void RimIndication(void)//	Проверить для нас
 	if (IsTestMode()) DisplTest();				// если тест то тест дисплея
 	
 	GrA->Temper = BlockTemper + GrC->CorrTemper; // Забираем температуру и корректируем ее
+
+#if BUR_90 & !BUR_M
+	Mcu.Tu.State = GrH->Inputs.all & 0x7;
+#endif
 
 	TenControl();	// управление теном
 	

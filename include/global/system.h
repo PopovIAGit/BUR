@@ -27,6 +27,7 @@ TPrdObj  Prd4;
 TPrdElem ListM[] = {
 	PrdElemInit(ProtectionsUpdate,	NULL, 					1),	//	1
 	PrdElemInit(MotorControlUpdate,	NULL, 					1),	//	2
+	PrdElemInit(MonitorUpdate,	NULL, 					1),
 	PrdElemInit(SerialCommTimings,	&Mb, 					1),	//	3
 	PrdElemInit(PultImpulseCapture,	&Pult,					1),	//	4
 	PrdElemInit(PrdExecute,			&Prd0,					1)	//	5
@@ -135,9 +136,11 @@ TPrdElem List4[] = {
 	PrdElemInit(LogInputCalc,			&BtnStop_MU,		1),	//	4
 	PrdElemInit(LogInputCalc,			&BtnStop_DU,		1),	//	5
 	PrdElemInit(LogInputCalc,			&BtnOpen,			1),	//	6
+#if !BUR_90
 	PrdElemInit(LogInputCalc,			&TuClose,			1),	//	7
 	PrdElemInit(LogInputCalc,			&TuOpen,			1),	//	8
-	PrdElemInit(LogInputCalc,			&TuStop,			1),	//	9	
+	PrdElemInit(LogInputCalc,			&TuStop,			1),	//	9
+#endif
 	PrdElemInit(LocalControl,			NULL,				1),	//	10
 	PrdElemInit(RemoteControl,			NULL,				1),	//	11
 	PrdElemInit(DataSetting,			NULL,				1),	//	12

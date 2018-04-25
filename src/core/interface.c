@@ -77,6 +77,10 @@ TDigitalInput 	dinDeblok,
 Uns		startTimer = PRD_10HZ*1;	// Таймер инициализации. Пока он не равен 0, идет инициализация. 1 секунда.
 extern  Int  lastDirection;
 
+ Uns mudustatedefect = 0;
+ Uns mudustatefault = 0;
+
+
 __inline void CheckParams(void);
 __inline void DefParamsSet(Uns Code);
 static   void PutAddData(Uns Addr, Uns *Value);
@@ -986,18 +990,35 @@ void LocalControl(void) // изменен и не проверен
 			}	
 
 		switch(BtnStatus & BTN_STOP)
-		{
-			//case BTN_STOP_MU:Mcu.Mpu.BtnKey = KEY_STOP; break;
-			//case BTN_STOP_DU:Mcu.Mpu.BtnKey = KEY_STOP; break;
-			case BTN_STOP:  
-							#if BUR_M  	
-							Mcu.Mpu.BtnKey = KEY_STOP;
-							#else
-								if (IsLocalControl() || GrB->MuDuSetup == mdOff)
-									Mcu.Mpu.BtnKey = KEY_STOP;
-							#endif
-					break;
-		}
+	    {
+		#if BUR_90
+		case BTN_STOP_MU:
+		#if BUR_M
+		    Mcu.Mpu.BtnKey = KEY_STOP;
+		#else
+		    if (IsLocalControl() || GrB->MuDuSetup == mdOff)
+		    Mcu.Mpu.BtnKey = KEY_STOP;
+		#endif
+		    break;
+		case BTN_STOP_DU:
+		#if BUR_M
+		    Mcu.Mpu.BtnKey = KEY_STOP;
+		#else
+		    if (IsLocalControl() || GrB->MuDuSetup == mdOff)
+		    Mcu.Mpu.BtnKey = KEY_STOP;
+		#endif
+		    break;
+		#else
+		    case BTN_STOP:
+		#if BUR_M
+		    Mcu.Mpu.BtnKey = KEY_STOP;
+		#else
+		    if (IsLocalControl() || GrB->MuDuSetup == mdOff)
+		    Mcu.Mpu.BtnKey = KEY_STOP;
+		#endif
+		#endif
+		    break;
+	    }
 
 		if (BtnStatus) BlinkTimer = (Uns)BLINK_TOUT;
 	}   
@@ -1023,8 +1044,13 @@ void LocalControl(void) // изменен и не проверен
 	}
 
 	// Выход из начального экрана эксрпесс-настройки ручкой "Стоп"
+#if BUR_90
+	if ((Menu.State == MS_EXPRESS) && Menu.Express.Enable && 	\
+		(Halls->bit.StopMU || Halls->bit.StopDU) && (Menu.Key == 0))
+#else
 	if ((Menu.State == MS_EXPRESS) && Menu.Express.Enable && 	\
 		(Halls->bit.StopMU && Halls->bit.StopDU) && (Menu.Key == 0))
+#endif
 	{
 		Menu.Express.Select = false;
 		Menu.Key = KEY_ENTER;
@@ -1057,7 +1083,7 @@ void RemoteControl(void) //24 - 220 + маски,
 	if (!PiData.Connect) return;	// если нет связи с АВР то не обрабатывает сигналы ТУ
 	Mcu.Tu.Enable = (!IsTestMode()) && (!IsParamEditing() && !GrG->TestCamera);  // если тест то не включаем работу с ту
 
-#if !BUR_90
+	#if !BUR_90
 	if(GrB->InputType == it24)		
 	{
 		ExtReg = ((Uns)(PiData.DiscrIn24 & 0x1F));
@@ -1067,27 +1093,27 @@ void RemoteControl(void) //24 - 220 + маски,
 		ExtReg = ((Uns)(PiData.DiscrIn220 & 0x1F));
 	}
 
-	GrH->Inputs.bit.Open  = (Uns)TuOpen.Flag  ^ (Uns)GrB->InputMask.bit.Open;	
-	GrH->Inputs.bit.Close = (Uns)TuClose.Flag ^ (Uns)GrB->InputMask.bit.Close;	 
-	GrH->Inputs.bit.Stop  = (Uns)TuStop.Flag  ^ (Uns)GrB->InputMask.bit.Stop;  
-	GrH->Inputs.bit.Mu  = 	(Uns)TuMu.Flag    ^ (Uns)GrB->InputMask.bit.Mu; 
-	GrH->Inputs.bit.Du  = 	(Uns)TuDu.Flag    ^ (Uns)GrB->InputMask.bit.Du;  
+	GrH->Inputs.bit.Open  	= (Uns)TuOpen.Flag  ^ (Uns)GrB->InputMask.bit.Open;
+	GrH->Inputs.bit.Close 	= (Uns)TuClose.Flag ^ (Uns)GrB->InputMask.bit.Close;
+	GrH->Inputs.bit.Stop  	= (Uns)TuStop.Flag  ^ (Uns)GrB->InputMask.bit.Stop;
+	GrH->Inputs.bit.Mu  	= (Uns)TuMu.Flag    ^ (Uns)GrB->InputMask.bit.Mu;
+	GrH->Inputs.bit.Du  	= (Uns)TuDu.Flag    ^ (Uns)GrB->InputMask.bit.Du;
 #else
 	ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
 
-	dinDeblok.inputBit = ((ExtReg>>SBEXT_DEBLOK)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinStop.inputBit = ((ExtReg>>SBEXT_STOP)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinClose.inputBit = ((ExtReg>>SBEXT_CLOSE)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinOpen.inputBit = ((ExtReg>>SBEXT_OPEN)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinDU.inputBit = ((ExtReg>>SBEXT_DU)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinMU.inputBit = ((ExtReg>>SBEXT_MU)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+	dinDeblok.inputBit 	= ((ExtReg>>SBEXT_DEBLOK)&0x1) 	^ (Uns)GrB->InputMask.bit.Deblok;
+	dinStop.inputBit 	= ((ExtReg>>SBEXT_STOP)&0x1) 	^ (Uns)GrB->InputMask.bit.Stop;
+	dinClose.inputBit 	= ((ExtReg>>SBEXT_CLOSE)&0x1) 	^ (Uns)GrB->InputMask.bit.Close;
+	dinOpen.inputBit 	= ((ExtReg>>SBEXT_OPEN)&0x1) 	^ (Uns)GrB->InputMask.bit.Open;
+	dinDU.inputBit 		= ((ExtReg>>SBEXT_DU)&0x1) 	^ (Uns)GrB->InputMask.bit.Du;
+	dinMU.inputBit 		= ((ExtReg>>SBEXT_MU)&0x1) 	^ (Uns)GrB->InputMask.bit.Mu;
 
-	GrH->Inputs.bit.Deblok = DigitalInputUpdate (&dinDeblok);
-	GrH->Inputs.bit.Open = DigitalInputUpdate (&dinOpen);
-	GrH->Inputs.bit.Close = DigitalInputUpdate (&dinClose);
-	GrH->Inputs.bit.Stop = DigitalInputUpdate (&dinStop);
-	GrH->Inputs.bit.Mu = DigitalInputUpdate (&dinMU);
-	GrH->Inputs.bit.Du = DigitalInputUpdate (&dinDU);
+	GrH->Inputs.bit.Deblok 	= DigitalInputUpdate (&dinDeblok);
+	GrH->Inputs.bit.Open 	= DigitalInputUpdate (&dinOpen);
+	GrH->Inputs.bit.Close 	= DigitalInputUpdate (&dinClose);
+	GrH->Inputs.bit.Stop 	= DigitalInputUpdate (&dinStop);
+	GrH->Inputs.bit.Mu 	= DigitalInputUpdate (&dinMU);
+	GrH->Inputs.bit.Du 	= DigitalInputUpdate (&dinDU);
 #endif
 
 
@@ -1105,6 +1131,8 @@ void RemoteControl(void) //24 - 220 + маски,
 								{
 									Mcu.MuDuInput = 0;
 									GrA->Faults.Proc.bit.MuDuDef = 1;
+									mudustatedefect = 0;
+									mudustatefault=1;
 									MuDuDefTimer = 0;
 								}		
 						}
@@ -1113,12 +1141,16 @@ void RemoteControl(void) //24 - 220 + маски,
 								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 1;
 								GrA->Faults.Proc.bit.MuDuDef = 0;
+								  mudustatedefect = 0;
+								  mudustatefault = 0;
 						}
 						else if(!GrH->Inputs.bit.Mu && GrH->Inputs.bit.Du) 
 						{ 		
 								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 0;
 								GrA->Faults.Proc.bit.MuDuDef = 0;
+								  mudustatedefect = 0;
+								  mudustatefault = 0;
 						}
 						else if(GrH->Inputs.bit.Mu  && GrH->Inputs.bit.Du)  
 						{		
@@ -1126,6 +1158,8 @@ void RemoteControl(void) //24 - 220 + маски,
 								{
 									Mcu.MuDuInput = 0;
 									GrA->Faults.Proc.bit.MuDuDef = 1;
+									mudustatedefect = 1;
+									mudustatefault=0;
 									MuDuDefTimer = 0;
 								}
 						}

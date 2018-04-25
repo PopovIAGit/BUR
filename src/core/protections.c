@@ -244,6 +244,8 @@ void ProtectionsClear(void)	// полная отчистка ошибок (включая ошибки энкодера и
 	IsShcReset = true;
 	i2tOverload.isFault = false;
 	Encoder.skipDefectFl = 0;
+	mudustatedefect = 0;
+	 mudustatefault = 0;
 
 }
 
@@ -251,6 +253,8 @@ void ProtectionsReset(void)	// сброс силовых защит(для возможного пуска двигател
 {
 	OverWayFlag = 0;
 	MuffFlag = 0;
+
+	mudustatedefect = 0;
 
 	GrA->Status.all &= ~STATUS_RESET_MASK;	
 	
@@ -440,6 +444,7 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 Bool IsDefectExist(TPrtMode Mode) // неисправность
 {
 	Defects.Proc.all = GrA->Faults.Proc.all; 	//забираем значение структур с ошибками   
+	Defects.Proc.bit.MuDuDef = mudustatedefect;
 	Defects.Load.all = GrH->FaultsLoad.all;  
 	Defects.Dev.all  = GrH->FaultsDev.all; 
 
@@ -497,6 +502,8 @@ Bool IsFaultExist(TPrtMode Mode) // сигнализация и выключение двигателя
 	Faults.Net.all  = GrH->FaultsNet.all;        
 	Faults.Load.all = GrH->FaultsLoad.all;  
 
+	Faults.Proc.bit.MuDuDef = mudustatefault;
+
 	Faults.Proc.bit.Drv_T  = 	GrA->Faults.Proc.bit.Drv_T;
 	Faults.Proc.bit.NoMove =	GrA->Faults.Proc.bit.NoMove;
 	Faults.Proc.bit.PhOrd  = 	GrA->Faults.Proc.bit.PhOrd;
@@ -509,6 +516,7 @@ Bool IsFaultExist(TPrtMode Mode) // сигнализация и выключение двигателя
 switch(GrB->SettingPlace)
 {
 	case spLinAuto:
+		if(GrC->MuDuDef 		< Mode) Faults.Proc.bit.MuDuDef = 0;
 
 		if(GrC->DriveTemper		< Mode)	Faults.Proc.bit.Drv_T 	 = 0;	// сбросили защиту по перегреву ДВ
 		if(GrC->PhOrd			< Mode)	Faults.Proc.bit.PhOrd 	 = 0;	// Направление вращения дв - останов
@@ -526,7 +534,7 @@ switch(GrB->SettingPlace)
 	
 	 break;
 	case spFire: 
-	
+		if(pmBlkTsSign 		< Mode) Faults.Proc.bit.MuDuDef = 0;
 		if(pmBlkTsSign			< Mode)	Faults.Proc.bit.Drv_T 	 = 0;	// сбросили защиту по перегреву ДВ
 		if(pmBlkTsSign			< Mode)	Faults.Proc.bit.PhOrd 	 = 0;	// Направление вращения дв - останов
 
@@ -543,7 +551,7 @@ switch(GrB->SettingPlace)
 
 	break;
 }
-
+	if(Faults.Proc.bit.MuDuDef)				return true;	// перегрев дв
 	if(Faults.Proc.bit.Drv_T)				return true;	// перегрев дв
 	if(Faults.Proc.bit.PhOrd)				return true;	// неверное чередование фаз двигателя
 	if(Faults.Proc.bit.NoMove)				return true;	// нет движения
@@ -623,7 +631,7 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 	if ((GrC->PhOrd == pmOff) || IsStopped())	// если защита от нерпав. черед. фаз выключина или все остановленно или откалеброванно 
 	{
 		FlagEngPhOrd = False;					// сбросили флаг если выключали останавливали или откалибравали на данное чередование
-		StartPos = Encoder.Revolution;	// стартовое положение это текущее положение с энкодера
+		StartPos = Revolution;//Encoder.Revolution;	// стартовое положение это текущее положение с энкодера
 		Timer = 0;						// сбросили таймер
 		return;							// вышли
 	}
