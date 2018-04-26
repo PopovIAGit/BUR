@@ -69,6 +69,10 @@ Uns   PhOrdTimer 		= 0;
 
 Bool IsShcReset = false;			// флаг сброса КЗ
 
+Uns ShCUTimer = 0;
+Uns ShCVTimer = 0;
+Uns ShCWTimer = 0;
+
 __inline void DefDriveFaults(void);	
 __inline void ShCProtect(void);
 
@@ -583,26 +587,52 @@ __inline void ShCProtect(void)			// проверка на КЗ
 	adcV = abs(ADC_IV - GrH->IV_Offset);
 	adcW = abs(ADC_IW - GrH->IW_Offset);
 	
-	if (adcU > GrC->ShC_Level)	GrA->Faults.Load.bit.ShCU = 1;
-	if (adcV > GrC->ShC_Level)	GrA->Faults.Load.bit.ShCV = 1;
-	if (adcW > GrC->ShC_Level)	GrA->Faults.Load.bit.ShCW = 1;
+	// Добавил настраиваимаю задержку на срабатывание защиты КЗ по фазам
+	if (adcU > GrC->ShC_Level)
+	{
+		ShCUTimer++;
+		if (ShCUTimer >= GrC->ShcTicTime)
+		{
+			GrH->FaultsLoad.bit.ShCU = 1;
+		}
+	}
+	else
+	{
+		ShCUTimer = 0;
+	}
+
+	if (adcV > GrC->ShC_Level)
+	{
+		ShCVTimer++;
+		if (ShCVTimer >= GrC->ShcTicTime)
+		{
+			GrH->FaultsLoad.bit.ShCV = 1;
+		}
+	}
+	else
+	{
+		ShCVTimer = 0;
+	}
+
+	if (adcW > GrC->ShC_Level)
+	{
+		ShCWTimer++;
+		if (ShCWTimer >= GrC->ShcTicTime)
+		{
+			GrH->FaultsLoad.bit.ShCW = 1;
+		}
+	}
+	else
+	{
+		ShCWTimer = 0;
+	}
+
 
 /*
-	if(GrC->ShC)
-	{
-		if ((ADC_IU < GrC->ShC_Down)||(ADC_IU > GrC->ShC_Up))
-			{
-				GrH->FaultsLoad.bit.ShCU = 1;
-			}
-		if ((ADC_IV < GrC->ShC_Down)||(ADC_IV > GrC->ShC_Up))
-			{
-				GrH->FaultsLoad.bit.ShCV = 1;
-			}
-		if ((ADC_IW < GrC->ShC_Down)||(ADC_IW > GrC->ShC_Up))
-			{
-				GrH->FaultsLoad.bit.ShCW = 1;
-			}	
-	}	*/
+
+	if (adcV > GrC->ShC_Level)	GrH->FaultsLoad.bit.ShCV = 1;
+	if (adcW > GrC->ShC_Level)	GrH->FaultsLoad.bit.ShCW = 1;*/
+
 }
 			
 void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВАНИЕ ФАЗ ДВИГАТЕЛЯ)

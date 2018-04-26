@@ -62,6 +62,11 @@ void ModBusControl(void)
 
 void SerialCommUpdate(TMbPort *Port)
 {
+	if (PauseModbus > 0)
+	{
+	    return;
+	}
+
 	MbConnect = Port->Frame.ConnFlg;								// Состояние связи Modbus
 
 	if (!Port->Frame.NewMsg) return;

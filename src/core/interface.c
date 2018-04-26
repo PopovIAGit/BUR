@@ -287,6 +287,8 @@ void PowerOn(void)
 
 	PowerEnable = True;	
 
+	SerialCommRefresh();
+
 	PowerOnCnt++;
 }
 
@@ -366,22 +368,22 @@ void DataBufferPre(void)
 
 //	if (Timer > 0) {	Timer--;	return;		}
 
-	if ((++PreTimer >= PRD_200HZ) && !LogEv.EventFlag)	// Запись по секунде
-	{
+	if ((++PreTimer >= PRD_200HZ) && !LogEv.EventFlag)						// Запись по секунде	
+	{			
 		PreTimer = 0;
 
-		LogEvBuffer[LogEvBufIndex].LogStatus = GrA->Status;
+		LogEvBuffer[LogEvBufIndex].LogStatus 	 = GrA->Status;
 		LogEvBuffer[LogEvBufIndex].LogPositionPr = GrA->PositionPr;
-		LogEvBuffer[LogEvBufIndex].LogTorque = GrA->Torque;
-		LogEvBuffer[LogEvBufIndex].LogUr = GrA->Ur;
-		LogEvBuffer[LogEvBufIndex].LogUs = GrA->Us;
-		LogEvBuffer[LogEvBufIndex].LogUt = GrA->Ut;
-		LogEvBuffer[LogEvBufIndex].LogIu = GrA->Iu;
-		LogEvBuffer[LogEvBufIndex].LogIv = GrA->Iv;
-		LogEvBuffer[LogEvBufIndex].LogIw = GrA->Iw;
-		LogEvBuffer[LogEvBufIndex].LogTemper = GrA->Temper;
-		LogEvBuffer[LogEvBufIndex].LogInputs = GrA->Inputs.all;
-		LogEvBuffer[LogEvBufIndex].LogOutputs = GrA->Outputs.all;
+		LogEvBuffer[LogEvBufIndex].LogTorque	 = GrA->Torque;
+		LogEvBuffer[LogEvBufIndex].LogUr		 = GrA->Ur;
+		LogEvBuffer[LogEvBufIndex].LogUs		 = GrA->Us;
+		LogEvBuffer[LogEvBufIndex].LogUt		 = GrA->Ut;
+		LogEvBuffer[LogEvBufIndex].LogIu		 = GrA->Iu;
+		LogEvBuffer[LogEvBufIndex].LogIv		 = GrA->Iv;
+		LogEvBuffer[LogEvBufIndex].LogIw		 = GrA->Iw;
+		LogEvBuffer[LogEvBufIndex].LogTemper	 = GrA->Temper;
+		LogEvBuffer[LogEvBufIndex].LogInputs	 = GrA->Inputs.all;
+		LogEvBuffer[LogEvBufIndex].LogOutputs 	 = GrA->Outputs.all;
 
 		// Инкрементируем текущий индекс в буфере. Предыдущие накопленные данные не удаляем.
 		if (++LogEvBufIndex >= LOG_EV_BUF_CELL_COUNT)
@@ -1262,7 +1264,9 @@ void BlkSignalization(void)	// Сигнализация на блоке
 
 void TsSignalization(void) //ТС
 {
-	//if(Fault_Delay > 0) return;
+	#if !BUR_M
+	    if(PauseModbus > 0) return;
+	#endif
 
 	TOutputReg *Reg = &GrH->Outputs;
 	
@@ -1292,16 +1296,23 @@ void TsSignalization(void) //ТС
 	else	
 	{ 
 	#if BUR_M
-
 #if !BUR_90
-		if(Fault_Delay > 0)
+		if(PauseModbus > 0)
 		{
-		    Reg->bit.Dout2 = 0;				//  Муфта
-		    Reg->bit.Dout3 = 0;				//	тс аларм
-		    Reg->bit.Dout5 = 0;				//  Питание
-		    Reg->bit.Dout6 = 0;				//  Закрыто
-		    Reg->bit.Dout7 = 0;				//  Открыто
-		    Reg->bit.Dout8 = 0;				//  Неисправность
+		    Reg->bit.Dout2 = 0;					//  Муфта
+		    Reg->bit.Dout3 = 0;					//  тс аларм
+		    Reg->bit.Dout5 = 0;					//  Питание
+		    if (GrC->NoControlKVOKVZ == 0)
+		    {
+			Reg->bit.Dout6 = 0;				//  Закрыто
+			Reg->bit.Dout7 = 0;				//  Открыто
+		    }
+		    else if (GrC->NoControlKVOKVZ == 1)
+		    {
+			Reg->bit.Dout6 = 1;				//  Закрыто
+			Reg->bit.Dout7 = 1;				//  Открыто
+		    }
+		    Reg->bit.Dout8 = 0;					//  Неисправность
 		    if (GrC->ReversKVOKVZ == 0)
 		    {
 		    	Reg->bit.Dout9  = 1;		//  КВЗ

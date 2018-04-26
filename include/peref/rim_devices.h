@@ -75,6 +75,10 @@
 #define ADC_US			AdcRegs.ADCRESULT4
 #define ADC_UT			AdcRegs.ADCRESULT5 
 
+#define ADC_IU_MIN		AdcRegs.ADCRESULT13
+#define ADC_IV_MIN		AdcRegs.ADCRESULT15
+#define ADC_IW_MIN		AdcRegs.ADCRESULT14
+
 #define HALL_SENS1		AdcRegs.ADCRESULT8
 #define HALL_SENS2		AdcRegs.ADCRESULT9
 #define HALL_SENS3		AdcRegs.ADCRESULT10

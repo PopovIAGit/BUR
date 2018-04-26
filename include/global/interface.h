@@ -35,10 +35,7 @@ typedef struct _TGroupA
 	Uns             CycleCnt;           // 21.Счетчик циклов
 	Int             Temper;             // 22.Температура блока
 	Uns             MkuPoVersion;       // 23.Версия ПО
-	Uns loadAng1;
-	Uns loadAng2;
-	Uns loadAng3;
-	Uns Rsvd[13];
+	Uns Rsvd[16];
 } TGroupA;
 
 // Группа B (Адрес = 40, Количество = 50) - Параметры пользователя
@@ -86,7 +83,7 @@ typedef struct _TGroupB
 	Uns				OverwayZone;		// 33.Макси
 	TDriveType      DriveType;          // 34.Тип привода
  	Uns             SleepTime;          // 35.Дежурный режим
- 	Uns 			key;
+ 	Uns	 	UporOnly;
 	Uns 			Rsvd[13];
 } TGroupB;
 
@@ -120,18 +117,8 @@ typedef struct _TGroupC
 	Uns 			BrakeZone;			// 22.Превентивное торможение
 	Uns				ReversKVOKVZ;		// 23. Реверс сигналов кво квз
 	Uns				ModbusPauseStart;	// 24. Время задержки на связь по интрефейсу RS-485
-#if BUR_90
-	Uns				DevOn;				// 25. ТИП схемы измерения токов 0-малые 1-большие
-	Uns  			ADCUr;				// 26. АЦП напряжения R
-	Uns  			ADCUs;				// 27. АЦП напряжения S
-	Uns  			ADCUt;				// 28. АЦП напряжения T
-	Uns  			ADCIu;				// 29. АЦП тока U
-	Uns  			ADCIv;				// 30. АЦП тока V
-	Uns  			ADCIw;				// 31. АЦП тока W
-#else
-	Uns				Rsvd115[7];			// 25-31. Резерв
-#endif
-	Uns       	    Rsvd5[2];           // 32-33.Резерв
+	Uns		NoControlKVOKVZ;	// для инвертирования кво и квз на блоках 14 года, без доступа к прямому управлению
+	Uns       	Rsvd5[8];          // 25-34.Резерв
 	TReverseType	ReverseType;        // 34.Тип реверса
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока
@@ -177,7 +164,8 @@ typedef struct _TGroupC
 	Uns             PhlLevel;      		// 73.Уровень обрыва фаз
 	Uns             PhlTime;       		// 74.Время определения обрыва фаз 
 	TPrtMode        I2t;                // 75.Время-токовая защита
-	Uns       	    Rsvd11[9];          // 76-84.Резерв
+	Uns				ShcTicTime;			// 76.Время определения КЗ в тиках (18 кГц)
+	Uns       	    Rsvd11[8];          // 77-84.Резерв
 	TPrtMode        ISkew;              // 85.Защита от асиметрии тока
 	Uns             ISkewLevel;         // 86.Уровень асиметрии тока
 	Uns             ISkewTime;          // 87.Время асиметрии тока 

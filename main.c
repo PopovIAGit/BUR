@@ -5,7 +5,6 @@ Uint16 CpuTime = 0;
 Uint16 CpuTime1 = 0;
 Uint16 CpuTime2 = 0;
 Uint16 CpuTimeMax = 0;
-extern Uns PauseModbus;
 
 void main(void)
 {
@@ -30,13 +29,10 @@ void main(void)
 	
 	PauseModbus = GrC->ModbusPauseStart;
 
-
 	while(1)
 	{
-		if (PauseModbus == 0)	// Вызываем SerialCommUpdate только если прошел таймаут паузы
-		{
-			SerialCommUpdate(&Mb);
-		}
+		SerialCommUpdate(&Mb);
+
 		BtWTUpdate(&Bluetooth);
 		ImUpdate(&Im);
 	}

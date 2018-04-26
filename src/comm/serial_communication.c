@@ -100,8 +100,10 @@ void PiUpdate(void)
 {
 	register Uns CRC;
 
+#if BUR_90
 	// Если инициализация еще не завершена, или питание потеряно, не связываемся с ПИ
 	if (!GrH->initComplete || !PowerSupplyEnable) return;
+#endif
 
 	switch (PiData.State)
 	{

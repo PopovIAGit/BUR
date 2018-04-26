@@ -190,7 +190,7 @@ __inline void InitGpio(void)
 	GpioCtrlRegs.GPADIR.bit.GPIO6   = 1; // TRN_CLK
 	GpioDataRegs.GPADAT.bit.GPIO6   = 1;
 
-	GpioCtrlRegs.GPADIR.bit.GPIO7   = 1; //
+	GpioCtrlRegs.GPADIR.bit.GPIO7   = 1; // LCD_RW
 	GpioDataRegs.GPADAT.bit.GPIO7   = 1;
 
 	GpioCtrlRegs.GPADIR.bit.GPIO8   = 1; // ENC_MSBINV ??.
@@ -199,7 +199,7 @@ __inline void InitGpio(void)
 	GpioCtrlRegs.GPADIR.bit.GPIO9   = 1; // LCD_EN
 	GpioDataRegs.GPADAT.bit.GPIO9   = 0;
 
-	GpioCtrlRegs.GPADIR.bit.GPIO10 	= 1; // DSP_LED
+	GpioCtrlRegs.GPADIR.bit.GPIO10 	= 1; // IRDA_CLK
 	GpioDataRegs.GPADAT.bit.GPIO10 	= 1;
 
 	GpioCtrlRegs.GPADIR.bit.GPIO11 	= 1; // ENC_STROB

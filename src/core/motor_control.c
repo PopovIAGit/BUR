@@ -63,17 +63,12 @@ TValveCmd SaveContGroup = vcwNone;
 Uns secflag = 0;
 Uns secpausetimer = 0;
 // ----------------------------------------	
-Int InomDefU[10]  	 = {13,11,18,52,52,47,56,110,85,148};					// default значения для Inom для разных приводов уфа
+Int InomDefU[11]  	 = {13,11,18,52,52,47,56,110,85,148,27};					// default значения для Inom для разных приводов уфа
 Int InomDefS[10]	 = {11,9,13,32,32,33,73,85,95,150};						// Сарапуль
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
 Int TransCurrDef[10] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100};	//					для TransCur править
 Int GearRatioDef[5]	 = {5250,7360,15675,16016,16016};						//для передаточного числа редуктора 
 
-extern Int	//типовые двигатели
-	drive1,  drive2,  drive3,	drive4,	drive5,	
-	drive6,  drive7,  drive8,  drive9,	drive10, 
-	drive11, drive12, drive13, drive14,	drive15, 
-	drive16, drive17, drive18, drive19, drive20, drive21;
 
 Uns TimerInterp = 0;
 Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time); 
@@ -156,15 +151,6 @@ void MotorControlUpdate(void)
 // -----------------------------------------------------------------
 __inline void ADC_Aquisition(void){		//18kHz
 
-#if BUR_90
-	GrC->ADCIu = ADC_IU;
-	GrC->ADCIv = ADC_IV;
-	GrC->ADCIw = ADC_IW;
-	GrC->ADCUr = ADC_UR;
-	GrC->ADCUs = ADC_US;
-	GrC->ADCUt = ADC_UT;
-#endif
-
 	URfltr.Input = _IQ16toIQ(ADC_UR);
 	USfltr.Input = _IQ16toIQ(ADC_US);
 	UTfltr.Input = _IQ16toIQ(ADC_UT);
@@ -187,33 +173,6 @@ __inline void DmcPrepare(void){	//18kHz
 		UR.Input = ADC_CONV(_IQtoIQ16(URfltr.Output), GrH->UR_Mpy, GrH->UR_Offset);
 		US.Input = ADC_CONV(_IQtoIQ16(USfltr.Output), GrH->US_Mpy, GrH->US_Offset);
 		UT.Input = ADC_CONV(_IQtoIQ16(UTfltr.Output), GrH->UT_Mpy, GrH->UT_Offset);
-
-#if BUR_90
-		// При выборе типа привода задаем коэффициент для датчиков тока в зависимости от нужной схемы
-/*		if (GrH->PP90Reg.bit.DevOn == 0 && GrH->IU_Mpy != 670) // малые токи
-		{
-			if (IsMemParReady())
-			{
-				GrH->IU_Mpy = 670;	//??? переснять, сейчас данные для старой платы
-				GrH->IV_Mpy = 670;
-				GrH->IW_Mpy = 670;
-				WritePar(GetAdr(GroupH.IU_Mpy), &GrH->IU_Mpy, 3);
-			}
-		}
-		else if (GrH->PP90Reg.bit.DevOn == 1 && GrH->IU_Mpy != 2100) // большие токи 3800
-		{
-			if (IsMemParReady())
-			{
-				GrH->IU_Mpy = 2100;
-				GrH->IV_Mpy = 2100;
-				GrH->IW_Mpy = 2100;
-				WritePar(GetAdr(GroupH.IU_Mpy), &GrH->IU_Mpy, 3);
-			}
-		}
-*/
-		GrC->DevOn = GrH->PP90Reg.bit.DevOn;
-#endif
-
 		IU.Input = ADC_CONV(_IQtoIQ16(IUfltr.Output), GrH->IU_Mpy, GrH->IU_Offset);
 		IV.Input = ADC_CONV(_IQtoIQ16(IVfltr.Output), GrH->IV_Mpy, GrH->IV_Offset);
 		IW.Input = ADC_CONV(_IQtoIQ16(IWfltr.Output), GrH->IW_Mpy, GrH->IW_Offset);
@@ -246,32 +205,7 @@ __inline void DmcPrepare(void){	//18kHz
 		ileg_trn_calc(&IV);
 		ileg_trn_calc(&IW);
 
-    switch (GrB->key)
-    {
-	case 0:
-	    if (!IU.CurAngle) Phifltr.Input = _IQ16toIQ(UR.CurAngle);
-	    break;
-	case 1:
-	    if (!IV.CurAngle) Phifltr.Input = _IQ16toIQ(US.CurAngle);
-	    break;
-	case 2:
-	    if (!IW.CurAngle) Phifltr.Input = _IQ16toIQ(UT.CurAngle);
-	    break;
-
-	case 3:
-		if (!IV.CurAngle)
-		    GrA->loadAng1 = US.CurAngle;
-		if (!IU.CurAngle)
-		    GrA->loadAng2 = UR.CurAngle;
-		if (!IW.CurAngle)
-		    GrA->loadAng3 = UT.CurAngle;
-		Phifltr.Input = _IQ16toIQ(Mid3UnsValue(GrA->loadAng1, GrA->loadAng2, GrA->loadAng3));
-	    break;
-
-	case 4:
-	    if (!UR.CurAngle) Phifltr.Input = _IQ16toIQ(180 - IU.CurAngle);
-	    break;
-    }
+	if (!IV.CurAngle) Phifltr.Input = _IQ16toIQ(US.CurAngle); 
 }
 // -----------------------------------------------------------------
 __inline void PulsePhaseControl(void){	//18kHz	
@@ -1152,7 +1086,7 @@ __inline void TorqueObsInit(void)
 						  }						  
 		 		break;//1
 		case dt100_A50_U: PFUNC_blkRead(&drive2,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-						  GrH->UporOnly = 0;
+						  GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1171,7 +1105,7 @@ __inline void TorqueObsInit(void)
 						  }							  
 				break;//2
 		case dt400_B20_U:   PFUNC_blkRead(&drive3,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 		GrH->UporOnly = 0;
+					 		GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1189,7 +1123,7 @@ __inline void TorqueObsInit(void)
 						  }							 
 		 		break;//3
 		case dt400_B50_U:   PFUNC_blkRead(&drive4,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 		GrH->UporOnly = 0;
+					 		GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1207,7 +1141,7 @@ __inline void TorqueObsInit(void)
 						  }	
 				break;//4
 		case dt800_V40_U:   PFUNC_blkRead(&drive5,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-						  GrH->UporOnly = 0;
+						  GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1226,7 +1160,7 @@ __inline void TorqueObsInit(void)
 						  }			  
 				break;//5
 		case dt1000_V20_U : PFUNC_blkRead(&drive6,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					GrH->UporOnly = 0;
+					GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1244,7 +1178,7 @@ __inline void TorqueObsInit(void)
 						  }	  
 		 		break;//6
 		case dt4000_G9_U  : PFUNC_blkRead(&drive7,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					GrH->UporOnly = 0;
+					GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1262,7 +1196,7 @@ __inline void TorqueObsInit(void)
 						  }						  
 				break;//7
 		case dt4000_G18_U : PFUNC_blkRead(&drive8,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 	GrH->UporOnly = 0;
+					 	GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1280,7 +1214,7 @@ __inline void TorqueObsInit(void)
 						  }			 				 
 				break;//8
 		case dt10000_D6_U : PFUNC_blkRead(&drive9,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 	  GrH->UporOnly = 0;
+					 	  GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1298,7 +1232,7 @@ __inline void TorqueObsInit(void)
 						  }	
 				break;//9
 		case dt10000_D12_U: PFUNC_blkRead(&drive10,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-						  GrH->UporOnly = 0;
+						  GrH->UporOnly = GrB->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1318,7 +1252,7 @@ __inline void TorqueObsInit(void)
 //-----------------Сарапульские------------------------------------------------------
 		case dt100_A25_S:   PFUNC_blkRead(&drive11,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 								  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
-								  GrH->UporOnly = 0;
+								  GrH->UporOnly = GrB->UporOnly;
 
 					      #if BUR_90
 						  GrH->PP90Reg.bit.DevOn = 0;
@@ -1336,12 +1270,12 @@ __inline void TorqueObsInit(void)
 				 		break;//11
 				case dt100_A50_S:
 							#if BUR_90
-							    PFUNC_blkRead(&drive21,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
+							    PFUNC_blkRead(&drive22,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 							    GrH->PP90Reg.bit.DevOn = 0;
 							#else
 							    PFUNC_blkRead(&drive12,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 							#endif
-							    GrH->UporOnly = 0;
+							    GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  if ((GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
@@ -1356,7 +1290,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//12
 				case dt400_B20_S:   PFUNC_blkRead(&drive13,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 		GrH->UporOnly = 0;
+							 		GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1374,7 +1308,7 @@ __inline void TorqueObsInit(void)
 								  }
 				 		break;//13
 				case dt400_B50_S:   PFUNC_blkRead(&drive14,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 		GrH->UporOnly = 0;
+							 		GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1392,7 +1326,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//14
 				case dt800_V40_S:   PFUNC_blkRead(&drive15,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								  GrH->UporOnly = 0;
+								  GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1410,7 +1344,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//15
 				case dt1000_V20_S : PFUNC_blkRead(&drive16,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								GrH->UporOnly = 0;
+								GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  if ((GrC->Inom != InomDefS[5])||(GrC->MaxTorque != MomMaxDef[5]))
@@ -1425,7 +1359,7 @@ __inline void TorqueObsInit(void)
 								  }
 				 		break;//16
 				case dt4000_G9_S  : PFUNC_blkRead(&drive17,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								GrH->UporOnly = 0;
+								GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1443,7 +1377,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//17
 				case dt4000_G18_S : PFUNC_blkRead(&drive18,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 	GrH->UporOnly = 0;
+							 	GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 									#if BUR_90
 									GrH->PP90Reg.bit.DevOn = 1;
@@ -1460,7 +1394,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//18
 				case dt10000_D6_S : PFUNC_blkRead(&drive19,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 	  GrH->UporOnly = 0;
+							 	  GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 									#if BUR_90
 									GrH->PP90Reg.bit.DevOn = 1;
@@ -1477,7 +1411,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//19
 				case dt10000_D12_S: PFUNC_blkRead(&drive20,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								  GrH->UporOnly = 0;
+								  GrH->UporOnly = GrB->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1496,6 +1430,27 @@ __inline void TorqueObsInit(void)
 								  	}
 								  }
 						break;//20
+				    case dt400_B40_U:
+					PFUNC_blkRead(&drive21, (Int *) (&Ram.GroupH.TqCurr), LENGTH_TRQ);
+					GrH->UporOnly = GrB->UporOnly;
+					PFUNC_blkRead(&TransCurrDef[9], (Int *) (&Ram.GroupH.TransCurr), 1);
+
+					#if BUR_90
+					GrH->PP90Reg.bit.DevOn = 0;
+					#endif
+
+					if ((GrC->Inom != InomDefU[10]) || (GrC->MaxTorque != MomMaxDef[2]))
+					{
+					    if (IsMemParReady())
+					    {
+						GrC->GearRatio = GearRatioDef[1];
+						GrC->Inom = InomDefU[10];
+						GrC->MaxTorque = MomMaxDef[2];
+						WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+
+					    }
+					}
+					break; //21
 	}
 } 
 // -----------------------------------------------------------------
@@ -1845,14 +1800,17 @@ void sifu_calc2(SIFU *v)					//функция сифу - изменена - фаза S и R поменялись м
 		{
 			case SIFU_DOWN: v->Status.all |= ((1<<SIFU_UR)|(1<<SIFU_UT)); break;// если реверсивное вращение то выставляем 1 для битов фазы R S если они были обнулены
 			case SIFU_UP:   v->Status.all |= ((1<<SIFU_UR_REV)|(1<<SIFU_UT_REV)); break; // аналогично только единички выставляются для битов реверсивной группы
-			break;																
 		}
 	}
 }
 //---------------------Проверка питания источника-------------------------------
 void PowerCheck(void)			// 200 Hz 
 {
+#if PLAT_VERSION_7
 	if(!POWER_CONTROL)			// если питание отключено
+#else
+	if(POWER_CONTROL)			// если питание отключено
+#endif
 	{
 		PowerSupplyCnt++;		// задержка на выключение
 		if (PowerSupplyCnt == 5)
