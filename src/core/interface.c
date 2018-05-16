@@ -1023,7 +1023,14 @@ void LocalControl(void) // изменен и не проверен
 	    }
 
 		if (BtnStatus) BlinkTimer = (Uns)BLINK_TOUT;
-	}   
+	}
+
+	if (BtnStatus & BTN_STOP)			// Если ручка находится в положении "СТОП"
+	{
+		GrT->StopButtonState = true;	// Выставляем флаг "ручка стоп нажата"
+	}
+	else
+		GrT->StopButtonState = false;	// Снимаем флаг "ручка стоп нажата"
 
 	Halls->bit.Open    = BtnOpen.Flag;							// забираем данные с датчиков холла дл обработки
 	Halls->bit.Close   = BtnClose.Flag;

@@ -500,7 +500,7 @@ void TekModbusParamsUpdate(void)
 
 	GrT->PositionPr 	 	= GrA->PositionPr;
 	GrT->CycleCnt 		 	= GrH->CycleCnt;
-	GrT->Rsvd1    	= 0;
+	//GrT->Rsvd1    	= 0;
 	GrT->Iu				= GrH->Imid;
 	GrT->Rsvd2[0] 	= 0;
 	GrT->Rsvd2[1] 	= 0;

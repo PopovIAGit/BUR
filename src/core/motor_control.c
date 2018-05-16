@@ -473,7 +473,7 @@ void ContactorControl(TContactorGroup i) // если 0 то
 					GrH->Outputs.bit.Dout0 = 0;	//  Ком.Закрыть
 					GrH->Outputs.bit.Dout4 = 1;	//  Ком.Стоп Стоп инвертный если 0 то стоп если 1 то ничего
 					
-				  if (++StopSetTimer > CONECTOR_STOP_TIME)
+				  if ((++StopSetTimer > CONECTOR_STOP_TIME)&&(!GrT->StopButtonState))	// Выключаем рэле по истечению таймера, или пока ручку СТОП не отпустят
 	   				{
 	   					StopSetTimer   = 0;
 						GrH->ContGroup = cgOff;

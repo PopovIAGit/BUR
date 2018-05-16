@@ -364,7 +364,7 @@ typedef struct _TGroupT
 	Uns 		 	PositionPr;		// 2 Текущее положение %
 	TTEK_ComReg  		ComReg;			// 3 Регистр команд
 	Uns 		 	CycleCnt;		// 4 Счетчик циклов
-	Uns			Rsvd1;			// 5 Резерв
+	Uns				StopButtonState;	// 5 Состояние ручки СТОП (0 - Ручка не нажата, 1 - Ручка нажата)
 	Uns 		 	Iu;			// 6 Ток фазы U
 	Uns 		 	Rsvd2[9];		// 7 - 15 Резерв
 	Uns 			Ur;			// 16 Напряжение входной сети
