@@ -4,6 +4,7 @@
 #define BUSY_STR_ADR		0
 #define CMD_CANC_ADR		1
 #define EXPR_STR_ADDR		4
+#define MPU_BLOCKED_ADR		32
 
 #define NUM_ICONS		5
 #define CODE_ICO		0x00
@@ -894,6 +895,8 @@ const struct MENU_STRING AddStr[] = {
 	"    дю  мер     ", // 29
 	"гюдюире пюанвхе ",	// 30	13
 	"  лнлемрш   нй  ", // 31
+	" сопюбкемхе лс  ", // 32
+	" гюакнйхпнбюмн  ", // 33
 };
 
 

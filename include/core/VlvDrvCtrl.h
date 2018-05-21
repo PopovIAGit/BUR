@@ -74,6 +74,7 @@ typedef struct {
 	Byte				 BtnKey;				// Команда с ручек/кнопок
 	Byte				 PduKey;				// Команда с ПДУ
 	Bool				 CancelFlag;			// Флаг отмена команды
+	Bool				 MpuBlockedFlag;		// Флаг отмены команды из-за блокировки МПУ
 } TMpuControl;
 
 // Структура для работы с телеуправлением

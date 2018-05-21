@@ -287,7 +287,10 @@ void PowerOn(void)
 
 	PowerEnable = True;	
 
-	SerialCommRefresh();
+	if (!GrG->TestCamera)
+	{
+		SerialCommRefresh();
+	}
 
 	PowerOnCnt++;
 }
@@ -949,6 +952,24 @@ void AddControl(void)
 			if (++CancelTimer >= (Uns)CANCEL_TOUT)
 			{
 				Mcu.Mpu.CancelFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.MpuBlockedFlag)	// Команда МУ заблокировано
+		{
+
+			CancelTimer++;
+			if (CancelTimer <= 20)			// 2 секунды показываем "КОМАНДА ОТМЕНЕНА"
+			{
+				PutAddData(CMD_CANC_ADR, Null);
+			}
+			else
+			{
+				PutAddData(MPU_BLOCKED_ADR, Null);
+			}
+			if (CancelTimer >= 40)		// 2 секунды показываем "МПУ ЗАБЛОКИРОВАНО"
+			{
+				Mcu.Mpu.MpuBlockedFlag = False;
 				CancelTimer = 0;
 			}
 		}

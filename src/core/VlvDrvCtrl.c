@@ -153,11 +153,11 @@ __inline void MpuControl(TVlvDrvCtrl *p)
 			break;
 		case KEY_CLOSE:
 			if (Active) *p->ControlWord = vcwClose;
-			else p->Mpu.CancelFlag = True;
+			else p->Mpu.MpuBlockedFlag = True;
 			break;
 		case KEY_OPEN:
 			if (Active) *p->ControlWord = vcwOpen;
-			else p->Mpu.CancelFlag = True;
+			else p->Mpu.MpuBlockedFlag = True;
 			break;
 	}
 }

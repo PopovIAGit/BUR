@@ -674,9 +674,9 @@ void EngPhOrdPrt(void)					// проверка на правильность чередования фаз (ЧЕРЕДОВА
 
 		if (GrC->EncoderType == 0)
 		{
-			if (Delta > ((RevMax + 1) / 2))
+			if (Delta > data)
 				Delta -= (RevMax + 1);// если дельта больше 2000 то декрементируем дельту на 4000
-			if (Delta < -((RevMax + 1) / 2))
+			if (Delta < -data)
 				Delta += (RevMax + 1);// если дельта меньше -2000 то инкрементируем дельту на 4000
 		}
 		else if (GrC->EncoderType == 1)

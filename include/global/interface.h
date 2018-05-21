@@ -602,7 +602,7 @@ extern TGroupT *GrT;
 	&Ram.GroupB.MuDuSetup, \
 	&Ram.GroupB.DuSource, \
 	&Ram.GroupC.ReverseType, \
-	True, 0, 0, False, \
+	True, 0, 0, False, False, \
 	True, False, 0, True, False, True,\
 	&Ram.GroupH.TuReleMode, \
 	&Ram.GroupB.TuLockSeal, \
