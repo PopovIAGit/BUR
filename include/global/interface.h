@@ -494,6 +494,7 @@ extern TGroupT *GrT;
 #define REG_I_NOM				GetAdr(GroupC.Inom)
 #define REG_GEAR_RATIO			GetAdr(GroupC.GearRatio)
 #define REG_DRIVE_TYPE			GetAdr(GroupB.DriveType)
+#define REG_ENCODER_TYPE		GetAdr(GroupC.EncoderType)
 
 #define REG_CYCLE_CNT			GetAdr(GroupH.CycleCnt)
 #define REG_CONTROL				GetAdr(GroupD.ControlWord)

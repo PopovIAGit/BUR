@@ -238,6 +238,7 @@ void DataSetting(void)	//???
 			&&(DefAddr != REG_MAX_TORQUE)		// Не максимальный момент
 			&&(DefAddr != REG_I_NOM)			// Не номинальный ток
 			&&(DefAddr != REG_DRIVE_TYPE)		// Не тип электропривода
+			&&(DefAddr != REG_ENCODER_TYPE)		// Не тип датчика положения
 			&&(DefAddr != REG_GEAR_RATIO) )		// Не КП редуктора
 		{
 	 		*(ToUnsPtr(&Ram) + DefAddr) = Dcr.Def;
@@ -1046,7 +1047,7 @@ void LocalControl(void) // изменен и не проверен
 		if (BtnStatus) BlinkTimer = (Uns)BLINK_TOUT;
 	}
 
-	if (BtnStatus & BTN_STOP)			// Если ручка находится в положении "СТОП"
+	if (BtnStatus == BTN_STOP)			// Если ручка находится в положении "СТОП"
 	{
 		GrT->StopButtonState = true;	// Выставляем флаг "ручка стоп нажата"
 	}
