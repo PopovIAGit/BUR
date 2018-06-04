@@ -26,21 +26,27 @@ typedef struct {
 	Uint16 Parity;
 	Uint16 Timeout1_5;
 	Uint16 Timeout3_5;
+	Uint16 TimeoutPre; //may habara
+	Uint16 TimeoutPost; //may habara
 	Uint16 TimeoutAck;
+	Uint16 TimeoutTestDelay; //may habara
 	TTrEnable TrEnable;
 } TMbParams;
 
 // Driver frame
 typedef struct {
-	Uint16 ConnFlg;
+	Uint16 ConnFlg;  // флаг используетс€ только дл€ индикации св€зи
 	Uint16 Exception;
 	Uint16 NewMsg;
 	Uint16 Flg3_5;
 	Uint16 Acknoledge;
 	Uint16 Timer1_5;
 	Uint16 Timer3_5;
+	Uint16 TimerPre;  //may habara
+	Uint16 TimerPost; //may habara
 	Uint16 TimerConn;
 	Uint16 TimerAck;
+	Uint16 TimerTestDelay; //may habara
 	Uint16 Counter;
 	Uint16 Size;
 	Uint16 Crc;

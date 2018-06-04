@@ -8,7 +8,7 @@
 Драйвер коммуникации по протоколу ModBus RTU
 ======================================================================*/
 
-#ifndef MODBUS_RTU_
+/*#ifndef MODBUS_RTU_
 #define MODBUS_RTU_
 
 #include "responses.h"
@@ -134,7 +134,7 @@ void ModBusTxIsr(TMbHandle);
 }
 #endif // extern "C"
 
-#endif
+#endif*/
 
 
 

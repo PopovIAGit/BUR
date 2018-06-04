@@ -8,6 +8,12 @@
 #define TOUT_WAIT		(Uint16)(0.000 * MB_SCALE)
 #define TOUT_CONN		(Uint16)(3.000 * MB_SCALE)
 #define TOUT_ACK		(Uint16)(1.000 * MB_SCALE)
+//may habara
+#define TOUT_PREAMBLE		(Uint16)(0.200 * MB_SCALE)
+#define TOUT_POSTAMBLE		(Uint16)(0.200 * MB_SCALE)
+
+#define TOUT_TESTSCI		(Uint16)(1.200 * MB_SCALE)
+
 
 #define INIT_CRC		0xFFFF
 #define GOOD_CRC		0x0000
@@ -22,6 +28,9 @@
 #define TEK_DISCR_TEST_MASK 	8160
 #endif
 
+Uint16  TestSCI=0;
+Uint16 EnabledTransmit=0;
+
 TMbPort Mb;
 
 Bool MbConnect = false;
@@ -32,10 +41,11 @@ Uint16 CrcTable[256];
 Uint16 MbTmpData[MB_DATA_MAX];
 static Uns BaudRates[7] = SCI_DEFAULT_BAUD_RATES;
 
+
 inline void   ModBusSetup(TMbPort *, Uint16 UartID, TTrEnable TrEnable);
 static void   ModBusReset(TMbPort *);
 inline void   ModBusRecieve(TMbPort *);
-static Byte	  ReadRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count);
+static Byte   ReadRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count);
 static Byte   WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count);
 //static void   ReadAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count);
 //static void   WriteAckRegs(TMbPort *Port, Uint16 Addr, Uint16 Count);
@@ -44,6 +54,8 @@ inline Uint16 CalcCRC(Uint16 CRC, Uint16 c);
 #if CRC_MODE
 static Uint16 CalcBufCRC(Uint16 *Buf, Uint16 Count);
 #endif
+inline Uint16 MaCalcTout(Uint16 Tout, Uint16 Baud);
+void ReStartReadLine(TMbPort *Port);
 inline Uint16 CalcTout(Uint16 Tout, Uint16 Baud);
 inline Uint16 TimerPending(Uint16 *Timer);
 static void   MbTxCtrl(Uint16 State);
@@ -67,54 +79,65 @@ void SerialCommUpdate(TMbPort *Port)
 	    return;
 	}
 
-	MbConnect = Port->Frame.ConnFlg;								// Состояние связи Modbus
+	//if(TestSCI==1){
+	//    return;
+	//}
 
+	MbConnect = Port->Frame.ConnFlg;	// Состояние связи Modbus
+	if (EnabledTransmit==1) return;
 	if (!Port->Frame.NewMsg) return;
-	Port->Frame.NewMsg = 0;											// Перед switch'ем, а не после
+	Port->Frame.NewMsg = 0;			// Перед switch'ем, а не после
+	ModBusRecieve(Port);
+	//Port->Frame.Counter = 0;
 
-	switch(Port->Frame.Flg3_5)
+	/*switch(Port->Frame.Flg3_5)
 	{
 		case 0:
 			ModBusRecieve(Port);
-			#if !CRC_MODE
-			Port->Frame.Crc = INIT_CRC;
-			#endif
-			Port->Frame.Counter = 0;								// в каждом case обнулять счетчик
+			Port->Frame.Counter = 0;	// в каждом case обнулять счетчик
 			break;
 		case 1:
 			Port->Frame.Counter = 0;
 			SCI_transmit(Port->Params.UartID, Port->Frame.Buf[0]);
 			break;
+
 		case 2:
 			Port->Params.TrEnable(0);
 			SCI_tx_disable(Port->Params.UartID);
-			#if !CRC_MODE
-			Port->Frame.Crc = INIT_CRC;
-			#endif
 			Port->Frame.Flg3_5 = 0;
 			Port->Frame.Counter = 0;
 			SCI_rx_enable(Port->Params.UartID);
 			break;
-	}	
+	}*/
 }
 
 void SerialCommRxHandler(TMbPort *Port)
 {
 	Uint16 Data;
-
+	if (EnabledTransmit==1) return;
 	Port->Stat.RxBytesCount++;
 	
 	Data = SCI_getstatus(Port->Params.UartID);
-	if (Data & SCI_BREAK) {SCI_reset(Port->Params.UartID); return;}
+	if (Data & SCI_BREAK)
+	{
+	    EnabledTransmit = 1;
+	    SCI_rx_disable(Port->Params.UartID);
+	    SCI_tx_disable(Port->Params.UartID);
+	    Port->Params.TrEnable(0);
+	    Port->Frame.Size = 0;
+	    Port->Frame.Counter = 0;
+	    Port->Frame.Timer3_5 = 0;
+	    Port->Frame.TimerTestDelay = Port->Params.TimeoutTestDelay;
+
+	    SCI_reset(Port->Params.UartID);
+	    return;
+	}
 
 	Data = SCI_recieve(Port->Params.UartID);
 	if (Port->Frame.Counter < MB_FRAME_MAX)
 	{
 		Port->Frame.Buf[Port->Frame.Counter++] = Data;
-		#if !CRC_MODE
-		Port->Frame.Crc = CalcCRC(Port->Frame.Crc, Data);
-		#endif
-		Port->Frame.Timer1_5 = Port->Params.Timeout1_5;
+		//Port->Frame.Timer1_5 = Port->Params.Timeout1_5;
 		Port->Frame.Timer3_5 = Port->Params.Timeout3_5;
 	}
 }
@@ -123,47 +146,80 @@ void SerialCommTxHandler(TMbPort *Port)
 {
 	Uint16 Data;
 
-	Port->Stat.TxBytesCount++;
+	if(TestSCI==1){
+	    if (++Port->Frame.Counter <2)
+	    {
+		SCI_transmit(Port->Params.UartID, 0x55);
+	    } else {
+		Port->Frame.Counter=0;
+		Port->Params.TrEnable(0);
+		SCI_tx_disable(Port->Params.UartID);
+		SCI_rx_enable(Port->Params.UartID);
+		Port->Frame.TimerTestDelay = Port->Params.TimeoutTestDelay;
+	    }
+	}
+	else {
 
-	if (++Port->Frame.Counter < Port->Frame.Size)
-	{
-		Data = Port->Frame.Buf[Port->Frame.Counter];
-		#if !CRC_MODE
-		Port->Frame.Crc = CalcCRC(Port->Frame.Crc, Data);
-		#endif
-		SCI_transmit(Port->Params.UartID, Data);
+	    Port->Stat.TxBytesCount++;
+
+	    if (++Port->Frame.Counter < Port->Frame.Size)// && EnabledTransmit==1)
+	    {
+		    Data = Port->Frame.Buf[Port->Frame.Counter];
+		    SCI_transmit(Port->Params.UartID, Data);
+		    //todo may habara
+		    //взводим таймер для правильного завершения передачи
+		    Port->Frame.TimerPost = Port->Params.TimeoutPost;
+	    } //когда запрещать передачу?
 	}
-	#if !CRC_MODE
-	else switch(Port->Frame.CrcIndex)
-	{
-		case 0:
-			SCI_transmit(Port->Params.UartID, Port->Frame.Crc & 0xFF);
-			Port->Frame.CrcIndex = 1;
-			break;
-		case 1:
-			SCI_transmit(Port->Params.UartID, Port->Frame.Crc >> 8);
-			Port->Frame.CrcIndex = 2;
-			break;
-		case 2: 
-			Port->Frame.Flg3_5 = 2;
-			Port->Frame.Timer3_5 = Port->Params.Timeout3_5;
-			break;
-	}
-	#else
-	else
-	{
-		Port->Frame.Flg3_5 = 2;
-		Port->Frame.Timer3_5 = Port->Params.Timeout3_5;
-	}
-	#endif
 }
 
 void SerialCommTimings(TMbPort *Port)
 {
-	if (!TimerPending(&Port->Frame.Timer1_5))  {SCI_rx_disable(Port->Params.UartID);}
-	if (!TimerPending(&Port->Frame.Timer3_5))  {Port->Frame.NewMsg = 1;}
-	if (!TimerPending(&Port->Frame.TimerConn)) {Port->Frame.ConnFlg = 0; Port->Frame.Exception = EX_NO_CONNECTION;}
-	if (!TimerPending(&Port->Frame.TimerAck))  {Port->Frame.Acknoledge = 0;}
+	//may habara
+	//if (!TimerPending(&Port->Frame.Timer1_5))  { }
+        if (!TimerPending(&Port->Frame.TimerTestDelay))
+        {
+            SCI_reset(Port->Params.UartID);
+            SCI_init(Port->Params.UartID, SCI_BRR(Port->Params.BaudRate), Port->Params.Parity, 8);
+            SCI_rx_enable(Port->Params.UartID);
+            EnabledTransmit = 0;
+        }
+
+	if (TestSCI==1){
+	    if (!TimerPending(&Port->Frame.TimerTestDelay)){
+		Port->Frame.Counter=0;
+		SCI_rx_disable(Port->Params.UartID);
+		SCI_tx_enable(Port->Params.UartID);
+		Port->Params.TrEnable(1);
+		SCI_transmit(Port->Params.UartID, 0x55);
+	    }
+	}
+
+	if (!TimerPending(&Port->Frame.Timer3_5))
+	{
+	    SCI_rx_disable(Port->Params.UartID);
+	    Port->Frame.NewMsg = 1;
+	}
+	//may habara
+	if (!TimerPending(&Port->Frame.TimerConn)) {Port->Frame.ConnFlg = 0; }
+						    //Port->Frame.Exception = EX_NO_CONNECTION;}
+	//следующее прерывание необходимо для Modbus  в случае если он находиться в режиме МАСТЕРА
+	//удалить
+	//if (!TimerPending(&Port->Frame.TimerAck))  {Port->Frame.Acknoledge = 0;}
+
+	//may habara
+	// преамбула нужна для организации старта передачи
+	if (!TimerPending(&Port->Frame.TimerPre))   {Port->Frame.Counter = 0;
+				//EnabledTransmit = 1;
+				SCI_transmit(Port->Params.UartID, Port->Frame.Buf[0]);}
+	// постамбула необходима для организации правильной логики завершения передачи
+	if (!TimerPending(&Port->Frame.TimerPost))  {
+						     //EnabledTransmit = 0;
+						     Port->Params.TrEnable(0);
+	    		                             SCI_tx_disable(Port->Params.UartID);
+	    		                             SCI_rx_enable(Port->Params.UartID);
+	    		                             Port->Frame.Counter = 0;
+	}
 }
 
 void SerialCommRefresh(void)
@@ -196,13 +252,38 @@ static void ModBusReset(TMbPort *Port)
 	Port->Params.Timeout3_5 = CalcTout(TOUT_3_5, Port->Params.BaudRate);
 	Port->Params.TimeoutAck = TOUT_ACK;
 	
-	Port->Frame.NewMsg     = 1;
-	Port->Frame.Flg3_5     = 2;
+	//may habara
+	Port->Params.TimeoutPre = CalcTout(TOUT_PREAMBLE, Port->Params.BaudRate);
+	Port->Params.TimeoutPost = CalcTout(TOUT_POSTAMBLE, Port->Params.BaudRate);
+	Port->Params.TimeoutTestDelay = CalcTout(TOUT_TESTSCI, Port->Params.BaudRate);
+
+
+	//may habara
+	Port->Frame.NewMsg = 0;//may 1
+
+	Port->Params.TrEnable(0);
+	SCI_tx_disable(Port->Params.UartID);
+	Port->Frame.Flg3_5 = 0;
+	Port->Frame.Counter = 0;
+	SCI_rx_enable(Port->Params.UartID);
+	Port->Frame.TimerPre   = 0;
+	Port->Frame.TimerPost  = 0;
+
 	Port->Frame.Timer1_5   = 0;
 	Port->Frame.Timer3_5   = 0;
 	Port->Frame.TimerConn  = 0;
-	Port->Frame.TimerAck   = 0;
-	Port->Frame.Acknoledge = 0;
+	//Port->Frame.TimerAck   = 0;
+	//Port->Frame.Acknoledge = 0;
+}
+
+void ReStartReadLine(TMbPort *Port)
+{
+    Port->Params.TrEnable(0);
+    Port->Frame.Size = 0;
+    Port->Frame.Counter = 0;
+    SCI_tx_disable(Port->Params.UartID);
+    SCI_rx_enable(Port->Params.UartID);
+    Port->Frame.Timer3_5 = 0;//Port->Params.Timeout3_5;
 }
 
 inline void ModBusRecieve(TMbPort *Port)
@@ -218,7 +299,7 @@ inline void ModBusRecieve(TMbPort *Port)
 	if ((Port->Frame.Buf[0] != Port->Params.Slave) ||
 		 (Port->Frame.Crc != GOOD_CRC))
 	{
-		SCI_rx_enable(Port->Params.UartID);
+		ReStartReadLine(Port);
 		return;
 	}
 	
@@ -226,137 +307,113 @@ inline void ModBusRecieve(TMbPort *Port)
 	Addr  = (Port->Frame.Buf[2] << 8) | Port->Frame.Buf[3];
 	Count = (Port->Frame.Buf[4] << 8) | Port->Frame.Buf[5];
 	
+	if (Port->Frame.Exception!=0)
+	{	//test 485
+	    Port->Frame.Exception = 0;
+	}
+
 	Port->Frame.Exception = 0;
 
+	switch(Func)
 	{
+	    case MB_DIAGNOSTICS:
+		if (Addr) Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+		else Port->Frame.Size = Port->Frame.Size - 2;
+	    break;
+	    case MB_REP_SLAVE_ID:
+	    break;
+	    default:
+		if (Port->Frame.Size < 5) { ReStartReadLine(Port); return;}
+		if (!Count || (Count > MB_DATA_MAX)) {
+		    Port->Frame.Exception = EX_ILLEGAL_DATA_VALUE; break;}
+		Res = 1;
+
+		if (GrC->MbOffsetMode && (Addr >= TEK_MB_START_ADDR))
+		{
+		    Addr = Addr - TEK_MB_START_ADDR;
+		}
+		if (GrC->ModbusConfiguration && (Addr >= 40000))		// 40000
+		{
+		    Addr = Addr - (TEK_MB_START_ADDR+1);			// 40001 - раньше с него начиналась группа Т
+		}
+		if (!Res) {Port->Frame.Exception = EX_ILLEGAL_DATA_ADDRESS; break;}
+
 		switch(Func)
 		{
-			case MB_DIAGNOSTICS:
-				if (Addr) Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-				else Port->Frame.Size = Port->Frame.Size - 2;
-				break;
-			case MB_REP_SLAVE_ID:
-				break;
-			default:
-				if (Port->Frame.Size < 5)
-					{SCI_rx_enable(Port->Params.UartID); return;}
-
-				if (!Count || (Count > MB_DATA_MAX))
-					{Port->Frame.Exception = EX_ILLEGAL_DATA_VALUE; break;}
-	// !
-				Res = 1;
-
-				if (GrC->MbOffsetMode && (Addr >= TEK_MB_START_ADDR))
-				{
-					Addr = Addr - TEK_MB_START_ADDR;
-				}
-				if (GrC->ModbusConfiguration && (Addr >= 40000))		// 40000
-				{
-					Addr = Addr - (TEK_MB_START_ADDR+1);						// 40001 - раньше с него начиналась группа Т
-				}
-				//if (Tmp <= (RAM_DATA_SIZE + 5)) {Res = 1;}
-				//else if (CHECK_TEK_MB_ADDR(Addr))	{Res = 5;}
-	//			else if ((Addr >= LOG_EV_RAM_DATA_ADR) && (Tmp <= LOG_EV_RAM_DATA_LADR))      
-	//				  {Res = 4; Addr = Addr - LOG_DATA_ADDR;}
-				//else {Res = 0;}
-
-				if (!Res) {Port->Frame.Exception = EX_ILLEGAL_DATA_ADDRESS; break;}
-
-				switch(Func)
-				{
-					case MB_READ_REGS:
-						switch(Res)
-						{
-							case 1: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&Ram, Addr, Count);
-									break;
-							//case 2:  ReadRegs(Port, (Uint16 *)MON_CH_ADR, Addr, Count); 	break;
-							//case 4:  ReadAckRegs(Port, Addr + LOG_MEM_ADDR,  Count); 		break;
-							//case 5: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&RamTek, (Addr - TEK_MB_START_ADDR), Count);
-							//		break;
-							default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-						}
-						break;
-					case MB_WRITE_REGS:
-						switch(Res)
-						{
-							case 1:
-								if ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET))
-								Mcu.EvLog.Source = CMD_SRC_SERIAL;
-															TempMbFlag = 1;
-								Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
-								if (!Port->Frame.Exception) SerialCommRefresh();
-
-								break;
-							//case 5:
-							//	Port->Frame.Exception = WriteRegsTek(Port, (Uint16 *)&RamTek, (Uint16 *)&Ram, (Addr - TEK_MB_START_ADDR), Count);
-							//	if (!Port->Frame.Exception) SerialCommRefresh();
-							//	break;
-							default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-										
-						}
-						break;
-
-						case MB_WRITE_REG:
-						switch(Res)
-						{
-							case 1:
-								Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
-								if (!Port->Frame.Exception) SerialCommRefresh();
-								break;
-							default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-										
-						}
-						break;
-
-					default:
-						Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-				}
+		    case MB_READ_REGS:
+			switch(Res)
+			{
+			    case 1: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&Ram, Addr, Count);
+			    break;
+			    default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+			}
+		    break;
+		    case MB_WRITE_REGS:
+			switch(Res)
+			{
+			    case 1:
+				if ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET))
+						Mcu.EvLog.Source = CMD_SRC_SERIAL;
+				TempMbFlag = 1;
+				Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
+				if (!Port->Frame.Exception) SerialCommRefresh();
+			    break;
+			    default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+			}
+		    break;
+		    case MB_WRITE_REG:
+			switch(Res)
+			{
+			    case 1:
+				Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
+				if (!Port->Frame.Exception) SerialCommRefresh();
+			    break;
+			    default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+			}
+		    break;
+		    default:
+			Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
 		}
 	}
-		
+
 	if (!Port->Params.Slave)
 	{
-		Port->Frame.Flg3_5 = 2;
-		Port->Frame.Timer3_5 = Port->Params.Timeout3_5;		
+	    ReStartReadLine(Port);
+	    return;
 	}
 	else
 	{
-		if (Port->Frame.Exception)
+	    if (Port->Frame.Exception)
+	    {
+		/*if (Port->Frame.Exception == EX_ACKNOWLEDGE)
 		{
-			if (Port->Frame.Exception == EX_ACKNOWLEDGE)
-			{
-				Port->Frame.Acknoledge = 1;
-				Port->Frame.TimerAck = Port->Params.TimeoutAck;
-			}
-			Port->Frame.Buf[1] |= 0x80;
-			Port->Frame.Buf[2]  = Port->Frame.Exception;
-			Port->Frame.Size    = 3;
-		}
-		else
-		{
-			Port->Frame.ConnFlg = 1;
-			Port->Frame.TimerConn = TOUT_CONN;
-		}
+			Port->Frame.Acknoledge = 1;
+			Port->Frame.TimerAck = Port->Params.TimeoutAck;
+		}*/
+		Port->Frame.Buf[1] |= 0x80;
+		Port->Frame.Buf[2]  = Port->Frame.Exception;
+		Port->Frame.Size    = 3;
+	    }
+	    else
+	    {
+		Port->Frame.ConnFlg = 1;
+		Port->Frame.TimerConn = TOUT_CONN;
+	    }
 
-		#if CRC_MODE
-		Port->Frame.Crc = CalcBufCRC(Port->Frame.Buf, Port->Frame.Size);
-		Port->Frame.Buf[Port->Frame.Size++] = Port->Frame.Crc & 0xFF;
-		Port->Frame.Buf[Port->Frame.Size++] = Port->Frame.Crc >> 8;
-		#else
-		Port->Frame.CrcIndex = 0;
-		Port->Frame.Crc = CalcCRC(INIT_CRC, Port->Frame.Buf[0]);
-		#endif
+	    Port->Frame.Crc = CalcBufCRC(Port->Frame.Buf, Port->Frame.Size);
+	    Port->Frame.Buf[Port->Frame.Size++] = Port->Frame.Crc & 0xFF;
+	    Port->Frame.Buf[Port->Frame.Size++] = Port->Frame.Crc >> 8;
 
-		SCI_tx_enable(Port->Params.UartID);
-		Port->Params.TrEnable(1);
+	    SCI_rx_disable(Port->Params.UartID);
+	    SCI_tx_enable(Port->Params.UartID);
+	    Port->Params.TrEnable(1);
 
-		Port->Frame.Flg3_5 = 1;
-		Port->Frame.Timer3_5 = Port->Params.Timeout3_5 + TOUT_WAIT;
+	    //Port->Frame.Flg3_5 = 1;
+	    Port->Frame.TimerPre = Port->Params.TimeoutPre;
 	}
 
 	//!!! или в ModBusRecieve
 //	MbConnect = !Port->Frame.Exception;
-
 }
 
 static Byte ReadRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
@@ -401,7 +458,7 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 			if (Val->Memory) 
 			{
 				Nvm = True;
-				LogParam.MbBuffer[LogParam.MbIndex] = i + Addr;			// Запомнили адрес параметра, инкрементировали индекс
+				LogParam.MbBuffer[LogParam.MbIndex] = i + Addr;		// Запомнили адрес параметра, инкрементировали индекс
 				LogParam.MbIndex++;
 			}
 			MbTmpData[i] = Tmp;
@@ -422,8 +479,6 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 		if (Tmp == vcwStop) Mcu.Tu.Ready = False;
 	}
 	
-
-	
 	if (Nvm && !IsMemParReady()) return EX_SLAVE_DEVICE_BUSY;
 
 	memcpy(&Data[Addr], MbTmpData, Count);
@@ -433,15 +488,10 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 		WritePar(Addr, &Data[Addr], Count);
 		RefreshData();
 
-
-
 //	Здесь можно зафиксировать измененный параметр для журнала
-
-
 //	Mcu.EvLog.Value = CMD_PAR_CHANGE; ???
 	}
 //	Mcu.EvLog.Source = CMD_SRC_SERIAL; ???
-
 	return 0;
 }
 
@@ -475,12 +525,20 @@ static Uint16 CalcBufCRC(Uint16 *Buf, Uint16 Count)
 }
 #endif
 
+inline Uint16 MaCalcTout(Uint16 Tout, Uint16 Baud)
+{
+	Tout = (Uint16)(Tout / Baud);
+	if (!Tout) return 1;
+	return Tout;
+}
+
 inline Uint16 CalcTout(Uint16 Tout, Uint16 Baud)
 {
 	Tout = (Uint16)_IQ1div(Tout, Baud);
 	if (!Tout) return 1;
 	return Tout;
 }
+
 
 inline Uint16 TimerPending(Uint16 *Timer)
 {
