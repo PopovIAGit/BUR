@@ -120,14 +120,17 @@ void SerialCommRxHandler(TMbPort *Port)
 	Data = SCI_getstatus(Port->Params.UartID);
 	if (Data & SCI_BREAK)
 	{
-	    EnabledTransmit = 1;
-	    SCI_rx_disable(Port->Params.UartID);
-	    SCI_tx_disable(Port->Params.UartID);
-	    Port->Params.TrEnable(0);
-	    Port->Frame.Size = 0;
-	    Port->Frame.Counter = 0;
-	    Port->Frame.Timer3_5 = 0;
-	    Port->Frame.TimerTestDelay = Port->Params.TimeoutTestDelay;
+	    if (Port->Params.BaudRate!=11520)
+	    {
+		EnabledTransmit = 1;
+	        SCI_rx_disable(Port->Params.UartID);
+		SCI_tx_disable(Port->Params.UartID);
+		Port->Params.TrEnable(0);
+		Port->Frame.Size = 0;
+		Port->Frame.Counter = 0;
+		Port->Frame.Timer3_5 = 0;
+		Port->Frame.TimerTestDelay = Port->Params.TimeoutTestDelay;
+	    }
 
 	    SCI_reset(Port->Params.UartID);
 	    return;
@@ -137,7 +140,6 @@ void SerialCommRxHandler(TMbPort *Port)
 	if (Port->Frame.Counter < MB_FRAME_MAX)
 	{
 		Port->Frame.Buf[Port->Frame.Counter++] = Data;
-		//Port->Frame.Timer1_5 = Port->Params.Timeout1_5;
 		Port->Frame.Timer3_5 = Port->Params.Timeout3_5;
 	}
 }
@@ -162,21 +164,20 @@ void SerialCommTxHandler(TMbPort *Port)
 
 	    Port->Stat.TxBytesCount++;
 
-	    if (++Port->Frame.Counter < Port->Frame.Size)// && EnabledTransmit==1)
+	    if (++Port->Frame.Counter < Port->Frame.Size)
 	    {
 		    Data = Port->Frame.Buf[Port->Frame.Counter];
 		    SCI_transmit(Port->Params.UartID, Data);
 		    //todo may habara
 		    //взводим таймер для правильного завершения передачи
 		    Port->Frame.TimerPost = Port->Params.TimeoutPost;
-	    } //когда запрещать передачу?
+	    }
 	}
 }
 
 void SerialCommTimings(TMbPort *Port)
 {
 	//may habara
-	//if (!TimerPending(&Port->Frame.Timer1_5))  { }
         if (!TimerPending(&Port->Frame.TimerTestDelay))
         {
             SCI_reset(Port->Params.UartID);
@@ -203,14 +204,9 @@ void SerialCommTimings(TMbPort *Port)
 	//may habara
 	if (!TimerPending(&Port->Frame.TimerConn)) {Port->Frame.ConnFlg = 0; }
 						    //Port->Frame.Exception = EX_NO_CONNECTION;}
-	//следующее прерывание необходимо для Modbus  в случае если он находиться в режиме МАСТЕРА
-	//удалить
-	//if (!TimerPending(&Port->Frame.TimerAck))  {Port->Frame.Acknoledge = 0;}
-
 	//may habara
 	// преамбула нужна для организации старта передачи
 	if (!TimerPending(&Port->Frame.TimerPre))   {Port->Frame.Counter = 0;
-				//EnabledTransmit = 1;
 				SCI_transmit(Port->Params.UartID, Port->Frame.Buf[0]);}
 	// постамбула необходима для организации правильной логики завершения передачи
 	if (!TimerPending(&Port->Frame.TimerPost))  {
@@ -257,7 +253,6 @@ static void ModBusReset(TMbPort *Port)
 	Port->Params.TimeoutPost = CalcTout(TOUT_POSTAMBLE, Port->Params.BaudRate);
 	Port->Params.TimeoutTestDelay = CalcTout(TOUT_TESTSCI, Port->Params.BaudRate);
 
-
 	//may habara
 	Port->Frame.NewMsg = 0;//may 1
 
@@ -272,8 +267,6 @@ static void ModBusReset(TMbPort *Port)
 	Port->Frame.Timer1_5   = 0;
 	Port->Frame.Timer3_5   = 0;
 	Port->Frame.TimerConn  = 0;
-	//Port->Frame.TimerAck   = 0;
-	//Port->Frame.Acknoledge = 0;
 }
 
 void ReStartReadLine(TMbPort *Port)
@@ -283,7 +276,7 @@ void ReStartReadLine(TMbPort *Port)
     Port->Frame.Counter = 0;
     SCI_tx_disable(Port->Params.UartID);
     SCI_rx_enable(Port->Params.UartID);
-    Port->Frame.Timer3_5 = 0;//Port->Params.Timeout3_5;
+    Port->Frame.Timer3_5 = 0;
 }
 
 inline void ModBusRecieve(TMbPort *Port)
@@ -295,7 +288,6 @@ inline void ModBusRecieve(TMbPort *Port)
 	#if CRC_MODE
 	Port->Frame.Crc = CalcBufCRC(Port->Frame.Buf, Port->Frame.Size);
 	#endif
-// ! if ((Port->Frame.Size < 5) || 
 	if ((Port->Frame.Buf[0] != Port->Params.Slave) ||
 		 (Port->Frame.Crc != GOOD_CRC))
 	{
@@ -385,11 +377,6 @@ inline void ModBusRecieve(TMbPort *Port)
 	{
 	    if (Port->Frame.Exception)
 	    {
-		/*if (Port->Frame.Exception == EX_ACKNOWLEDGE)
-		{
-			Port->Frame.Acknoledge = 1;
-			Port->Frame.TimerAck = Port->Params.TimeoutAck;
-		}*/
 		Port->Frame.Buf[1] |= 0x80;
 		Port->Frame.Buf[2]  = Port->Frame.Exception;
 		Port->Frame.Size    = 3;
@@ -408,12 +395,9 @@ inline void ModBusRecieve(TMbPort *Port)
 	    SCI_tx_enable(Port->Params.UartID);
 	    Port->Params.TrEnable(1);
 
-	    //Port->Frame.Flg3_5 = 1;
 	    Port->Frame.TimerPre = Port->Params.TimeoutPre;
 	}
 
-	//!!! или в ModBusRecieve
-//	MbConnect = !Port->Frame.Exception;
 }
 
 static Byte ReadRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
@@ -491,7 +475,6 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 //	Здесь можно зафиксировать измененный параметр для журнала
 //	Mcu.EvLog.Value = CMD_PAR_CHANGE; ???
 	}
-//	Mcu.EvLog.Source = CMD_SRC_SERIAL; ???
 	return 0;
 }
 
