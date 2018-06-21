@@ -197,6 +197,7 @@ typedef enum
 	bcmDiscrInTest				// Тест дискретных входов	
 } TBurCmd;
 
+#if BUR_90
 // Состояние дискретных входов
 typedef union _TInputReg {
   Uns all;
@@ -210,7 +211,20 @@ typedef union _TInputReg {
 		Uns Rsvd:10;      	// 6-15  Резерв
 	} bit;
 } TInputReg;
-
+#else
+// Состояние дискретных входов
+typedef union _TInputReg {
+  Uns all;
+	struct {
+		Uns Open:1;       	// 0     Открыть
+		Uns Close:1;      	// 1     Закрыть
+		Uns Stop:1;       	// 2     Стоп
+		Uns Mu:1;			// 3	 Местное
+		Uns Du:1;			// 4	 Дистанция
+		Uns Rsvd:11;      	// 6-15  Резерв
+	} bit;
+} TInputReg;
+#endif
 // Тип входного сигнала
 typedef enum {
 	it24  =  0,		// 0 Тип сигнала 24 В
@@ -248,6 +262,32 @@ typedef enum {
 	dt400_B40_U 	= 21
 }TDriveType;
 
+#if BUR_90
+	#if BUR_M
+	// Маска дискретных входов
+	typedef union _TInputMask {
+		Uns all;
+		 struct {
+			Uns Deblok:1;       // 0     Деблокировка
+			Uns Rsvd:15;    // 6-15  Резерв
+		 } bit;
+	} TInputMask;
+	#else
+	// Маска дискретных входов
+	typedef union _TInputMask {
+		Uns all;
+		 struct {
+			Uns Mu:1;       // 0     Открыть
+			Uns Du:1;      	// 1     Закрыть
+			Uns Open:1;     // 2     Стоп
+			Uns Close:1;	// 3	 Му
+			Uns Stop:1;		// 4	 Ду
+			Uns Deblok:1;	// 5	 Деблокировка
+			Uns Rsvd:10;    // 6-15  Резерв
+		 } bit;
+	} TInputMask;
+	#endif
+#else
 // Маска дискретных входов
 typedef union _TInputMask {
 	Uns all;
@@ -257,10 +297,11 @@ typedef union _TInputMask {
 		Uns Open:1;     // 2     Стоп
 		Uns Close:1;	// 3	 Му
 		Uns Stop:1;		// 4	 Ду
-		Uns Deblok:1;	// 5	 Деблокировка
-		Uns Rsvd:10;    // 6-15  Резерв
+		Uns Rsvd:11;    // 6-15  Резерв
 	 } bit;
 } TInputMask;
+#endif
+
 
 // Состояние дискретных выходов
 typedef union _TOutputReg {

@@ -1086,7 +1086,7 @@ __inline void TorqueObsInit(void)
 						  }						  
 		 		break;//1
 		case dt100_A50_U: PFUNC_blkRead(&drive2,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-						  GrH->UporOnly = GrB->UporOnly;
+						  GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1105,7 +1105,7 @@ __inline void TorqueObsInit(void)
 						  }							  
 				break;//2
 		case dt400_B20_U:   PFUNC_blkRead(&drive3,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 		GrH->UporOnly = GrB->UporOnly;
+					 		GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1123,7 +1123,7 @@ __inline void TorqueObsInit(void)
 						  }							 
 		 		break;//3
 		case dt400_B50_U:   PFUNC_blkRead(&drive4,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 		GrH->UporOnly = GrB->UporOnly;
+					 		GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1141,7 +1141,7 @@ __inline void TorqueObsInit(void)
 						  }	
 				break;//4
 		case dt800_V40_U:   PFUNC_blkRead(&drive5,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-						  GrH->UporOnly = GrB->UporOnly;
+						  GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1160,7 +1160,7 @@ __inline void TorqueObsInit(void)
 						  }			  
 				break;//5
 		case dt1000_V20_U : PFUNC_blkRead(&drive6,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					GrH->UporOnly = GrB->UporOnly;
+					GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1178,7 +1178,7 @@ __inline void TorqueObsInit(void)
 						  }	  
 		 		break;//6
 		case dt4000_G9_U  : PFUNC_blkRead(&drive7,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					GrH->UporOnly = GrB->UporOnly;
+					GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1196,7 +1196,7 @@ __inline void TorqueObsInit(void)
 						  }						  
 				break;//7
 		case dt4000_G18_U : PFUNC_blkRead(&drive8,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 	GrH->UporOnly = GrB->UporOnly;
+					 	GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1214,7 +1214,7 @@ __inline void TorqueObsInit(void)
 						  }			 				 
 				break;//8
 		case dt10000_D6_U : PFUNC_blkRead(&drive9,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					 	  GrH->UporOnly = GrB->UporOnly;
+					 	  GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1232,7 +1232,7 @@ __inline void TorqueObsInit(void)
 						  }	
 				break;//9
 		case dt10000_D12_U: PFUNC_blkRead(&drive10,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-						  GrH->UporOnly = GrB->UporOnly;
+						  GrH->UporOnly = GrC->UporOnly;
 						  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 						  #if BUR_90
@@ -1252,7 +1252,7 @@ __inline void TorqueObsInit(void)
 //-----------------Сарапульские------------------------------------------------------
 		case dt100_A25_S:   PFUNC_blkRead(&drive11,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 								  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
-								  GrH->UporOnly = GrB->UporOnly;
+								  GrH->UporOnly = GrC->UporOnly;
 
 					      #if BUR_90
 						  GrH->PP90Reg.bit.DevOn = 0;
@@ -1275,7 +1275,7 @@ __inline void TorqueObsInit(void)
 							#else
 							    PFUNC_blkRead(&drive12,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 							#endif
-							    GrH->UporOnly = GrB->UporOnly;
+							    GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[1], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  if ((GrC->Inom != InomDefS[1])||(GrC->MaxTorque != MomMaxDef[1]))
@@ -1290,7 +1290,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//12
 				case dt400_B20_S:   PFUNC_blkRead(&drive13,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 		GrH->UporOnly = GrB->UporOnly;
+							 		GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[2], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1308,7 +1308,7 @@ __inline void TorqueObsInit(void)
 								  }
 				 		break;//13
 				case dt400_B50_S:   PFUNC_blkRead(&drive14,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 		GrH->UporOnly = GrB->UporOnly;
+							 		GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[3], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1326,7 +1326,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//14
 				case dt800_V40_S:   PFUNC_blkRead(&drive15,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								  GrH->UporOnly = GrB->UporOnly;
+								  GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[4], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1344,7 +1344,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//15
 				case dt1000_V20_S : PFUNC_blkRead(&drive16,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								GrH->UporOnly = GrB->UporOnly;
+								GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[5], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  if ((GrC->Inom != InomDefS[5])||(GrC->MaxTorque != MomMaxDef[5]))
@@ -1359,7 +1359,7 @@ __inline void TorqueObsInit(void)
 								  }
 				 		break;//16
 				case dt4000_G9_S  : PFUNC_blkRead(&drive17,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								GrH->UporOnly = GrB->UporOnly;
+								GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[6], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1377,7 +1377,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//17
 				case dt4000_G18_S : PFUNC_blkRead(&drive18,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 	GrH->UporOnly = GrB->UporOnly;
+							 	GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[7], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 									#if BUR_90
 									GrH->PP90Reg.bit.DevOn = 1;
@@ -1394,7 +1394,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//18
 				case dt10000_D6_S : PFUNC_blkRead(&drive19,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-							 	  GrH->UporOnly = GrB->UporOnly;
+							 	  GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[8], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 									#if BUR_90
 									GrH->PP90Reg.bit.DevOn = 1;
@@ -1411,7 +1411,7 @@ __inline void TorqueObsInit(void)
 								  }
 						break;//19
 				case dt10000_D12_S: PFUNC_blkRead(&drive20,  			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								  GrH->UporOnly = GrB->UporOnly;
+								  GrH->UporOnly = GrC->UporOnly;
 								  PFUNC_blkRead(&TransCurrDef[9], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 
 								  #if BUR_90
@@ -1432,7 +1432,7 @@ __inline void TorqueObsInit(void)
 						break;//20
 				    case dt400_B40_U:
 					PFUNC_blkRead(&drive21, (Int *) (&Ram.GroupH.TqCurr), LENGTH_TRQ);
-					GrH->UporOnly = GrB->UporOnly;
+					GrH->UporOnly = GrC->UporOnly;
 					PFUNC_blkRead(&TransCurrDef[9], (Int *) (&Ram.GroupH.TransCurr), 1);
 
 					#if BUR_90

@@ -139,7 +139,12 @@ void InterfaceInit(void)
 	GrA->CycleCnt = GrH->CycleCnt;
 	PrevCycle = GrH->CycleCnt;
 	GrA->MkuPoVersion = (DEVICE_GROUP * 1000) + VERSION; // 1*1000+114 = 1114
+#if PLAT_VERSION_7
 	GrC->MkuPoSubVersion = (MODULE_VERSION * 100) + SUBVERSION;
+#else
+	GrC->MkuPoSubVersion = (MODULE_VERSION_OLD * 100) + SUBVERSION;
+#endif
+
 	GrG->SimulSpeedMode = 0;	// И всякий случай выключаем режим симуляции скорости
 	GrH->initComplete = false;	// Снимаем флаг завершения инициализации
 
@@ -717,7 +722,6 @@ void StartDispl(String Str)
 	if (MbConnect)				Menu.HiString[13] = CONN_ICO;
 	if (Bluetooth.IsConnected)	Menu.HiString[15] = BT_ICO;
 
-
 #if IR_IMP_TEST
 	DecToStr(IrImpCount, &Menu.LoString[12], 0, 4, FALSE, FALSE);
 #endif	
@@ -1129,23 +1133,23 @@ void RemoteControl(void) //24 - 220 + маски,
 	GrH->Inputs.bit.Stop  	= (Uns)TuStop.Flag  ^ (Uns)GrB->InputMask.bit.Stop;
 	GrH->Inputs.bit.Mu  	= (Uns)TuMu.Flag    ^ (Uns)GrB->InputMask.bit.Mu;
 	GrH->Inputs.bit.Du  	= (Uns)TuDu.Flag    ^ (Uns)GrB->InputMask.bit.Du;
-#else
+	#else
 	ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
 
 	dinDeblok.inputBit 	= ((ExtReg>>SBEXT_DEBLOK)&0x1) 	^ (Uns)GrB->InputMask.bit.Deblok;
 	dinStop.inputBit 	= ((ExtReg>>SBEXT_STOP)&0x1) 	^ (Uns)GrB->InputMask.bit.Stop;
 	dinClose.inputBit 	= ((ExtReg>>SBEXT_CLOSE)&0x1) 	^ (Uns)GrB->InputMask.bit.Close;
 	dinOpen.inputBit 	= ((ExtReg>>SBEXT_OPEN)&0x1) 	^ (Uns)GrB->InputMask.bit.Open;
-	dinDU.inputBit 		= ((ExtReg>>SBEXT_DU)&0x1) 	^ (Uns)GrB->InputMask.bit.Du;
-	dinMU.inputBit 		= ((ExtReg>>SBEXT_MU)&0x1) 	^ (Uns)GrB->InputMask.bit.Mu;
+	dinDU.inputBit 		= ((ExtReg>>SBEXT_DU)&0x1) 		^ (Uns)GrB->InputMask.bit.Du;
+	dinMU.inputBit 		= ((ExtReg>>SBEXT_MU)&0x1) 		^ (Uns)GrB->InputMask.bit.Mu;
 
 	GrH->Inputs.bit.Deblok 	= DigitalInputUpdate (&dinDeblok);
 	GrH->Inputs.bit.Open 	= DigitalInputUpdate (&dinOpen);
 	GrH->Inputs.bit.Close 	= DigitalInputUpdate (&dinClose);
 	GrH->Inputs.bit.Stop 	= DigitalInputUpdate (&dinStop);
-	GrH->Inputs.bit.Mu 	= DigitalInputUpdate (&dinMU);
-	GrH->Inputs.bit.Du 	= DigitalInputUpdate (&dinDU);
-#endif
+	GrH->Inputs.bit.Mu 		= DigitalInputUpdate (&dinMU);
+	GrH->Inputs.bit.Du 		= DigitalInputUpdate (&dinDU);
+	#endif
 
 
 	switch(GrB->MuDuSetup)
@@ -1205,16 +1209,17 @@ void RemoteControl(void) //24 - 220 + маски,
 					{
 						GrB->MuDuSetup = mdOff;
 						WritePar(GetAdr(GroupB.MuDuSetup), GrB->MuDuSetup, 1);
-						
 					}
 					break;
 	}
 
-	// Обработка дискретного входа "Деблокировка"
-	ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
-	dinDeblok.inputBit = ((ExtReg>>SBEXT_DEBLOK)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
-	dinDeblok.timeout = (PRD_50HZ * GrB->TuTime) / 10;
-	GrH->Inputs.bit.Deblok = DigitalInputUpdate (&dinDeblok);
+	#if BUR_90
+		// Обработка дискретного входа "Деблокировка"
+		ExtReg = ((Uns)(PiData.DiscrIn220 & 0x7F));
+		dinDeblok.inputBit = ((ExtReg>>SBEXT_DEBLOK)&0x1) ^ (Uns)GrB->InputMask.bit.Deblok;
+		dinDeblok.timeout = (PRD_50HZ * GrB->TuTime) / 10;
+		GrH->Inputs.bit.Deblok = DigitalInputUpdate (&dinDeblok);
+	#endif
 
 	#endif
 }
@@ -1453,14 +1458,14 @@ void AlgControl(void)
 			GrC->SetDefaults = 0;
 		}
 	}
-	
+#if BUR_90
 	// Если обнаружен фронт дискретного входа деблокировка
 	if ((prevDeblokState != GrH->Inputs.bit.Deblok)&&(GrH->Inputs.bit.Deblok == 1))
 	{
 		GrD->PrtReset = 1;						// По нарастающему фронту сигнала Deblok аодаем команду "Сброс защит"
 	}
 	prevDeblokState = GrH->Inputs.bit.Deblok;
-
+#endif
 	// Сброс защит
 	if (GrD->PrtReset != 0)
 	{	

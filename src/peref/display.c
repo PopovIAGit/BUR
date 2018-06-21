@@ -75,8 +75,6 @@ void DISPL_Update(TDisplay *p)
 	else if (!p->Enable) DisplayOff(p);
 	else DisplayOn(p);
 
-
-
 }
 
 void DISPL_AddSymb(TDisplay *p, Byte Addr, Ptr Data, Byte Count)
@@ -180,8 +178,6 @@ static void SendData(TDisplay *p, Byte Data)
 {
 	SetCs(); SPI_send(p->SpiId, Data); ClrCs();
 }
-
-
 
 
 static void PutData(TDisplay *p, Byte Data)

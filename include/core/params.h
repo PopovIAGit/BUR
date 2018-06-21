@@ -6,10 +6,10 @@
 #define EXPR_STR_ADDR		4
 #define MPU_BLOCKED_ADR		32
 
-#define NUM_ICONS		5
-#define CODE_ICO		0x00
-#define CONN_ICO		0x01
-#define BT_ICO			0x02
+#define NUM_ICONS				5
+#define CODE_ICO				0x00
+#define CONN_ICO				0x01
+#define BT_ICO					0x02
 #define CODEON_ICO              0x03
 #define CODEOFF_ICO             0x04
 
@@ -98,8 +98,23 @@ const struct MENU_PARAM params[] = {
 #else
 "B21.рхо бу яхцм ", "    ", 	0,      1,  	0, M_LIST|M_SADR(144),		//61
 #endif
+#if BUR_90
+	#if BUR_M
+"B22.люяй бу яхцм", "    ", 	0,     63,  	0, M_BINE|M_RMAX(0),		//62
+"B23.люяй бшу яхц", "    ", 	0,  65530,  	0, M_BINE|M_RMAX(7),		//63
+	#else
 "B22.люяй бу яхцм", "    ", 	0,     63,  	0, M_BINE|M_RMAX(5),		//62
 "B23.люяй бшу яхц", "    ", 	0,  65530,  	0, M_BINE|M_RMAX(7),		//63
+	#endif
+#else
+	#if BUR_M
+"B22.пегепб      ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//62
+"B23.люяй бшу яхц", "    ", 	0,  65530,  	0, M_BINE|M_RMAX(7),		//63
+	#else
+"B22.люяй бу яхцм", "    ", 	0,     63,  	0, M_BINE|M_RMAX(5),		//62
+"B23.люяй бшу яхц", "    ", 	0,  65530,  	0, M_BINE|M_RMAX(7),		//63
+	#endif
+#endif
 "B24.яйнп ябъгх  ", "    ", 	0,      6,  	3, M_LIST|M_SADR(146),		//64
 "B25.юдпея ярюмж ", "    ", 	1,    247,  	1, M_EDIT|M_RMAX(2),		//65
 "B26.пефхл ябъгх ", "    ", 	0,      2,  	0, M_LIST|M_SADR(226),		//66
@@ -116,7 +131,7 @@ const struct MENU_PARAM params[] = {
 "B33.осрэ сокнрм ", "на  ", 	1,   1000,    100, M_EDIT|M_RMAX(3)|M_PREC(1),//73
 "б34.рхо опхбндю ", "    ",     0,     21,      0, M_LIST|M_SADR(229),		//74
 "B35.дефспм пефхл", "C   ",     0,   6000,      0, M_EDIT|M_RMAX(3),		//75
-"B36.сонп рнкэйн ", "C   ",     0,   	1,      0, M_EDIT|M_RMAX(3),		//76
+"   B36.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//76
 "   B37.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//77
 "   B38.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//78
 "   B39.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//79
@@ -160,7 +175,7 @@ const struct MENU_PARAM params[] = {
 "я23.пеб йбн йбг ", "    ", 	0,  	1,  	0, M_FACT|M_RMAX(1),		//113
 "я24.ла оюсг ярп ", "    ", 	0,    100,     30, M_FACT|M_RMAX(2)|M_PREC(1),	//114
 "я25.месопйбнйбг ", "    ", 	0,      1,  	0, M_FACT|M_RMAX(4),		//115
-"   я26.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//116
+"C26.сонп рнкэйн ", "C   ",     0,   	1,      0, M_FLST|M_SADR(188),		//116
 "   я27.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//117
 "   я28.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//118
 "   я29.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//119
@@ -927,6 +942,7 @@ char Icons[NUM_ICONS][7] =	{
 				};
 
 
+
 #endif	//CREATE_STRUCTS
 
 
@@ -946,5 +962,7 @@ extern TCubConfig TqCurr;
 extern TCubConfig TqAngUI;
 extern TCubConfig TqAngSf;
 extern char Icons[NUM_ICONS][7];
+
+
 
 #endif

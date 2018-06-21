@@ -67,8 +67,23 @@ typedef struct _TGroupB
 	#else
 	TInputType 		InputType;			// 21.Тип входного сигнала 24/220
 	#endif
+#if BUR_90
+	#if BUR_M
 	TInputMask	    InputMask;			// 22.Маска дискретных входов
 	TOutputMask 	OutputMask;			// 23.Маска дискретных выходов
+	#else
+	TInputMask	    InputMask;			// 22.Маска дискретных входов
+	TOutputMask 	OutputMask;			// 23.Маска дискретных выходов
+	#endif
+#else
+	#if BUR_M
+	Uns 			Rsvd22;
+	TOutputMask 	OutputMask;			// 23.Маска дискретных выходов
+	#else
+	TInputMask	    InputMask;			// 22.Маска дискретных входов
+	TOutputMask 	OutputMask;			// 23.Маска дискретных выходов
+	#endif
+#endif
 	TBaudRate       RsBaudRate;         // 24.Скорость связи
 	Uns             RsStation;          // 25.Адрес станции
 	TParityMode		RsMode;				// 26.Режим связи
@@ -83,8 +98,7 @@ typedef struct _TGroupB
 	Uns				OverwayZone;		// 33.Макси
 	TDriveType      DriveType;          // 34.Тип привода
  	Uns             SleepTime;          // 35.Дежурный режим
- 	Uns	 	UporOnly;
-	Uns 			Rsvd[13];
+	Uns 			Rsvd[14];
 } TGroupB;
 
 // Группа C (Адрес = 90, Количество = 120) - Заводские параметры
@@ -117,8 +131,9 @@ typedef struct _TGroupC
 	Uns 			BrakeZone;			// 22.Превентивное торможение
 	Uns				ReversKVOKVZ;		// 23. Реверс сигналов кво квз
 	Uns				ModbusPauseStart;	// 24. Время задержки на связь по интрефейсу RS-485
-	Uns		NoControlKVOKVZ;	// для инвертирования кво и квз на блоках 14 года, без доступа к прямому управлению
-	Uns       	Rsvd5[8];          // 25-34.Резерв
+	Uns				NoControlKVOKVZ;	// 25. для инвертирования кво и квз на блоках 14 года, без доступа к прямому управлению
+ 	Uns	 			UporOnly;			// 26. Только упор
+	Uns       		Rsvd5[7];          // 27-33.Резерв
 	TReverseType	ReverseType;        // 34.Тип реверса
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока

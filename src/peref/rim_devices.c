@@ -83,7 +83,8 @@ void RimDevicesInit(void)
         encoderDPMA15_Init(&enDPMA15);
 
 
-	DISPL_AddSymb(&Display,0,ToPtr(Icons), NUM_ICONS);
+    DISPL_AddSymb(&Display,0,ToPtr(Icons), NUM_ICONS);
+
 
 	GrG->DiscrInTest = 0;
 	GrG->DiscrOutTest = 0;
