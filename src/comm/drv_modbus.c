@@ -333,38 +333,31 @@ inline void ModBusRecieve(TMbPort *Port)
 		switch(Func)
 		{
 		    case MB_READ_REGS:
-			switch(Res)
-			{
-			    case 1: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&Ram, Addr, Count);
-			    break;
-			    default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-			}
-		    break;
+				switch(Res)
+				{
+					case 1: Port->Frame.Exception = ReadRegs(Port, (Uint16 *)&Ram, Addr, Count);
+					break;
+					default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+				}
+				break;
+
 		    case MB_WRITE_REGS:
-			switch(Res)
-			{
-			    case 1:
-				if ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET))
-						Mcu.EvLog.Source = CMD_SRC_SERIAL;
-				TempMbFlag = 1;
-				Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
-				if (!Port->Frame.Exception) SerialCommRefresh();
-			    break;
-			    default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-			}
-		    break;
 		    case MB_WRITE_REG:
-			switch(Res)
-			{
-			    case 1:
-				Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
-				if (!Port->Frame.Exception) SerialCommRefresh();
-			    break;
-			    default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
-			}
-		    break;
+				switch(Res)
+				{
+					case 1:
+						if ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET))
+							Mcu.EvLog.Source = CMD_SRC_SERIAL;
+						TempMbFlag = 1;
+						Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
+						if (!Port->Frame.Exception) SerialCommRefresh();
+						break;
+					default: Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+				}
+				break;
+
 		    default:
-			Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
+		    	Port->Frame.Exception = EX_ILLEGAL_FUNCTION;
 		}
 	}
 
@@ -425,12 +418,31 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 	Uint16 i, Tmp, *Buf;
 	Bool Nvm = False;
 
-
-	if (Port->Frame.Buf[6] != (Count << 1)) return EX_ILLEGAL_DATA_VALUE;
-  	else if (Port->Frame.Size != (Port->Frame.Buf[6] + 9)) return EX_ILLEGAL_DATA_VALUE;
+	// Для команды MB_WRITE_REGS - Если Count не совпадает - выдаем ошибку
+	if ((Port->Frame.Buf[6] != (Count << 1))&&(Port->Frame.Buf[1] == MB_WRITE_REGS))
+	{
+		return EX_ILLEGAL_DATA_VALUE;
+	}
+	// Для команды MB_WRITE_REGS - Если длина посылки не бьется - выдаем ошибку
+	else if ((Port->Frame.Size != (Port->Frame.Buf[6] + 9))&&(Port->Frame.Buf[1] == MB_WRITE_REGS))
+	{
+		return EX_ILLEGAL_DATA_VALUE;
+	}
+	// Для команды MB_WRITE_REG - Если длина посылки не бьется - выдаем ошибку
+	else if ((Port->Frame.Size != 8)&&(Port->Frame.Buf[1] == MB_WRITE_REG))
+	{
+		return EX_ILLEGAL_DATA_VALUE;
+	}
 	else
 	{
-		Buf = &Port->Frame.Buf[7];
+		if (Port->Frame.Buf[1] == MB_WRITE_REGS)
+			Buf = &Port->Frame.Buf[7];
+		else
+		{
+			Buf = &Port->Frame.Buf[4];
+			Count = 1;
+		}
+
 		for (i=0; i < Count; i++)
 		{
 			Tmp  = (*Buf++) << 8;
@@ -438,8 +450,8 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 			GetDcr(i + Addr, &Dcr);
 			if (Val->ReadOnly) {MbTmpData[i] = Data[i+Addr]; continue;}
 			if (!CheckRange(Tmp, Dcr.Min, Dcr.Max))
-				return EX_ILLEGAL_DATA_VALUE; 
-			if (Val->Memory) 
+				return EX_ILLEGAL_DATA_VALUE;
+			if (Val->Memory)
 			{
 				Nvm = True;
 				LogParam.MbBuffer[LogParam.MbIndex] = i + Addr;		// Запомнили адрес параметра, инкрементировали индекс
@@ -449,8 +461,8 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 		}
 		Port->Frame.Size = 6;	// ???
 	}
-
 	
+
 //	Проверяем была ли подана команда по последовательному интерфейсу.
 //	Если была подана, а режим ДУ отключен, то выдваем исключение
 

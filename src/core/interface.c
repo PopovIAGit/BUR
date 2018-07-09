@@ -1118,6 +1118,10 @@ void RemoteControl(void) //24 - 220 + маски,
 	if (!PiData.Connect) return;	// если нет связи с АВР то не обрабатывает сигналы ТУ
 	Mcu.Tu.Enable = (!IsTestMode()) && (!IsParamEditing() && !GrG->TestCamera);  // если тест то не включаем работу с ту
 
+	if ((GrB->DuSource == mdsSerial)&&(GrC->IgnorStopTU))
+	{
+		Mcu.Tu.Enable = false;
+	}
 	#if !BUR_90
 	if(GrB->InputType == it24)		
 	{
