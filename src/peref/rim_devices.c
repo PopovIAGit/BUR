@@ -499,7 +499,14 @@ void TekModbusParamsUpdate(void)
 		GrT->ComReg.all = 0;
 
 
-	GrT->PositionPr 	 	= GrA->PositionPr;
+	if (!GrC->PosDividerOn)
+	{
+		GrT->PositionPr 	 	= GrA->PositionPr;
+	}
+	else
+	{
+		GrT->PositionPr 	 	= GrA->PositionPr/10;
+	}
 	GrT->CycleCnt 		 	= GrH->CycleCnt;
 	//GrT->Rsvd1    	= 0;
 	GrT->Iu				= GrH->Imid;

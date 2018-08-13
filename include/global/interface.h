@@ -147,7 +147,8 @@ typedef struct _TGroupC
 	Uns			    CoefVoltFltr;		// 38.Коэффициент фильтрации входного напряжения
 	Uns			    CoefCurrFltr;		// 39.Коэффициент фильтрации тока нагрузки 
 	Uns				TrqViewTime;		// 40.Коэффициент фильтрации момента
-	Uns             Rsvd8[3];       	// 41-43.резерв
+	Uns             Rsvd8[2];       	// 41-42.резерв
+	Uns				PosDividerOn;		// 43 Делитель модбас для Казахстана
 	Uns				ModbusConfiguration;// 44 Конфигурация модбас ДЛЯ ВЕРСИИ 1.112
 	Uns				MbOffsetMode;		// 45.Режим сдвига адреов для лбщих регистров на 40000
 	Uns				LedTestMode;		// 46.Включение всех светодиодов на 2 секунды
