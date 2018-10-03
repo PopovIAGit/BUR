@@ -439,9 +439,9 @@ typedef enum {
 
 // Разрешение управления с ПДУ
 typedef enum {
-  ctrlEnabled  = 0,		// Управление разрешено
-  ctrlNeedConfirm  = 1,	// Необходимо подтверждение
-  ctrlDisabled = 2		// Управление запрещено
+	ctrlNeedConfirm  = 0,	// Необходимо подтверждение
+	ctrlEnabled  = 1,		// Управление разрешено
+	ctrlDisabled = 2		// Управление запрещено
 } TEnCtrlPDU;
 
 // Состояние светодиодов блока
