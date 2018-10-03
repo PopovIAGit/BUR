@@ -93,7 +93,8 @@ typedef struct _TGroupB
 	#else
 	Uns				ReversMove;			// B28. 68 Реверс хода. 0 - Реверс выключен; 1 - Реверс включен.
 	#endif
-	Uns 			Rsvd2[3];			// 29-31.
+	TEnCtrlPDU		EnableControlPDU;	// B29. 69 Разрешение управления с ПДУ: 0 - разрешено; 1 - разрешено с подтверждением; 2 - запрещено
+	Uns 			Rsvd2[2];			// 30-31.
 	Uns				NoMoveTime;		   	// 32.Время отсутствия движения
 	Uns				OverwayZone;		// 33.Макси
 	TDriveType      DriveType;          // 34.Тип привода
@@ -624,7 +625,7 @@ extern TGroupT *GrT;
 	&Ram.GroupB.MuDuSetup, \
 	&Ram.GroupB.DuSource, \
 	&Ram.GroupC.ReverseType, \
-	True, 0, 0, False, False, \
+	True, 0, 0, 0, False, False, \
 	True, False, 0, True, False, True,\
 	&Ram.GroupH.TuReleMode, \
 	&Ram.GroupB.TuLockSeal, \

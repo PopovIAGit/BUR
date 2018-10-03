@@ -437,6 +437,13 @@ typedef enum {
 	it_FUTABA		// VAC FUTABA
 } TIndicType;
 
+// Разрешение управления с ПДУ
+typedef enum {
+  ctrlEnabled  = 0,		// Управление разрешено
+  ctrlNeedConfirm  = 1,	// Необходимо подтверждение
+  ctrlDisabled = 2		// Управление запрещено
+} TEnCtrlPDU;
+
 // Состояние светодиодов блока
 typedef union _TLedsReg {	// МОИ
 	Uns all;

@@ -73,6 +73,7 @@ typedef struct {
 	Bool				 Enable;				// Наличие местного управления
 	Byte				 BtnKey;				// Команда с ручек/кнопок
 	Byte				 PduKey;				// Команда с ПДУ
+	Bool				 WaitConfirmFlag;		// Флаг того, что мы ожидаем подтверждение команды управления с ПДУ
 	Bool				 CancelFlag;			// Флаг отмена команды
 	Bool				 MpuBlockedFlag;		// Флаг отмены команды из-за блокировки МПУ
 } TMpuControl;

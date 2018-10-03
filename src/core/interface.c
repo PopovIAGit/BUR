@@ -80,7 +80,7 @@ extern  Int  lastDirection;
  Uns mudustatedefect = 0;
  Uns mudustatefault = 0;
 
-
+ Byte PduKeysControls (Byte );
 __inline void CheckParams(void);
 __inline void DefParamsSet(Uns Code);
 static   void PutAddData(Uns Addr, Uns *Value);
@@ -951,6 +951,15 @@ void AddControl(void)
 			}
 			PutAddData(BUSY_STR_ADR, &GrH->BusyValue);
 		}
+		else if (Mcu.Mpu.WaitConfirmFlag) // Подтверждение команды на пуск
+		{
+			PutAddData(CONFIRM_ADDR, Null);
+			if (++CancelTimer >= 100)		// 100 - это 10 секунд на частоте 10 Гц
+			{
+				Mcu.Mpu.WaitConfirmFlag = False;
+				CancelTimer = 0;
+			}
+		}
 		else if (Mcu.Mpu.CancelFlag) //отмена команды пду
 		{
 			PutAddData(CMD_CANC_ADR, Null);
@@ -982,6 +991,7 @@ void AddControl(void)
 		{
 			GrH->BusyValue = 0;
 			Menu.Indication = True;
+			CancelTimer = 0;
 			return;
 		}
 	}
@@ -1068,10 +1078,8 @@ void LocalControl(void) // изменен и не проверен
 	//Обработка команд с ПДУ
 	if (Pult.Key != 0)											// если пришла команда по ирде от ПДУ			
 	{
-		if (IsLocalControl() || GrB->MuDuSetup == mdOff)
-		Mcu.Mpu.PduKey = Pult.Key;								// Записываем команду в управление приводом, для возможной обработки
-
-		Menu.Key = Pult.Key;
+		Mcu.Mpu.PduKey = PduKeysControls(Pult.Key);				// Записываем команду в управление приводом, для возможной обработки
+		Menu.Key = Mcu.Mpu.PduKey;
 		PduKeyFlag = 1;
 		PultActiveTimer = PULT_LED_TOUT;
 		BlinkTimer = (Uns)BLINK_TOUT;							// мигаем светодиодиком что еслить действие :)
@@ -1110,6 +1118,57 @@ void LocalControl(void) // изменен и не проверен
 	{
 		Menu.SleepTimer = 0;
 	}
+}
+
+// Функция обработки кнопок ПДУ в зависимости от значения параметра GrB->EnableControlPDU
+Byte PduKeysControls (Byte pduKey)
+{
+	Byte result;
+	static char savedCommand = 0;
+
+	result = pduKey;
+
+	// Если управление приводом с ПДУ заблокировано
+	if (GrB->EnableControlPDU == ctrlDisabled)
+	{
+		if (pduKey == KEY_OPEN  || pduKey == KEY_CLOSE)			// Если это команды "Открыть" или "Закрыть"
+		{
+			result = 0;
+			Mcu.Mpu.CancelFlag = true;							// Фильтруем эти команды
+		}
+	}
+	// Если стоит режим подтверждения команд с ПДУ
+	else if (GrB->EnableControlPDU == ctrlNeedConfirm)
+	{
+		if (!Mcu.Status->bit.MuDu && (GrB->MuDuSetup != mdOff))	// Если управление с МУ заблокировано
+		{
+			if (pduKey == KEY_OPEN  || pduKey == KEY_CLOSE)		// и поступила команда "Открыть" или закрыть
+			{
+				result = 0;
+				Mcu.Mpu.CancelFlag = true;						// Фильтруем эти команды
+			}
+		}
+		else if (Mcu.Mpu.WaitConfirmFlag == false)				// Если БУР не находится в режиме ожидания подтверждающей команды
+		{
+			if (pduKey == KEY_OPEN  || pduKey == KEY_CLOSE)		// и поступила команда "Открыть" или закрыть
+			{
+				savedCommand = pduKey;
+				result = 0;										// фильтруем поступившие команды
+				Mcu.Mpu.WaitConfirmFlag = true;					// и переходим в режим ожидания команды
+			}
+		}
+		else													// Если активен режим ожидания подтверждения команды
+		{
+			if (pduKey == KEY_ENTER)							// Если пришла команда "Ввод"
+				result = savedCommand;							// Восстанавливаем команду управления
+			else												// все прочие команды фильтруем
+				result = 0;
+
+			Mcu.Mpu.WaitConfirmFlag = false;					// И, соответственно, сбрасываем флаг
+		}
+	}
+
+	return result;
 }
 
 void RemoteControl(void) //24 - 220 + маски, 
