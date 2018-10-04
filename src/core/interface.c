@@ -954,7 +954,7 @@ void AddControl(void)
 		else if (Mcu.Mpu.WaitConfirmFlag) // Подтверждение команды на пуск
 		{
 			PutAddData(CONFIRM_ADDR, Null);
-			if (++CancelTimer >= 100)		// 100 - это 10 секунд на частоте 10 Гц
+			if (++CancelTimer >= 50)		// 50 - это 5 секунд на частоте 10 Гц
 			{
 				Mcu.Mpu.WaitConfirmFlag = False;
 				CancelTimer = 0;
