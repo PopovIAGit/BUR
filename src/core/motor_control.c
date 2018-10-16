@@ -67,6 +67,7 @@ Int InomDefU[11]  	 = {13,11,18,52,52,47,56,110,85,148,27};					// default значе
 Int InomDefS[10]	 = {11,9,13,32,32,33,73,85,95,150};						// Сарапуль
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
 Int TransCurrDef[10] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100};	//					для TransCur править
+Int TransCurr100A25 = 2000;
 Int GearRatioDef[5]	 = {5250,7360,15675,16016,16016};						//для передаточного числа редуктора 
 
 
@@ -1251,7 +1252,7 @@ __inline void TorqueObsInit(void)
 				break;//10
 //-----------------Сарапульские------------------------------------------------------
 		case dt100_A25_S:   PFUNC_blkRead(&drive11,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
-								  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
+								  PFUNC_blkRead(&TransCurr100A25, 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 								  GrH->UporOnly = GrC->UporOnly;
 
 					      #if BUR_90
