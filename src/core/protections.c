@@ -256,13 +256,19 @@ void ProtectionsClear(void)	// полная отчистка ошибок (включая ошибки энкодера и
 void ProtectionsReset(void)	// сброс силовых защит(для возможного пуска двигателя)
 {
 	OverWayFlag = 0;
+#if !BUR_90
 	MuffFlag = 0;
 
 	mudustatedefect = 0;
 
 	GrA->Status.all &= ~STATUS_RESET_MASK;	
 	
-	GrA->Faults.Proc.all &= ~PROC_RESET_MASK;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто) 
+	GrA->Faults.Proc.all &= ~PROC_RESET_MASK;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто)
+#else
+	mudustatedefect = 0;							// Если это БУР 90, то "муфту" и "нет движения" не сбрасываем
+	GrA->Status.all &= ~STATUS_RESET_MASK_90;
+	GrA->Faults.Proc.all &= ~PROC_RESET_MASK_90;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто)
+#endif
 	GrH->FaultsLoad.all  &= ~LOAD_RESET_MASK;	// сбросили ошибки нагрузки (все)
 	#if BUR_M
 	GrH->FaultsNet.all   &= ~NET_RESET_MASK;					
@@ -520,7 +526,7 @@ Bool IsFaultExist(TPrtMode Mode) // сигнализация и выключение двигателя
 switch(GrB->SettingPlace)
 {
 	case spLinAuto:
-		if(GrC->MuDuDef 		< Mode) Faults.Proc.bit.MuDuDef = 0;
+		if(GrC->MuDuDef 		< pmBlkTsSign) Faults.Proc.bit.MuDuDef = 0;
 
 		if(GrC->DriveTemper		< Mode)	Faults.Proc.bit.Drv_T 	 = 0;	// сбросили защиту по перегреву ДВ
 		if(GrC->PhOrd			< Mode)	Faults.Proc.bit.PhOrd 	 = 0;	// Направление вращения дв - останов

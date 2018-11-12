@@ -18,6 +18,7 @@ extern "C" {
 
 // Статус работы
 #define STATUS_RESET_MASK	0x2082
+#define STATUS_RESET_MASK_90	0x2002
 #define STATUS_EVLOG_MASK	0x56F
 #define STATUS_MOVE_MASK	0xC
 typedef union _TStatusReg {
@@ -49,6 +50,7 @@ typedef union _TStatusReg {
 #define PROC_OVERW_MASK		0x0020
 #define PROC_DRV_T_MASK 	0x0040
 #define PROC_RESET_MASK		0x00A1
+#define PROC_RESET_MASK_90	0x00A0
 #define PROCESS_EVLOG_MASK	0x01F3
 typedef union _TProcessReg {
 	Uns all;
