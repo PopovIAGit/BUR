@@ -23,6 +23,7 @@ void main(void)
 	MonitorInit();			// Инициализация графического монитора реального времени
 	#if BUR_M
 	ContactorControl(cgStop);
+	//StopPowerControl();
 	#endif
 
 	EnableInterrupts();

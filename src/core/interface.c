@@ -1446,12 +1446,13 @@ void TsSignalization(void) //ТС
 		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
 		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
 		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
-		if (GrC->ReversKVOKVZ == 0)
+
+		if ((GrC->ReversKVOKVZ == 0) && (GrH->ContGroup != cgStopKvoKvz))
 		{
 		    Reg->bit.Dout9 =  !(IsOpened() 	||	(!IsOpened()&& !IsClosed()));		//  КВЗ
 		    Reg->bit.Dout10 = !(IsClosed() 	||	(!IsOpened()&& !IsClosed()));		//  КВО
 		}
-		else if (GrC->ReversKVOKVZ == 1)
+		else if ((GrC->ReversKVOKVZ == 1) && (GrH->ContGroup != cgStopKvoKvz))
 		{
 		    Reg->bit.Dout9 =  (IsOpened() 	||	(!IsOpened()&& !IsClosed()));		//  КВЗ
 		    Reg->bit.Dout10 = (IsClosed() 	||	(!IsOpened()&& !IsClosed()));		//  КВО

@@ -228,6 +228,11 @@ void DmcIndication1(void)
 		koef1 = 5;
 		koef2 = 1;
 	}
+	else if (GrC->Drive_Type == dt100_A25_S)
+	{
+		koef1 = 5;
+		koef2 = 1;
+	}
 	else if (GrC->Drive_Type == dt4000_G18_U)
 	{
 		koef1 = 5;
@@ -413,7 +418,13 @@ void NetMomitor(void)
 		else 
 		{
 			Net_Mon_Timer = 0;
-
+#if BUR_90									// Заплатка только для БУР-90 - решает проблему, когда привод ехал, и у него оборвали питание
+			if (Fault_Delay)				// чтобы после восстановления электропитания привод не ехал снова
+			{								// Если прилетело 380 В, а у нас еще Fault_Delay,
+				GrH->ContGroup = cgStopKvoKvz;	// то принудительно зажимаем "СТОП", чтобы отхлопнуть контакторы
+				PhEl.Direction = 0;
+			}
+#endif
 			switch(PhEl.Direction)
 			{
 			case  -1:GrD->ControlWord = GrG->TestCamera ? vcwTestClose : vcwClose; break;
@@ -510,6 +521,26 @@ void ContactorControl(TContactorGroup i) // если 0 то
 				GrH->Outputs.bit.Dout0 = 0;	//  Ком.Закрыть
 				GrH->Outputs.bit.Dout4 = 0;	//  Ком.Стоп		
 				break;
+
+		case cgStopKvoKvz:
+				GrH->Outputs.bit.Dout1 = 0;	//  Ком.Открыть
+				GrH->Outputs.bit.Dout0 = 0;	//  Ком.Закрыть
+				GrH->Outputs.bit.Dout4 = 1;	//  Ком.Стоп Стоп инвертный если 0 то стоп если 1 то ничего
+				if (GrC->ReversKVOKVZ == 0)
+				{
+					GrH->Outputs.bit.Dout9 = GrH->Outputs.bit.Dout10 = 1;		// КВЗ и КВО
+				}
+				else
+				{
+					GrH->Outputs.bit.Dout9 = GrH->Outputs.bit.Dout10 = 0;		// КВЗ и КВО
+				}
+
+				if (++StopSetTimer > CONECTOR_STOP_TIME)	// Выключаем рэле по истечению таймера, или пока ручку СТОП не отпустят
+				{
+					StopSetTimer   = 0;
+					GrH->ContGroup = cgOff;
+				}
+
    }
 
 }

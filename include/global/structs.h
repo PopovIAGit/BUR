@@ -491,7 +491,8 @@ typedef enum {
 	cgOff = 0,
 	cgStop = 1,
 	cgOpen = 2,
-	cgClose = 3
+	cgClose = 3,
+	cgStopKvoKvz = 4
 } TContactorGroup;
 
 // Тип задвижки клин/шибер
