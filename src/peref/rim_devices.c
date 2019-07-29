@@ -219,7 +219,7 @@ void RimIndication(void)//	Проверить для нас
 	if (RamUpdFlag && IsMemParReady())
 	{
 		WriteAllParams();
-		RefreshData();
+		RefreshData(0);
 		RamUpdFlag = false;
 	}
 

@@ -150,7 +150,7 @@ void InterfaceInit(void)
 
 	if (GrH->ScFaults) LowPowerReset |= BIT0;
 
-	RefreshData();
+	RefreshData(0);
 
 	// Выводим момент
 	Ram.GroupH.StartIndic =REG_TORQUE_ADDR; //8;
@@ -208,7 +208,7 @@ void InterfIndication(void)
 		GrH->initComplete = true;	// Считаем, что инициализация завершена
 }
 
-void RefreshData(void)
+void RefreshData(Uns addr)
 {
 	static Bool Flag = false;
 	
@@ -218,6 +218,11 @@ void RefreshData(void)
 
 	SerialCommRefresh();
 	
+	if (addr == REG_INDICATOR_TYPE)
+	{
+		DisplayReset(&Display, (Uns)Ram.GroupC.IndicatorType);
+	}
+
 	if (!Flag)
 	{
 		while(!InterfaceRefresh())   {};
@@ -255,7 +260,7 @@ void DataSetting(void)	//???
 	if (IsMemParReady())
 	{
 		WriteAllParams();
-		RefreshData();
+		RefreshData(DefAddr);
 		DefFlag = 2;
 	}
 }
@@ -331,15 +336,6 @@ void PowerOff(void)
 
 Bool InterfaceRefresh(void)
 {
-	static Uns prevIndType = 123;			// Предыдущий тип индикатора
-
-	if (prevIndType != GrC->IndicatorType)	// Если тип индикатора был изменен
-	{
-		prevIndType = GrC->IndicatorType;	// Пересбрасываем дисплей
-		DisplayReset(&Display, (Uns)Ram.GroupC.IndicatorType);
-		WritePar(GetAdr(GroupC.IndicatorType), &Ram.GroupC.IndicatorType, 1);
-	}
-
 	if (!InterfRefrState) return true;
 
 	Calib.GearRatio = GrC->GearRatio;
@@ -768,13 +764,24 @@ Bool WriteValue(Uns Memory, Uns Param, Uns *Value)
 	{
 		//TempValue = *Value;
 		WritePar(Param, Value, 1);
-		RefreshData();
+		RefreshData(Param);
 																	// Отправляем данные в журнал изменения параметров
 		LogParam.Addr 	  = Param;									// Адрес параметра
 		LogParam.NewValue = *Value;									// Новое значение параметра
 		LogParam.ExecFlag = true;									// Выставляем флаг формирования журнала
 	}
-	
+	else if ( (Param == REG_DEV_DATE)||(Param == REG_DEV_TIME) )	// Если изменяется параметр времени или даты
+	{
+		if (GrB->DevDate.bit.Year != 0)								// Если год не равен нулю
+		{
+			GrH->FaultsDev.bit.TimeNotSet = 0;						// То снимаем аварию "Время не задано"
+		}
+		// Отправляем данные в журнал изменения параметров
+		LogParam.Addr 	  = Param;									// Адрес параметра
+		LogParam.NewValue = *Value;									// Новое значение параметра
+		LogParam.ExecFlag = true;									// Выставляем флаг формирования журнала
+	}
+
 	return True;
 }
 

@@ -95,7 +95,7 @@ void ProtectionsInit(void)	// начальная инициализация для защит
 	ProtectionI2T_Init(&i2tOverload, PRD_50HZ);
 }
 
-void ProtectionsUpdate(void)// периодическое обновление в защитах
+void ProtectionsUpdate(void)	// 18 кГц периодическое обновление в защитах
 {
 	#if !BUR_M
 	if(Sifu.Direction == SIFU_UP)
@@ -119,7 +119,7 @@ void ProtectionsUpdate(void)// периодическое обновление в защитах
 	GrH->FaultsLoad.bit.I2t = i2tOverload.isFault;
 }
 
-void ProtectionsEnable(void)// проверка включения защит ЭД
+void ProtectionsEnable(void)	// 50 Гц проверка включения защит ЭД
 {
 	static Byte State = 0;
 	Bool Enable;
@@ -319,7 +319,7 @@ void ProtectionsControl(void)	// для расчета ассиметрии
 	}
 }
 
-void FaultIndication(void)				// индикация ошибок устройства и технологического процесса			
+void FaultIndication(void)				// 50 Гц индикация ошибок устройства и технологического процесса
 {
 	static Uns 	tempMotorTimer = 0;
 
@@ -376,11 +376,11 @@ void FaultIndication(void)				// индикация ошибок устройства и технологического 
 		}
 		GrH->FaultsDev.bit.TSens   = TempSens.Error;		// температура
 		GrH->FaultsDev.bit.AVRcon  = !PiData.Connect;		// наличие конекта до АВР
-		/*
-		#if !BUR_M
-		GrH->FaultsDev.bit.LowPower = !PowerEnable;			// Включен режим сохранения энергии
-		#endif
-		*/
+		// --------- Срабатывание аварии "время не задано" ----------------------------
+		if (GrB->DevDate.bit.Year == 0)						// Если год равен нулю
+		{
+			GrH->FaultsDev.bit.TimeNotSet = 1;				// То выставляем аварию "Время не задано"
+		}
 	}
 	if (GrC->PosSensEnable != pmOff)
 	{

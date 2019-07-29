@@ -512,9 +512,13 @@ extern TGroupT *GrT;
 #define REG_GEAR_RATIO			GetAdr(GroupC.GearRatio)
 #define REG_DRIVE_TYPE			GetAdr(GroupB.DriveType)
 #define REG_ENCODER_TYPE		GetAdr(GroupC.EncoderType)
+#define REG_DEV_DATE			GetAdr(GroupB.DevDate)
+#define REG_DEV_TIME			GetAdr(GroupB.DevTime)
+#define REG_INDICATOR_TYPE		GetAdr(GroupC.IndicatorType)
 
 #define REG_CYCLE_CNT			GetAdr(GroupH.CycleCnt)
 #define REG_CONTROL				GetAdr(GroupD.ControlWord)
+#define REG_COM_REG				GetAdr(GroupT.ComReg)
 #define REG_SC_FAULTS			GetAdr(GroupH.ScFaults)
 #define REG_CALIB_STATE			GetAdr(GroupH.CalibState)
 #define REG_TASK_CLOSE			GetAdr(GroupD.TaskClose)
@@ -697,7 +701,7 @@ Bool EnableEdit(Uns Password, Uns Param);
 Bool WriteValue(Uns Memory, Uns Param, Uns *Value);
 void GetExpressText(Uns State);
 Byte GetExpressState(Byte CurrentState, Uns State);
-void RefreshData(void);
+void RefreshData(Uns);
 void DataSetting(void);
 void AddControl(void);
 void LocalControl(void);

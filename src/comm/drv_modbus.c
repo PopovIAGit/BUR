@@ -346,8 +346,11 @@ inline void ModBusRecieve(TMbPort *Port)
 				switch(Res)
 				{
 					case 1:
-						if ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET))
-							Mcu.EvLog.Source = CMD_SRC_SERIAL;
+						if ( ((Addr >= REG_TASK_CLOSE)&&(Addr <= REG_RS_RESET)) ||	// Если идет обращение по адресу от 210 по 221 (группа D - регистр Команд)
+							  (Addr == REG_COM_REG) )								// или по адресу 3 (T4 Регистр команд)
+						{
+							Mcu.EvLog.Source = CMD_SRC_SERIAL;						// то выставляем источник команды RS-485
+						}
 						TempMbFlag = 1;
 						Port->Frame.Exception = WriteRegs(Port, (Uint16 *)&Ram, Addr, Count);
 						if (!Port->Frame.Exception) SerialCommRefresh();
@@ -482,7 +485,7 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 	if (Nvm)
 	{
 		WritePar(Addr, &Data[Addr], Count);
-		RefreshData();
+		RefreshData(Addr);
 
 //	Здесь можно зафиксировать измененный параметр для журнала
 //	Mcu.EvLog.Value = CMD_PAR_CHANGE; ???

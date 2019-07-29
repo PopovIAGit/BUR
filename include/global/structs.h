@@ -139,7 +139,7 @@ typedef union _TLoadReg {
 #define DEV_ERR_MASK		0x009F
 #define DEV_TMP_MASK		0x0060
 #define DEV_RSC_MASK		0x0800
-#define DEV_EVLOG_MASK		0x09FB
+#define DEV_EVLOG_MASK		0x19FB
 
 typedef union _TDeviceReg {
 	Uns all;
@@ -159,7 +159,8 @@ typedef union _TDeviceReg {
 		Uns Rsvd1:2;		// 9-10  Резерв
 	#endif
 		Uns Th_Err:1;		// 11 	 Температура блока свыше 110 град
-     	Uns Rsvd:4;       	// 12-15 Резерв
+		Uns TimeNotSet:1;	// 12    Время не настроено
+     	Uns Rsvd:3;       	// 12-15 Резерв
   } bit;
 } TDeviceReg;
 
