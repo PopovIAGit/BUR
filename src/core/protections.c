@@ -415,18 +415,16 @@ __inline void DefDriveFaults(void)		// реакци€ на ошибки, системой
 			else if (Dmc.RequestDir > 0) MufEnable = !IsOpened();// если направление движение не совпадает с заданным
 			else MufEnable = !IsClosed();	//	аналогично
 			
-		
-		if (Mcu.Valve.BreakFlag && BreakFlag)// выставл€ем муфту и аварии во всех случа€х кроме зоны уплотнени€ы
+			if (Mcu.Valve.BreakFlag && BreakFlag)// выставл€ем муфту и аварии во всех случа€х кроме зоны уплотнени€ы
 			{
 				MufEnable = 0;
 			}
 
-		GrA->Faults.Proc.bit.NoMove = MufEnable;// выставл€ем ошибку по отсутсвию движени€ или неправильном направлении вращени€
-		GrA->Status.bit.Mufta = MufEnable;// выставл€ем в статус что сработала муфта
+			GrA->Faults.Proc.bit.NoMove = MufEnable;// выставл€ем ошибку по отсутсвию движени€ или неправильном направлении вращени€
+			GrA->Status.bit.Mufta = MufEnable;// выставл€ем в статус что сработала муфта
 			
-	
 			ValveDriveStop(&Mcu, True);//даем команду на остановку (без плавного)
-
+			Mcu.EvLog.Source = CMD_SRC_BLOCK;		// »сточник команды - сам блок
 			if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
 			else Mcu.EvLog.Value = CMD_DEFSTOP;	//???  ѕсевдокоманда дл€
 		}
@@ -436,6 +434,7 @@ __inline void DefDriveFaults(void)		// реакци€ на ошибки, системой
 			if (!onlyPosSens || GrC->PosSensEnable == pmSignStop)
 			{
 				ValveDriveStop(&Mcu, True);	// если в статусе прочитали ошибку то даем команду на остановку 
+				Mcu.EvLog.Source = CMD_SRC_BLOCK;	// »сточник команды - сам блок
 				if (Mcu.EvLog.Value) Mcu.EvLog.QueryValue = CMD_DEFSTOP;
 				else Mcu.EvLog.Value = CMD_DEFSTOP;
 			}

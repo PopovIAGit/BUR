@@ -156,7 +156,7 @@ typedef union {
 #define CMD_SRC_MPU			0x1000	// Местный пост управления
 #define CMD_SRC_DIGITAL		0x2000	// Дискретный интерфейс
 #define CMD_SRC_SERIAL		0x4000	// Последовательный интерфейс
-#define CMD_SRC_ANALOG		0x8000	// Аналогвый интерфейс
+#define CMD_SRC_MPO_MPZ		0x8000	// Команда в результате замыкания МПО или МПЗ
 
 // Структура управления приводом
 typedef struct {

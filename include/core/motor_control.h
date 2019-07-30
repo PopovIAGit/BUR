@@ -118,7 +118,7 @@ void ProgonModeUpdate (void);
 void TqHandControl(void);
 
 #if BUR_M
-void NetMomitor(void);
+void NetMonitor(void);
 void ContactorControl(TContactorGroup i);
 #endif
 void MonitorUpdate1(void);

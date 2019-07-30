@@ -153,7 +153,7 @@ TPrdElem List4[] = {
 	PrdElemInit(GetCurrentCmd,			NULL,				1),	//	19
 	PrdElemInit(EngPhOrdPrt,			NULL,				1),	//	20
 	#if BUR_M
-	PrdElemInit(NetMomitor,				NULL,				1),	//	21
+	PrdElemInit(NetMonitor,				NULL,				1),	//	21
 	#endif
 	PrdElemInit(DmcIndication1,			NULL,				1),	//	22
 	PrdElemInit(DmcIndication2,			NULL,				1),	//	23

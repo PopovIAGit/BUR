@@ -391,7 +391,7 @@ void StopPowerControl(void) // упровление при стопе
 
 //----------------Отслеживание состояние питающей сети для подачи команд БУР М
 #if BUR_M
-void NetMomitor(void)
+void NetMonitor(void)
 {
 	if ((GrH->FaultsLoad.all & LOAD_SHC_MASK) && IsPowerOn())	
 		GrD->ControlWord = vcwStop;	
@@ -427,8 +427,12 @@ void NetMomitor(void)
 #endif
 			switch(PhEl.Direction)
 			{
-			case  -1:GrD->ControlWord = GrG->TestCamera ? vcwTestClose : vcwClose; break;
-				case  1 :GrD->ControlWord = GrG->TestCamera ? vcwTestOpen  : vcwOpen;  break;
+				case -1: GrD->ControlWord = GrG->TestCamera ? vcwTestClose : vcwClose;
+						Mcu.EvLog.Source = CMD_SRC_MPO_MPZ;
+						break;
+				case  1: GrD->ControlWord = GrG->TestCamera ? vcwTestOpen  : vcwOpen;
+						Mcu.EvLog.Source = CMD_SRC_MPO_MPZ;
+						break;
 			}	
 		}
 	}
@@ -445,6 +449,7 @@ void NetMomitor(void)
 		else 
 		{
 			GrD->ControlWord = vcwStop;	
+			Mcu.EvLog.Source = CMD_SRC_MPO_MPZ;
 			PowerLostTimer2   = 0;
 		}		
 	}
@@ -455,6 +460,7 @@ void NetMomitor(void)
 		 if (GrH->FaultsNet.bit.BvR ||GrH->FaultsNet.bit.BvS ||GrH->FaultsNet.bit.BvT)
 		 {
 		 	GrD->ControlWord = vcwStop;
+		 	Mcu.EvLog.Source = CMD_SRC_BLOCK;
 			BreakVoltFlag = 0;
 		 }
 	}
@@ -564,15 +570,17 @@ register Uns Tmp;
 			Dmc.WorkMode   = wmTestPh;	// стм. тест фаз
 			Dmc.RequestDir = -1;		// направления закрытие
 			#if BUR_M
-			if(!PhEl.Direction)
+			if ( IsPowerOff() )			// Управляем реле "Закрыть" только в том случае, если контакторы МПО и МПЗ разомкнуты (нету ~380 В). А иначе смысла подавать управляющие сигналы на пускатели - нету
 			{
-				GrH->ContGroup = cgClose;
+				if(!PhEl.Direction)
+				{
+					GrH->ContGroup = cgClose;
+				}
+				if (GrC->ReversKVOKVZ == 1)
+				{
+					SaveContGroup = vcwClose;
+				}
 			}
-			if (GrC->ReversKVOKVZ == 1)
-			{
-			    SaveContGroup = vcwClose;
-			}
-
 
 			#endif 
 			Mcu.EvLog.Value = CMD_CLOSE;
@@ -581,15 +589,17 @@ register Uns Tmp;
 			Dmc.WorkMode   = wmTestPh;	 
 			Dmc.RequestDir = 1;
 			#if BUR_M
-			if(!PhEl.Direction)
+			if ( IsPowerOff() ) 		// Управляем реле "Открыть" только в том случае, если контакторы МПО и МПЗ разомкнуты (нету ~380 В). А иначе смысла подавать управляющие сигналы на пускатели - нету
 			{
-				GrH->ContGroup = cgOpen;
+				if(!PhEl.Direction)
+				{
+					GrH->ContGroup = cgOpen;
 
-			}
-
-			if (GrC->ReversKVOKVZ == 1)
-			{
-			    SaveContGroup = vcwOpen;
+				}
+				if (GrC->ReversKVOKVZ == 1)
+				{
+					SaveContGroup = vcwOpen;
+				}
 			}
 			#endif 
 			Mcu.EvLog.Value = CMD_OPEN;
@@ -1026,8 +1036,9 @@ void CalibStop(void)	// остановка по данным калибровки
 		if (Mcu.Valve.BreakFlag) OverWayFlag = 1; // если работаем с уплотнением то выставляем что уплотнение не достигнуто
 		else 
 			{
-			ValveDriveStop(&Mcu, False);		  // если без уплотнения то даем команду на стоп с плавным
+				ValveDriveStop(&Mcu, False);		// если без уплотнения то даем команду на стоп с плавным
 				Mcu.EvLog.Value = CMD_STOP;			// стоп по конечнику
+				Mcu.EvLog.Source = CMD_SRC_BLOCK;	// Источник команды - блок управления
 			}
 	}
 }
