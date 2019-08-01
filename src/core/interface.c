@@ -75,7 +75,8 @@ TDigitalInput 	dinDeblok,
 				dinDU,
 				dinMU;
 Uns		startTimer = PRD_10HZ*1;	// Таймер инициализации. Пока он не равен 0, идет инициализация. 1 секунда.
-extern  Int  lastDirection;
+extern  Int  	lastDirection;
+extern	Bool	calibStopFlag;
 
  Uns mudustatedefect = 0;
  Uns mudustatefault = 0;
@@ -582,7 +583,14 @@ void LogCmdControl(void)
 	if (Timer > 0)	Timer--;
 
 	LogCmd.Enable = !Timer;
+//--- Заплатка для корректной записи статуса "Открыто" и "Закрыто" при стопе в концевиках ---
+	if (LogCmd.CmdReg && calibStopFlag)													// Если была сформирована командля для записи в журнал и был произведен останов по концевику
+	{
+		GrA->Status.bit.Opened = (calibStopFlag == CLB_OPEN);							// Выставляем статус "Закрыто" и "Открыто"
+		GrA->Status.bit.Closed = (calibStopFlag == CLB_CLOSE);							// в зависимости от значения флага
 
+		calibStopFlag = 0;																// Снимаем флаг
+	}
 //--------------------------------------------------------------------------------
 	LogCmdUpdate(&LogCmd);																// Вызываем функцию формирования журнала
 //--------------------------------------------------------------------------------
@@ -774,6 +782,13 @@ Bool WriteValue(Uns Memory, Uns Param, Uns *Value)
 		{
 			GrH->FaultsDev.bit.TimeNotSet = 0;						// То снимаем аварию "Время не задано"
 		}
+		// Отправляем данные в журнал изменения параметров
+		LogParam.Addr 	  = Param;									// Адрес параметра
+		LogParam.NewValue = *Value;									// Новое значение параметра
+		LogParam.ExecFlag = true;									// Выставляем флаг формирования журнала
+	}
+	else if ( (Param >= REG_TASK_CLOSE)&&(Param <= REG_REV_CLOSE) )	// Если была запись в регистры калибровок
+	{
 		// Отправляем данные в журнал изменения параметров
 		LogParam.Addr 	  = Param;									// Адрес параметра
 		LogParam.NewValue = *Value;									// Новое значение параметра
@@ -1540,7 +1555,7 @@ void AlgControl(void)
 	}
 }
 
-void ClbControl(void)	// управление калибровками 
+void ClbControl(void)	// 200 Hz управление калибровками
 {
 	Calib.ResetFlag = !IsStopped();	// если остановленно то отправляем 1 в сброс 
 	if (Calib.CancelFlag)			// если выставлен флаг отмены команды (если откалиброванно , или выставлен рессет флаг или идет автокалибровка)

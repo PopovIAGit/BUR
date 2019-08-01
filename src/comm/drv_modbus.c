@@ -460,6 +460,11 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 				LogParam.MbBuffer[LogParam.MbIndex] = i + Addr;		// «апомнили адрес параметра, инкрементировали индекс
 				LogParam.MbIndex++;
 			}
+			else if ( (Addr >= REG_TASK_CLOSE)&&(Addr <= REG_REV_CLOSE) )	// Ћовушка дл€ параметров калибровки. ќни в пам€ть не записываютс€, но в журнал записыватьс€ должны
+			{
+				LogParam.MbBuffer[LogParam.MbIndex] = i + Addr;		// «апомнили адрес параметра, инкрементировали индекс
+				LogParam.MbIndex++;
+			}
 			MbTmpData[i] = Tmp;
 		}
 		Port->Frame.Size = 6;	// ???

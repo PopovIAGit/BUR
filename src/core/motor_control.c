@@ -59,6 +59,7 @@ Uns ReqDirection 		= 0;
 Uns DebugStartDelayCnt2 = 10;
 Uns BreakVoltFlag 		= 0;
 Bool 	waitStartVoltageFlag = false;	// Флаг того, что блок ждет напряжение при старте
+Bool	calibStopFlag = 0; 				// Флаг который выставляется, если электропривод был остановлен путем достижения концевика
 TValveCmd SaveContGroup = vcwNone;
 Uns secflag = 0;
 Uns secpausetimer = 0;
@@ -1028,8 +1029,16 @@ void CalibStop(void)	// остановка по данным калибровки
 	
 	if (IsStopped() || GrG->TestCamera) return; // если остановленно то выходим
 	
-	if ((Dmc.RequestDir < 0) && (Dmc.TargetPos <= GrC->BrakeZone)) StopFlag = True; // если направление вращения закрытие целевое положение достигнуто или привышено то ставим флаг стопа
-	if ((Dmc.RequestDir > 0) && (Dmc.TargetPos >= -(Int)GrC->BrakeZone)) StopFlag = True; // если направление вращение открытие
+	if ((Dmc.RequestDir < 0) && (Dmc.TargetPos <= GrC->BrakeZone))
+	{
+		StopFlag = True; // если направление вращения закрытие целевое положение достигнуто или привышено то ставим флаг стопа
+		calibStopFlag = CLB_CLOSE;	// Выставляем флаг, что привод был остановлен в "Закрыто"
+	}
+	if ((Dmc.RequestDir > 0) && (Dmc.TargetPos >= -(Int)GrC->BrakeZone))
+	{
+		StopFlag = True; // если направление вращение открытие
+		calibStopFlag = CLB_OPEN;	// Выставляем флаг, что привод был остановлен в "Открыто"
+	}
 	
 	if (StopFlag)	// если нужно останавливаться
 	{

@@ -523,6 +523,7 @@ extern TGroupT *GrT;
 #define REG_CALIB_STATE			GetAdr(GroupH.CalibState)
 #define REG_TASK_CLOSE			GetAdr(GroupD.TaskClose)
 #define REG_RS_RESET			GetAdr(GroupD.RsReset)
+#define REG_REV_CLOSE			GetAdr(GroupD.RevClose)
 
 #define CMD_DEFAULTS_USER	0x0010	// Пользовательские параметры по умолчанию
 #define CMD_RES_CLB			0x0020	// Сброс калибровки датчика положения
