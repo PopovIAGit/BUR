@@ -8,7 +8,7 @@
 #define VERSION					136
 #define MODULE_VERSION			70
 #define MODULE_VERSION_OLD		50
-#define SUBVERSION				5
+#define SUBVERSION				6
 
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)

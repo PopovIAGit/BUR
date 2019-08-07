@@ -30,7 +30,7 @@ Bool DataError = false;
 
 char LogEvBufIndex = 0;
 bool LogEvMainDataFlag = false;
-Byte LogEvBufCurIndex = 0;
+char LogEvBufCurIndex = 0;
 Byte LogEvBufSeconds = 0;
 Uns  PrevLogAddr[3] = {0,0,0};
 Uns  PrevLogCount[3] = {0,0,0};
@@ -378,24 +378,23 @@ void DataBufferPre(void)
 	{			
 		PreTimer = 0;
 
-		LogEvBuffer[LogEvBufIndex].LogStatus 	 = GrA->Status;
-		LogEvBuffer[LogEvBufIndex].LogPositionPr = GrA->PositionPr;
-		LogEvBuffer[LogEvBufIndex].LogTorque	 = GrA->Torque;
-		LogEvBuffer[LogEvBufIndex].LogUr		 = GrA->Ur;
-		LogEvBuffer[LogEvBufIndex].LogUs		 = GrA->Us;
-		LogEvBuffer[LogEvBufIndex].LogUt		 = GrA->Ut;
-		LogEvBuffer[LogEvBufIndex].LogIu		 = GrA->Iu;
-		LogEvBuffer[LogEvBufIndex].LogIv		 = GrA->Iv;
-		LogEvBuffer[LogEvBufIndex].LogIw		 = GrA->Iw;
-		LogEvBuffer[LogEvBufIndex].LogTemper	 = GrA->Temper;
-		LogEvBuffer[LogEvBufIndex].LogInputs	 = GrA->Inputs.all;
-		LogEvBuffer[LogEvBufIndex].LogOutputs 	 = GrA->Outputs.all;
+		LogEvBuffer[0] = LogEvBuffer[1];
+		LogEvBuffer[1] = LogEvBuffer[2];
+		LogEvBuffer[2] = LogEvBuffer[3];
+		LogEvBuffer[3] = LogEvBuffer[4];
 
-		// Инкрементируем текущий индекс в буфере. Предыдущие накопленные данные не удаляем.
-		if (++LogEvBufIndex >= LOG_EV_BUF_CELL_COUNT)
-		{
-			LogEvBufIndex = 0;
-		}
+		LogEvBuffer[4].LogStatus 	 = GrA->Status;
+		LogEvBuffer[4].LogPositionPr = GrA->PositionPr;
+		LogEvBuffer[4].LogTorque	 = GrA->Torque;
+		LogEvBuffer[4].LogUr		 = GrA->Ur;
+		LogEvBuffer[4].LogUs		 = GrA->Us;
+		LogEvBuffer[4].LogUt		 = GrA->Ut;
+		LogEvBuffer[4].LogIu		 = GrA->Iu;
+		LogEvBuffer[4].LogIv		 = GrA->Iv;
+		LogEvBuffer[4].LogIw		 = GrA->Iw;
+		LogEvBuffer[4].LogTemper	 = GrA->Temper;
+		LogEvBuffer[4].LogInputs	 = GrA->Inputs.all;
+		LogEvBuffer[4].LogOutputs 	 = GrA->Outputs.all;
 	}
 }
 
@@ -403,14 +402,6 @@ void LogEvControl(void)
 {
 	static Uns Timer = (Uns)LOG_START_TOUT;
 	static Uns Addr;
-
-/*
-	if (IsMemParReady())
-	{
-		GrH->FaultsNet.all = 0;
-		WritePar(GetAdr(GroupH.FaultsNet.all), GrH->FaultsNet.all, 1);
-	}
-*/
 
 	if (Timer > 0) Timer--;													// Задержка работы журнала
 
@@ -424,13 +415,6 @@ void LogEvControl(void)
 	LogEv.FaultsState[1] = GrA->Faults.Net.all  & NET_EVLOG_MASK;
 	LogEv.FaultsState[2] = GrA->Faults.Load.all & LOAD_EVLOG_MASK;
 	LogEv.FaultsState[3] = GrA->Faults.Dev.all  & DEV_EVLOG_MASK;
-
-/*
-	LogEv.FaultsState[0] = DbgLog;
-	LogEv.FaultsState[1] = DbgLog;
-	LogEv.FaultsState[2] = 0;
-	LogEv.FaultsState[3] = 0;
-*/
 
 //--------------------------------------------------------------------------------
 	LogEvUpdate(&LogEv);													// Вызываем функцию формирования первой ячейки журнала событий
@@ -457,11 +441,13 @@ void LogEvControl(void)
 			WritePar(Addr, LogEv.Data, LOG_EV_DATA_CNT);										// Записываем параметры в момент возникновения события
 
 			LogEvMainDataFlag = true;
-			LogEvBufCurIndex = LogEvBufIndex;
+			LogEvBufCurIndex = LOG_EV_BUF_CELL_COUNT;											// Заряжаем каунтер
 			LogEv.WriteFlag = false;															// Сбрасываем флаг разрешения записи. По этому флагу записываются только параметры в момент события
 
 			// После записи основной ячейки, формируем начальный адрес буфера
 			Addr = LOG_EV_BUF_START_ADDR + GrH->LogEvAddr * LOG_EV_BUF_DATA_CNT * LOG_EV_BUF_DATA_CELL;
+
+			return;
 		}
 		else if (Menu.EvLogFlag)									// Чтение журнала из меню
 		{
@@ -484,15 +470,18 @@ void LogEvControl(void)
 
 	if ((IsMemLogReady()) && (LogEvMainDataFlag))
 	{
-		if (--LogEvBufIndex < 0)										// Декрементируем индекс буфера, т.к. записываем сначала данные 1 секунды и так далее до 5-й секунды	 
-			LogEvBufIndex = (LOG_EV_BUF_CELL_COUNT - 1);				// Индекс массива начинается не с 1, а с 0
+		if (LogEvBufCurIndex > 0)
+		{
 
-		WriteLog(Addr, ToUnsPtr(&LogEvBuffer[LogEvBufIndex]), LOG_EV_BUF_DATA_CNT);		// Пишем в память
-		
-		Addr += LOG_EV_BUF_DATA_CNT;							// Увеличиваем адрес на количество записанный из буфера данных
-		
+			WriteLog(Addr, ToUnsPtr(&LogEvBuffer[LogEvBufCurIndex - 1]), LOG_EV_BUF_DATA_CNT);		// Пишем в память
 
-		if (LogEvBufIndex == LogEvBufCurIndex)	{				// Если индексы сравнялись, значит мы дошли до самого последнего (5-я секунда)
+			LogEvBufCurIndex--;
+
+			Addr += LOG_EV_BUF_DATA_CNT;							// Увеличиваем адрес на количество записанный из буфера данных
+		}
+
+		if (LogEvBufCurIndex == 0)					// Если индексы сравнялись, значит мы дошли до самого последнего (5-я секунда)
+		{
 			LogEvMainDataFlag = false;							// Записали все ячейки из буфера сбрасываем флаг записи основного события (0-я секунда)
 			if (++GrH->LogEvAddr >= LOG_EV_CNT)					// Инкрементируем начальный адрес записи и проверяем его выход за пределы установленой области 
 				GrH->LogEvAddr = 0;								// Если вышел за установленую область, то присваиваем самый первый адрес
