@@ -1222,9 +1222,9 @@ void RemoteControl(void) //24 - 220 + маски,
 
 	switch(GrB->MuDuSetup)
 	{
-		case mdOff:		GrA->Faults.Proc.bit.MuDuDef = 0;			break;
-		case mdMuOnly:	GrA->Faults.Proc.bit.MuDuDef = 0;			break;
-		case mdDuOnly:	GrA->Faults.Proc.bit.MuDuDef = 0;			break;
+		case mdOff:		GrA->Faults.Proc.bit.MuDuDef = 0; mudustatefault = 0; mudustatedefect = 0;			break;
+		case mdMuOnly:	GrA->Faults.Proc.bit.MuDuDef = 0; mudustatefault = 0; mudustatedefect = 0;			break;
+		case mdDuOnly:	GrA->Faults.Proc.bit.MuDuDef = 0; mudustatefault = 0; mudustatedefect = 0;			break;
 		case mdSelect:		
 					if(IsStopped() && !GrG->TestCamera) 
 					{

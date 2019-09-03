@@ -377,7 +377,7 @@ void FaultIndication(void)				// 50 Гц индикация ошибок устройства и технологиче
 		GrH->FaultsDev.bit.TSens   = TempSens.Error;		// температура
 		GrH->FaultsDev.bit.AVRcon  = !PiData.Connect;		// наличие конекта до АВР
 		// --------- Срабатывание аварии "время не задано" ----------------------------
-		if (GrB->DevDate.bit.Year == 0)						// Если год равен нулю
+		if (GrB->DevDate.bit.Year == 0 && !GrG->TestCamera)						// Если год равен нулю
 		{
 			GrH->FaultsDev.bit.TimeNotSet = 1;				// То выставляем аварию "Время не задано"
 		}
