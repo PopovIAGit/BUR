@@ -73,6 +73,8 @@ Uns ShCUTimer = 0;
 Uns ShCVTimer = 0;
 Uns ShCWTimer = 0;
 
+Uns NoTimeSetTimer = 0;
+
 __inline void DefDriveFaults(void);	
 __inline void ShCProtect(void);
 
@@ -377,10 +379,20 @@ void FaultIndication(void)				// 50 Гц индикация ошибок устройства и технологиче
 		GrH->FaultsDev.bit.TSens   = TempSens.Error;		// температура
 		GrH->FaultsDev.bit.AVRcon  = !PiData.Connect;		// наличие конекта до АВР
 		// --------- Срабатывание аварии "время не задано" ----------------------------
-		if (GrB->DevDate.bit.Year == 0 && !GrG->TestCamera)						// Если год равен нулю
+		if (!GrG->TestCamera)
 		{
-			GrH->FaultsDev.bit.TimeNotSet = 1;				// То выставляем аварию "Время не задано"
+			if (GrB->DevDate.bit.Year == 0 && ++NoTimeSetTimer > 3* PRD_50HZ)						// Если год равен нулю
+			{
+				GrH->FaultsDev.bit.TimeNotSet = 1;				// То выставляем аварию "Время не задано"
+				NoTimeSetTimer = 0;
+			}
 		}
+		else
+		{
+			GrH->FaultsDev.bit.TimeNotSet = 0;
+			NoTimeSetTimer = 0;
+		}
+
 	}
 	if (GrC->PosSensEnable != pmOff)
 	{
@@ -473,6 +485,7 @@ Bool IsDefectExist(TPrtMode Mode) // неисправность
 	if(Defects.Proc.bit.CycleMode)  Defects.Proc.bit.CycleMode			 = 0;
 	if(Defects.Proc.bit.PhOrd)		Defects.Proc.bit.PhOrd 	 			 = 0;
 	if(Defects.Dev.bit.PosSens)		Defects.Dev.bit.PosSens 	 		 = 0;
+	if(Defects.Dev.bit.TimeNotSet && GrG->TestCamera)  Defects.Dev.bit.TimeNotSet 	 		 = 0;
 	if(Defects.Net.all  & NET_BV_MASK)			Defects.Net.all 		&=~NET_BV_MASK;		// обрыв вх фаз
 	if(Defects.Load.all & LOAD_SHC_MASK)		Defects.Load.all 		&=~LOAD_SHC_MASK;	// КЗ
 	if(Defects.Load.all & LOAD_I2T_MASK)		Defects.Load.all 		&=~LOAD_I2T_MASK;	// ВТЗ
@@ -510,6 +523,8 @@ Bool IsFaultExist(TPrtMode Mode) // сигнализация и выключение двигателя
 	//Faults.Proc.all = GrA->Faults.Proc.all; 	//забираем значение структур с ошибками
 	Faults.Net.all  = GrH->FaultsNet.all;        
 	Faults.Load.all = GrH->FaultsLoad.all;  
+
+
 
 	Faults.Proc.bit.MuDuDef = mudustatefault;
 

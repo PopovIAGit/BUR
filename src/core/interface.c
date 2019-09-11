@@ -770,6 +770,7 @@ Bool WriteValue(Uns Memory, Uns Param, Uns *Value)
 		if (GrB->DevDate.bit.Year != 0)								// Если год не равен нулю
 		{
 			GrH->FaultsDev.bit.TimeNotSet = 0;						// То снимаем аварию "Время не задано"
+			NoTimeSetTimer = 0;
 		}
 		// Отправляем данные в журнал изменения параметров
 		LogParam.Addr 	  = Param;									// Адрес параметра
@@ -1228,7 +1229,7 @@ void RemoteControl(void) //24 - 220 + маски,
 		case mdSelect:		
 					if(IsStopped() && !GrG->TestCamera) 
 					{
-						if(!GrH->Inputs.bit.Mu      && !GrH->Inputs.bit.Du)
+						if(!GrH->Inputs.bit.Mu && !GrH->Inputs.bit.Du)
 						{	 	
 								if (++MuDuDefTimer > (2 * PRD_50HZ))
 								{
@@ -1266,7 +1267,12 @@ void RemoteControl(void) //24 - 220 + маски,
 									MuDuDefTimer = 0;
 								}
 						}
-					} 
+					}
+					else if (GrG->TestCamera)
+					{
+					    mudustatedefect = 0;
+					                                        mudustatefault=0;
+					}
 					break; 
 	}
 	#else
