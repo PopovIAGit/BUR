@@ -609,8 +609,8 @@ typedef union _TTEK_TechReg
 		Uns Opening:1;		// 8 		"Открывается"
 		Uns Closing:1;		// 9 		"Закрывается"
 		Uns Stop:1;		// 10 		Стоп
-		Uns Rsvd11:1;		// 11 		Резерв
-		Uns Rsvd12:1;		// 12 		Резерв
+		Uns KVO:1;		// 11 		Резерв
+		Uns KVZ:1;		// 12 		Резерв
 		Uns Ten:1;		// 13 		Включен тен
 		Uns Rsvd14:1;		// 14	 	Резерв
 		Uns Ready:1;		// 15 		Готов к работе
@@ -724,6 +724,18 @@ typedef struct _TDigitalInput {
 	Uns		 output;					// Выход
 } TDigitalInput;
 
+// Структура для обработки логики размыкания КВО и КВЗ
+typedef struct
+{
+	Uns		*pTuState;		// Вход: Состояние ТУ (указатель)
+	Uns		*pButtonsState;	// Вход: Состояние кнопок (указатель)
+	Uns		*pPduKeyState;	// Вход: Состояние кнопок ПДУ (указатель)
+	Uns		*pOnTimeout;	// Параметр: Время удержания флага (указатель)
+	Uns		delayTimeout;	// Параметр: Время задержки после отпускания флага
+	Uns		timer;			// Параметр: Таймер
+	Bool	delayFlag;		// Параметр: флаг задержки после размыкания КВО и КВЗ
+	Bool	offFlag;		// Выход: флаг размыкания КВО и КВЗ.
+} TKVOKVZoff;
 
 #ifdef __cplusplus
 }

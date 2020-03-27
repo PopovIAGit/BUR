@@ -99,7 +99,8 @@ typedef struct _TGroupB
 	Uns				OverwayZone;		// 33.Макси
 	TDriveType      DriveType;          // 34.Тип привода
  	Uns             SleepTime;          // 35.Дежурный режим
-	Uns 			Rsvd[14];
+ 	Uns				KvoKvzOffOnStop;	// 36.Размыкание КВО и КВЗ при СТОП, 0 - Нет, 1 - Да
+	Uns 			Rsvd[13];
 } TGroupB;
 
 // Группа C (Адрес = 90, Количество = 120) - Заводские параметры
@@ -134,7 +135,8 @@ typedef struct _TGroupC
 	Uns				ModbusPauseStart;	// 24. Время задержки на связь по интрефейсу RS-485
 	Uns				NoControlKVOKVZ;	// 25. для инвертирования кво и квз на блоках 14 года, без доступа к прямому управлению
  	Uns	 			UporOnly;			// 26. Только упор
-	Uns       		Rsvd5[7];           // 27-33.Резерв
+	Uns       		Rsvd5[6];           // 27-32.Резерв
+	Uns				TimeBtnStopKVOKVZ;	// 33. время разрыва КВО КВЗ при повороте ручки стоп
 	TReverseType	ReverseType;        // 34.Тип реверса
 //-----------------------Настройка фильтров-------------------------------
 	Int             CorrTemper;         // 35.Корректировка температуры блока
@@ -332,7 +334,7 @@ typedef struct _TGroupH
   	Uns             ISkewValue;          // 136.Асиметрия токов нагрузки
 	Uns             Position;            // 137.Положение
 	Uns				initComplete;		 // 138.Флаг того, что инициализация завершена (или нет)
-	Uns 			Rsvd3;			 	 // 139.Резерв
+	Uns 			BtnStopFlag;		 // 139. Если этот флаг равен "1", то КВО и КВЗ размыкаются
 } TGroupH;
 
 // Группа E (Адрес 400, Количество 32)
@@ -686,8 +688,10 @@ extern Uns TempMuDu;
 
 extern Uns mudustatedefect;
 extern Uns mudustatefault;
+extern TKVOKVZoff KvoKvzOff;
 
 // Прототипы функций
+Bool OffKVOKVZ_Control (TKVOKVZoff *p);
 void InterfaceInit(void);
 void InterfIndication(void);
 void DataBufferPre(void);

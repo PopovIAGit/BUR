@@ -388,6 +388,7 @@ void StopPowerControl(void) // упровление при стопе
 	// задержка перед следующим пуском
 	Mcu.StartDelay = (Uns)START_DELAY_TIME;	
 	BreakVoltFlag = 0;
+	Muf.Timer = 0;
 }
 
 //----------------Отслеживание состояние питающей сети для подачи команд БУР М

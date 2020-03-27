@@ -30,6 +30,8 @@ void main(void)
 	
 	PauseModbus = GrC->ModbusPauseStart;
 
+	DisplayReset(&Display, (Uns)Ram.GroupC.IndicatorType);
+
 	while(1)
 	{
 		SerialCommUpdate(&Mb);

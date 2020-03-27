@@ -360,7 +360,7 @@ void TekModbusParamsUpdate(void)
 	if (PauseModbus > 0)
 	{
 	    PauseModbus--;
-	    return;
+	    //return;
 	}
 	// Заполняем технологический регистр
 	GrT->TechReg.bit.Opened  = GrA->Status.bit.Opened;
@@ -376,8 +376,8 @@ void TekModbusParamsUpdate(void)
 	GrT->TechReg.bit.Rsvd4   = 0;
 	GrT->TechReg.bit.Rsvd5   = 0;
 	GrT->TechReg.bit.Rsvd6   = 0;
-	GrT->TechReg.bit.Rsvd11  = 0;
-	GrT->TechReg.bit.Rsvd12  = 0;
+	GrT->TechReg.bit.KVO  = GrH->BtnStopFlag ? 0 : !GrA->Status.bit.Opened;
+	GrT->TechReg.bit.KVZ  = GrH->BtnStopFlag ? 0 : !GrA->Status.bit.Closed;
 	GrT->TechReg.bit.Rsvd14  = 0;
 
 	
