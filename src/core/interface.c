@@ -1796,7 +1796,7 @@ TKVOKVZoff KvoKvzOff = KVO_KVZ_OFF_DEFAULT;
 // Функция формирования флага по размыканию КВО и КВЗ при стопе
 // Вход - факт поворота ручки стоп и факт прохождения команды СТОП по ТУ
 // Выход - флаг размыкания КВО и КВЗ
-Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 50 Hz
+Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 {
 	if (!GrB->KvoKvzOffOnStop)
 	{
@@ -1826,7 +1826,7 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 50 Hz
 	}
 	else										// если флаг выключения КВО и КВЗ активен
 	{
-		if(p->timer++ >= *p->pOnTimeout * 5)	// Отсчитываем таймер.
+		if(p->timer++ >= *p->pOnTimeout)		// Отсчитываем таймер.
 		{										// по окончанию таймера, проверяем, ушел ли стоп
 			if ((p->ButtonsState == KEY_STOP)||
 				(p->TuState & TU_STOP)||
