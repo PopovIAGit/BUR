@@ -78,7 +78,9 @@ Uns ImCmdLogAddrsTable[] = {
 								GetAdr(GroupB.DevDate),
 								GetAdr(GroupH.Seconds),
 								GetAdr(GroupH.LogControlWord),
-								GetAdr(GroupA.Status)
+								GetAdr(GroupA.Status),
+								GetAdr(GroupA.Outputs.all),
+								GetAdr(GroupA.PosFix)
 };
 
 Uns ImParamLogAddrsTable[] = {

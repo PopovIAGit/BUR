@@ -1129,7 +1129,11 @@ void LocalControl(void) // изменен и не проверен
 		Menu.SleepTimer = 0;
 	}
 
-	Ram.GroupH.BtnStopFlag = OffKVOKVZ_Control (&KvoKvzOff);
+	// Заполнение входов структуры формирования флага по размыканию КВО и КВЗ при стопе
+	// Сама функция OffKVOKVZ_Control(&KvoKvzOff) вызывается в TsSignalization
+	KvoKvzOff.TuState = Mcu.Tu.State;			// Вход: Состояние ТУ
+	KvoKvzOff.ButtonsState = Mcu.Mpu.BtnKey;	// Вход: Состояние кнопок
+	KvoKvzOff.PduKeyState = Mcu.Mpu.PduKey;		// Вход: Состояние кнопок ПДУ
 }
 
 // Функция обработки кнопок ПДУ в зависимости от значения параметра GrB->EnableControlPDU
@@ -1374,7 +1378,7 @@ void BlkSignalization(void)	// Сигнализация на блоке
 
 void TsSignalization(void) //ТС
 {
-
+	GrH->BtnStopFlag = OffKVOKVZ_Control(&KvoKvzOff);		// Вызов функции формирования флага по размыканию КВО и КВЗ при стопе
 
 	#if !BUR_M
 	    if(PauseModbus > 0) return;
@@ -1577,6 +1581,7 @@ void ClbControl(void)	// 200 Hz управление калибровками
 //	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
 //	GrC->OpenPosition  = IndicPos(Calib.Indication->OpenPos);				// забираем положение открыто
 //	GrC->Position 	   = GrH->Position;										// копируем текущее положение в гр.С
+    GrA->PosFix = GrH->Position;
 
 	if (!IsNoCalib() && (Menu.State != MS_EXPRESS) && Menu.Express.Enable)
 		Menu.Express.Enable = FALSE;
@@ -1780,9 +1785,7 @@ Uns	DigitalInputUpdate (TDigitalInput *p)
 #define DELAY_TIMEOUT 50 	// 10 = 1 сек на 10 Гц
 
 #define KVO_KVZ_OFF_DEFAULT { \
-		&Mcu.Tu.State, \
-		(Uns *) &Mcu.Mpu.BtnKey, \
-		(Uns *) &Mcu.Mpu.PduKey, \
+		0, 0, 0, \
 		&Ram.GroupC.TimeBtnStopKVOKVZ, \
 		DELAY_TIMEOUT, \
 		0, 0, 0 }
@@ -1810,9 +1813,9 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 50 Hz
 	}
 	else if (!p->offFlag) 						// Если флаг размыкания КВО и КВЗ снят
 	{											// то смотрим на состояние кнопок и ТУ
-		if ((*p->pButtonsState == KEY_STOP)||	// Если нажата кнопка СТОП на МПУ то выставляем флаг разрывани КВО и КВЗ
-			(*p->pTuState & TU_STOP)||			// Если пришел СТОП по ТУ - аналогично
-			(*p->pPduKeyState == KEY_STOP) )	// Если команда с ПДУ - аналогично
+		if ((p->ButtonsState == KEY_STOP)||	// Если нажата кнопка СТОП на МПУ то выставляем флаг разрывани КВО и КВЗ
+			(p->TuState & TU_STOP)||			// Если пришел СТОП по ТУ - аналогично
+			(p->PduKeyState == KEY_STOP) )		// Если команда с ПДУ - аналогично
 		{
 			if (!GrA->Status.bit.Closing && !GrA->Status.bit.Opening)
 			{
@@ -1824,9 +1827,9 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 50 Hz
 	{
 		if(p->timer++ >= *p->pOnTimeout * 5)	// Отсчитываем таймер.
 		{										// по окончанию таймера, проверяем, ушел ли стоп
-			if ((*p->pButtonsState == KEY_STOP)||
-				(*p->pTuState & TU_STOP)||
-				(*p->pPduKeyState == KEY_STOP) )
+			if ((p->ButtonsState == KEY_STOP)||
+				(p->TuState & TU_STOP)||
+				(p->PduKeyState == KEY_STOP) )
 			{									// если СТОП не ушел, то удерживаем таймер
 				p->timer = *p->pOnTimeout;
 			}

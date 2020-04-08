@@ -12,7 +12,7 @@
 
 #define FAULTS_COUNT_DEF			4				// Количество регистров дефектов
 #define LOG_EV_BUF_DATA_COUNT		20				// Определяет емкость буфера журнала событий
-#define LOG_CMD_BUF_DATA_COUNT		5				// Определяет емкость буфера журнала команд
+#define LOG_CMD_BUF_DATA_COUNT		7				// Определяет емкость буфера журнала команд
 #define LOG_PARAM_BUF_DATA_COUNT	5				// Определяет емкость буфера журнала изменения параметров
 #define MB_PARAM_BUF_COUNT			5
 
@@ -57,6 +57,8 @@ typedef struct _TLogCmd
 	Uns *Date;								// Указатель на дату
 	Uns *Seconds;							// Указатель на секунды
 	Uns *StatusReg;							// Указатель на статусный регистр блока
+	Uns *StatDigOut;						// Указатель на регистр состояния дискретных выходов
+	Uns *Position;							// Указатель на регистр положения
 	Uns CmdReg;								// Регистр команд
 	Uns CmdRegPrev;							// Предыдущее значение регистра команд 
 	Uns Data[LOG_CMD_BUF_DATA_COUNT];		// Буфер журнала команд

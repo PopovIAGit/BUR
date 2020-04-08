@@ -35,7 +35,8 @@ typedef struct _TGroupA
 	Uns             CycleCnt;           // 21.Счетчик циклов
 	Int             Temper;             // 22.Температура блока
 	Uns             MkuPoVersion;       // 23.Версия ПО
-	Uns Rsvd[16];
+	Uns 			Rsvd[15];			// 24-38. Резерв
+	Uns				PosFix;				// 39. Положение для журнала команд
 } TGroupA;
 
 // Группа B (Адрес = 40, Количество = 50) - Параметры пользователя
@@ -487,7 +488,7 @@ extern TGroupT *GrT;
 //!!!!
 
 #define LOG_CMD_START_ADDR		1000								// Начальный адрес журнала команд
-#define LOG_CMD_DATA_CNT		5									// Количество записываемых в память полей
+#define LOG_CMD_DATA_CNT		7									// Количество записываемых в память полей (Было 5, но добавился состояние ТС и Положение)
 #define LOG_CMD_CNT				1500								// Емкость журнала команд (количество записей)
 
 #define LOG_PARAM_START_ADDR	9000								// Начальный адрес журанала изменения параметров
@@ -573,7 +574,7 @@ extern TGroupT *GrT;
 #define LOG_CMD_DEFAULTS	{	\
 		FALSE, FALSE, FALSE,	\
 		&Ram.GroupB.DevTime.all, &Ram.GroupB.DevDate.all, &Ram.GroupH.Seconds, \
-		&Ram.GroupA.Status.all, 0, 0,\
+		&Ram.GroupA.Status.all, &Ram.GroupA.Outputs.all, &Ram.GroupA.PosFix, 0, 0,\
 		0,0,0,0,0				\
 		}
 

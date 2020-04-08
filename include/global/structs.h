@@ -727,9 +727,9 @@ typedef struct _TDigitalInput {
 // Структура для обработки логики размыкания КВО и КВЗ
 typedef struct
 {
-	Uns		*pTuState;		// Вход: Состояние ТУ (указатель)
-	Uns		*pButtonsState;	// Вход: Состояние кнопок (указатель)
-	Uns		*pPduKeyState;	// Вход: Состояние кнопок ПДУ (указатель)
+	Uns		TuState;		// Вход: Состояние ТУ
+	Uns		ButtonsState;	// Вход: Состояние кнопок
+	Uns		PduKeyState;	// Вход: Состояние кнопок ПДУ
 	Uns		*pOnTimeout;	// Параметр: Время удержания флага (указатель)
 	Uns		delayTimeout;	// Параметр: Время задержки после отпускания флага
 	Uns		timer;			// Параметр: Таймер

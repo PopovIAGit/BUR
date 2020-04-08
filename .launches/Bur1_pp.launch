@@ -24,7 +24,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.Texas Instruments XDS100v2 USB Emulator_0/C28xx" value="Bur1_pp"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:Bur1_pp}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Sauris SAU510-USB Iso Plus Emulator/C28xx" value="C:/D\SOFT\BUR One\BUR\Debug\Bur1_pp.out"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Sauris SAU510-USB Iso Plus v.2 Emulator_0/C28xx" value="F:/Tomzel\Programmers\Bur1_dev01.137.7.0.01\Debug\Bur1_pp.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Sauris SAU510-USB Iso Plus v.2 Emulator_0/C28xx" value="C:/Users\sevostyanovdv.TOM-TN\Desktop\Bur_1\Debug\Bur1_pp.out"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Texas Instruments XDS100v2 USB Emulator_0/C28xx" value="E:/Tomzel\Programmers\Bur1_dev1.136.7.0.02\Debug\Bur1_pp.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/Bur1_pp"/>
