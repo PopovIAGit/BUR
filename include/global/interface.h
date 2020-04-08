@@ -693,6 +693,7 @@ extern TKVOKVZoff KvoKvzOff;
 
 // Прототипы функций
 Bool OffKVOKVZ_Control (TKVOKVZoff *p);
+void PosFixControl(void);
 void InterfaceInit(void);
 void InterfIndication(void);
 void DataBufferPre(void);

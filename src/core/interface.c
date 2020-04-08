@@ -538,6 +538,7 @@ void GetCurrentCmd(void)
 		case CMD_DEFSTOP:		LogControlWord = bcmDefStop;			break;
 		case CDM_DISCROUT_TEST: LogControlWord = bcmDiscrOutTest;		break;
 		case CMD_DISCRIN_TEST: 	LogControlWord = bcmDiscrInTest; 		break;
+		case CMD_FIX_POS: 		LogControlWord = bcmFixPos; 			break;
 	}
 
 	if (Mcu.EvLog.Value != 0)
@@ -1845,3 +1846,35 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 50 Hz
 	return p->offFlag;
 }
 
+// Функция фиксации в журнале команд событий по скачкам положения или при изменении состояния дискретных выходов
+void PosFixControl(void)
+{
+	static Uns PrevPosition = 0;	// Предыдущее значение положения энкодера
+	static Uns DeltaPos = 0;		// Разница между текущем и предыдущим значением положения
+	static Uns PrevTsState = 0;		// Предыдущее состояние телеуправления
+
+	if (GrA->Status.bit.Stop)
+	{
+		DeltaPos = abs(GrA->Position - PrevPosition);
+		// Если в состоянии "стоп" произошло изменение положение энкодера более чем на 5 меток, то записываем это событие в журнал команд
+		if (DeltaPos > 5)
+		{
+			GrA->PosFix = GrA->Position;
+			Mcu.EvLog.Value = CMD_FIX_POS;
+			Mcu.EvLog.Source = CMD_SRC_BLOCK;
+		}
+	}
+	else
+	{
+		GrA->PosFix = GrA->Position;
+	}
+	PrevPosition = GrA->Position;
+
+	// Если состояние ТС поменялось - пишем в журнал
+	if (GrA->Outputs.all != PrevTsState)
+	{
+		Mcu.EvLog.Value = CMD_FIX_POS;
+		Mcu.EvLog.Source = CMD_SRC_BLOCK;
+	}
+	PrevTsState = GrA->Outputs.all;
+}

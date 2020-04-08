@@ -112,7 +112,7 @@ const struct MENU_PARAM params[] = {
 "B22.ะลวละย      ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//62
 "B23.ฬภัส ยÛี ัศร", "    ", 	0,  65530,  	0, M_BINE|M_RMAX(7),		//63
 	#else
-"B22.ฬภัส ยี ัศรอ", "    ", 	0,     63,  	0, M_BINE|M_RMAX(5),		//62
+"B22.ฬภัส ยี ัศรอ", "    ", 	0,     31,  	0, M_BINE|M_RMAX(4),		//62
 "B23.ฬภัส ยÛี ัศร", "    ", 	0,  65530,  	0, M_BINE|M_RMAX(7),		//63
 	#endif
 #endif

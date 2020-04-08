@@ -146,6 +146,7 @@ typedef union {
 #define CMD_CLOSE				0x0002	// Закрыть
 #define CMD_OPEN				0x0004	// Открыть
 #define CMD_MOVE				0x0008	// Переместить
+#define CMD_FIX_POS 			0x0200	// Изменение состояния дискретных выходов или скачок положения энкодера
 #define CMD_DEFSTOP				0x0800	// Стоп при аварии(не является командой, добавлено для журнала)  : Добавил PIA 12.09.2012
 #define CDM_DISCROUT_TEST		0x1000	// Тест дискретных выходов
 #define CMD_DISCRIN_TEST		0x2000	// Тест дискретных входов

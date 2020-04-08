@@ -185,19 +185,20 @@ typedef enum {
 // Команды БУР
 typedef enum
 {
-	bcmNone = 0,				// Нет команды
-	bcmStop,					// Стоп
-	bcmClose,					// Закрыть
-	bcmOpen,					// Открыть
-	bcmSetDefaultsUser,			// Пользовательские параметры по умолчанию
-	bcmCalibReset,				// Сброс калибровки
-	bcmPrtReset,				// Сброс защит
-	bcmLogClear,				// Очистка журнала
-	bcmCycleReset,				// Сброс циклов
-	bcmSetDefaultsFact,			// Установка заводских параметров по умолчанию
-	bcmDefStop,					// Спсевдо команда стоп при авариях, нужна для определения общей продолжительности работы
-	bcmDiscrOutTest,			// Тест дискретных выходов
-	bcmDiscrInTest				// Тест дискретных входов	
+	bcmNone = 0,				// 0 Нет команды
+	bcmStop,					// 1 Стоп
+	bcmClose,					// 2 Закрыть
+	bcmOpen,					// 3 Открыть
+	bcmSetDefaultsUser,			// 4 Пользовательские параметры по умолчанию
+	bcmCalibReset,				// 5 Сброс калибровки
+	bcmPrtReset,				// 6 Сброс защит
+	bcmLogClear,				// 7 Очистка журнала
+	bcmCycleReset,				// 8 Сброс циклов
+	bcmSetDefaultsFact,			// 9 Установка заводских параметров по умолчанию
+	bcmDefStop,					// 10 Спсевдо команда стоп при авариях, нужна для определения общей продолжительности работы
+	bcmDiscrOutTest,			// 11 Тест дискретных выходов
+	bcmDiscrInTest,				// 12 Тест дискретных входов
+	bcmFixPos					// 13 Команда фиксации положения
 } TBurCmd;
 
 #if BUR_90

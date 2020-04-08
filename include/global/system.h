@@ -159,6 +159,7 @@ TPrdElem List4[] = {
 	PrdElemInit(DmcIndication2,			NULL,				1),	//	23
 	PrdElemInit(LogInputCalc,			&TuMu,				1),	//	24
 	PrdElemInit(LogInputCalc,			&TuDu,				1),	//	25
+	PrdElemInit(PosFixControl,			NULL,				1),	//	25
 	PrdElemInit(PultTimer,				&Pult,				1) 	//	26
 };
 
