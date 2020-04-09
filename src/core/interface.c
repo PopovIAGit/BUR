@@ -1132,9 +1132,9 @@ void LocalControl(void) // изменен и не проверен
 
 	// Заполнение входов структуры формирования флага по размыканию КВО и КВЗ при стопе
 	// Сама функция OffKVOKVZ_Control(&KvoKvzOff) вызывается в TsSignalization
-	KvoKvzOff.TuState = Mcu.Tu.State;			// Вход: Состояние ТУ
-	KvoKvzOff.ButtonsState = Mcu.Mpu.BtnKey;	// Вход: Состояние кнопок
-	KvoKvzOff.PduKeyState = Mcu.Mpu.PduKey;		// Вход: Состояние кнопок ПДУ
+	KvoKvzOff.TuState |= Mcu.Tu.State;			// Вход: Состояние ТУ
+	KvoKvzOff.ButtonsState |= Mcu.Mpu.BtnKey;	// Вход: Состояние кнопок
+	KvoKvzOff.PduKeyState |= Mcu.Mpu.PduKey;		// Вход: Состояние кнопок ПДУ
 }
 
 // Функция обработки кнопок ПДУ в зависимости от значения параметра GrB->EnableControlPDU
@@ -1842,6 +1842,8 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 			}
 		}
 	}
+
+	p->TuState = p->ButtonsState = p->PduKeyState = 0;
 
 	return p->offFlag;
 }
