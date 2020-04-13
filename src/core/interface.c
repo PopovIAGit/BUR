@@ -1582,7 +1582,6 @@ void ClbControl(void)	// 200 Hz управление калибровками
 //	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
 //	GrC->OpenPosition  = IndicPos(Calib.Indication->OpenPos);				// забираем положение открыто
 //	GrC->Position 	   = GrH->Position;										// копируем текущее положение в гр.С
-    GrA->PosFix = GrH->Position;
 
 	if (!IsNoCalib() && (Menu.State != MS_EXPRESS) && Menu.Express.Enable)
 		Menu.Express.Enable = FALSE;
@@ -1855,22 +1854,29 @@ void PosFixControl(void)
 	static Uns DeltaPos = 0;		// Разница между текущем и предыдущим значением положения
 	static Uns PrevTsState = 0;		// Предыдущее состояние телеуправления
 
+	if (PauseModbus)				// Во время задержки на выдачи интерфейсных сигналов в функцию не заходим
+	{
+		PrevPosition = Revolution;
+		PrevTsState = GrA->Outputs.all;
+		return;
+	}
+
 	if (GrA->Status.bit.Stop)
 	{
-		DeltaPos = abs(GrA->Position - PrevPosition);
+		DeltaPos = abs(GrH->Position - PrevPosition);
 		// Если в состоянии "стоп" произошло изменение положение энкодера более чем на 5 меток, то записываем это событие в журнал команд
-		if (DeltaPos > 5)
+		if ( (DeltaPos > 5 ) && ( DeltaPos < RevMax - 5 ) )
 		{
-			GrA->PosFix = GrA->Position;
+			GrA->PosFix = GrH->Position;
 			Mcu.EvLog.Value = CMD_FIX_POS;
 			Mcu.EvLog.Source = CMD_SRC_BLOCK;
 		}
 	}
 	else
 	{
-		GrA->PosFix = GrA->Position;
+		GrA->PosFix = GrH->Position;
 	}
-	PrevPosition = GrA->Position;
+	PrevPosition = GrH->Position;
 
 	// Если состояние ТС поменялось - пишем в журнал
 	if (GrA->Outputs.all != PrevTsState)

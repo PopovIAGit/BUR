@@ -44,6 +44,8 @@ timings.h
 #define TEST_STATE_TIME			(0.040 * PRD_200HZ)		// Ограничение времени тестового режима > было 1.2
 #define UPOR_STATE_TIME			(2.000 * PRD_200HZ)		// Ограничение времени режиме упора для
 #define MOVE_STATE_TIME			(1.000 * PRD_200HZ)		// Ограничение времени перехода на упор
+#define ACCEL_TIME				(1 * PRD_200HZ)			// Огранечение времени на разгон (сразу после режима "упор")
+#define UPOR_SWITCH_TIME		(0.500 * PRD_200HZ)		// Время перехода в режим "упор" при разгоне
 #define PAUSE_STATE_TIME		(0.040 * PRD_200HZ)		// Ограничение времени режима паузы
 #define DYN_PAUSE_TIME			(0.040 * PRD_200HZ)		// Ограничение времени паузы на
 #define KICK_ST0_TIME			(0.040 * PRD_200HZ)		// Ограничение времени в удар режиме при отсутствии напр

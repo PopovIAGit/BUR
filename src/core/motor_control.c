@@ -16,7 +16,6 @@ APFILTER3  IWfltr;
 APFILTER1  Umfltr  	= RMS_FLTR_DEFAULT;
 APFILTER3  Imfltr  	= IMID_FLTR_DEFAULT;
 APFILTER1  Phifltr  = URMSF_DEFAULT;
-APFILTER3  Trqfltr	= TORQ_FLTR_DEFAULT;
 
 ILEG_TRN   UR;
 ILEG_TRN   US;
@@ -40,6 +39,7 @@ Uns  KickCounter    = 0;		// счетчик количества ударов
 Uns  KickModeTimer  = 0;		// счетчик для режима ударного момента
 Uns  UporModeTimer  = 0;		// счетчик для упора
 Uns  timerMaxTorque = 0;		// время для защиты от раскачки в режимах
+Uns  accelTimer		= 0;		// счетчик для разгона
 Uns  PauseModeTimer = 0;		// счетчик для режима паузы
 Uns  DynModeTimer   = 0;		// счетчик для динамического торможения
 Byte DmcRefrState   = 0;
@@ -117,7 +117,6 @@ void MotorControlInit(void)
 	ApFilter1Init(&Umfltr);
 	ApFilter3Init(&Imfltr);
 	ApFilter1Init(&Phifltr);
-	ApFilter3Init(&Trqfltr);
 
 	memset(&UR, 0, sizeof(ILEG_TRN));	// обнуляем структуры состояния токов и напряжений
 	memset(&US, 0, sizeof(ILEG_TRN));	// чтоб после кампиляции и прошивки там шлака небыло
@@ -649,6 +648,7 @@ register Uns Tmp;
 	KickModeTimer    = 0;
 	UporModeTimer    = 0;
 	timerMaxTorque = 0;
+	accelTimer		 = 0;
 	PauseModeTimer   = 0;
 	DynModeTimer     = 0;
 	#if BUR_M
@@ -874,17 +874,40 @@ __inline void UporStartMode(void)	// стм. Упор старт
 // -----------------------------------------------------------------
 __inline void MoveMode(void)	// стм. движение
 {
-	Sifu.SetAngle   = 0;	// полное открытие тиристоров (задание на угол открытия тиристоров)
-	Sifu.AccelTime  = GrC->VoltAcc;	// 100
-	GrH->Torque 	= Torq.Indication; // показываем момент как он есть
+	Sifu.SetAngle   = 0;							// полное открытие тиристоров (задание на угол открытия тиристоров)
+	Sifu.AccelTime  = GrC->VoltAcc;					// 100
+	GrH->Torque 	= Torq.Indication; 				// показываем момент как он есть
 
-	if (!Sifu.OpenAngle) timerMaxTorque++;		// если угол открытия тиристоров 0 то пускаем таймер
-	if (timerMaxTorque >= (Uns)MOVE_STATE_TIME)	// если находимся в режиме движения дольше 1 с
+	// 1) Разгон, длящийся 1 секунду сразу после режима упора
+	if (accelTimer < ACCEL_TIME)					// 1 секунда
 	{
-		if ((Torq.Indication >= Dmc.TorqueSet) || (AbsSpeed < MIN_FREQ_RPM)) // если слищком большой момент или слишком маленькая скорость
-			Dmc.WorkMode = wmPause;	// стм. пауза
-		timerMaxTorque = 0;		// сбросили таймер 
+		accelTimer++;
+		if ( (Torq.Indication >= Dmc.TorqueSet) ||	// если крутящий момент был превышен
+		     (AbsSpeed < MIN_FREQ_RPM) ) 			// или скорость вращения стала меньше порогового значения
+		{
+			if (timerMaxTorque++ >= (Uns)UPOR_SWITCH_TIME)// Отсчитываем время переход в режим "упор"
+			{
+				timerMaxTorque = 0;
+				Dmc.WorkMode = wmPause;				// переход в режим упора (паузы)
+				accelTimer = 0;
+			}
+		}
+		else
+		{
+			timerMaxTorque = 0;
+		}
 	}
+	// 2) Режим обычного движения
+	else
+	{
+		if ((Torq.Indication >= Dmc.TorqueSet) ||	// если крутящий момент был превышен
+		    (AbsSpeed < MIN_FREQ_RPM) ) 			// или скорость вращения стала меньше порогового значения
+		{
+			Dmc.WorkMode = wmPause;					// переход в стм "упор" осуществляется мгновенно
+			accelTimer = 0;
+		}
+	}
+
 }
 // -----------------------------------------------------------------
 __inline void PauseMode(void) // стм. пауза
@@ -1083,9 +1106,7 @@ void TorqueCalc(void)	// расчет момента по кубу
 	else if (Dmc.TorqueSetPr < 80)	  Add = GrC->Corr80Trq;
 	else if (Dmc.TorqueSetPr < 110)	  Add = GrC->Corr110Trq;
 
-	Trqfltr.Input = _IQ16toIQ(Cub->Output); // фильтруем значение момента
-	ApFilter3Calc(&Trqfltr);				// 
-	Tmp =(_IQtoIQ16(Trqfltr.Output)) + Add; 
+	Tmp = Cub->Output + Add;
 
 	if(Dmc.RequestDir > 0)
 	{
