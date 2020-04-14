@@ -1782,11 +1782,12 @@ Uns	DigitalInputUpdate (TDigitalInput *p)
 }
 
 
-#define DELAY_TIMEOUT 50 	// 10 = 1 сек на 10 Гц
+#define DELAY_TIMEOUT	10 	// 10 = 1 сек на 10 Гц
+#define ON_TIMEOUT	 	10	// Время разрыва КВО КВЗ при повороте ручки стоп 10 = 1 сек на 10 Гц
 
 #define KVO_KVZ_OFF_DEFAULT { \
 		0, 0, 0, \
-		&Ram.GroupC.TimeBtnStopKVOKVZ, \
+		ON_TIMEOUT, \
 		DELAY_TIMEOUT, \
 		0, 0, 0 }
 
@@ -1825,13 +1826,13 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 	}
 	else										// если флаг выключения КВО и КВЗ активен
 	{
-		if(p->timer++ >= *p->pOnTimeout)		// Отсчитываем таймер.
+		if(p->timer++ >= p->onTimeout)		// Отсчитываем таймер.
 		{										// по окончанию таймера, проверяем, ушел ли стоп
 			if ((p->ButtonsState == KEY_STOP)||
 				(p->TuState & TU_STOP)||
 				(p->PduKeyState == KEY_STOP) )
 			{									// если СТОП не ушел, то удерживаем таймер
-				p->timer = *p->pOnTimeout;
+				p->timer = p->onTimeout;
 			}
 			else								// если СТОП ушел, то снимаем все флаги
 			{
