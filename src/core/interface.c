@@ -494,7 +494,7 @@ void LogEvControl(void)
 	}
 }
 
-void GetCurrentCmd(void)
+void GetCurrentCmd(void)	// 50 Hz
 {
 	Uns LogControlWord = bcmNone;
 	static Uns PrevEvLogValue = 0;
@@ -505,10 +505,12 @@ void GetCurrentCmd(void)
 		LogControlWord = bcmNone;
 	else if (Mcu.EvLog.QueryValue)
 	{
-		if (DelayTimer++ > 25)
+		if (DelayTimer++ > 15)
 		{
 			Mcu.EvLog.Value = Mcu.EvLog.QueryValue;
+			Mcu.EvLog.Source = Mcu.EvLog.QuerySource;
 			Mcu.EvLog.QueryValue = 0;
+			Mcu.EvLog.QuerySource = 0;
 			LogControlWord = bcmNone;
 			DelayTimer = 0;
 		}
@@ -1575,8 +1577,8 @@ void ClbControl(void)	// 200 Hz управление калибровками
 	}
 	Calib.AutoCmd = 0;				// сбрасываем команду автокалибровки
 
-	GrA->Status.bit.Closed = IsStopped() && ((Calib.Zone & CLB_CLOSE) != 0);	// закрытие - если в стопе и откалиброванно "закрыто"
-	GrA->Status.bit.Opened = IsStopped() && ((Calib.Zone & CLB_OPEN)  != 0);	// открытие - если в стопе и откалиброванно "открытие"
+	GrA->Status.bit.Closed = /* IsStopped() && */ ((Calib.Zone & CLB_CLOSE) != 0);	// закрытие - если в стопе и откалиброванно "закрыто"
+	GrA->Status.bit.Opened = /* IsStopped() && */ ((Calib.Zone & CLB_OPEN)  != 0);	// открытие - если в стопе и откалиброванно "открытие"
 						
     GrH->Position      = Revolution;								// забираем текущее положение (пока с теста)
 //	GrC->ClosePosition = IndicPos(Calib.Indication->ClosePos);				// забираем	положение закрыто
@@ -1859,6 +1861,7 @@ void PosFixControl(void)
 	{
 		PrevPosition = Revolution;
 		PrevTsState = GrA->Outputs.all;
+		GrA->PosFix = GrH->Position;
 		return;
 	}
 
@@ -1869,8 +1872,8 @@ void PosFixControl(void)
 		if ( (DeltaPos > 5 ) && ( DeltaPos < RevMax - 5 ) )
 		{
 			GrA->PosFix = GrH->Position;
-			Mcu.EvLog.Value = CMD_FIX_POS;
-			Mcu.EvLog.Source = CMD_SRC_BLOCK;
+			Mcu.EvLog.QueryValue = CMD_FIX_POS;
+			Mcu.EvLog.QuerySource = CMD_SRC_BLOCK;
 		}
 	}
 	else
@@ -1882,8 +1885,9 @@ void PosFixControl(void)
 	// Если состояние ТС поменялось - пишем в журнал
 	if (GrA->Outputs.all != PrevTsState)
 	{
-		Mcu.EvLog.Value = CMD_FIX_POS;
-		Mcu.EvLog.Source = CMD_SRC_BLOCK;
+		Mcu.EvLog.QueryValue = CMD_FIX_POS;
+		Mcu.EvLog.QuerySource = CMD_SRC_BLOCK;
+		GrA->PosFix = GrH->Position;
 	}
 	PrevTsState = GrA->Outputs.all;
 }

@@ -488,7 +488,7 @@ extern TGroupT *GrT;
 
 #define LOG_CMD_START_ADDR		1000								// Начальный адрес журнала команд
 #define LOG_CMD_DATA_CNT		7									// Количество записываемых в память полей (Было 5, но добавился состояние ТС и Положение)
-#define LOG_CMD_CNT				1500								// Емкость журнала команд (количество записей)
+#define LOG_CMD_CNT				1140								// Емкость журнала команд (количество записей)
 
 #define LOG_PARAM_START_ADDR	9000								// Начальный адрес журанала изменения параметров
 #define LOG_PARAM_DATA_CNT		5									// Количество записываемых полей (поля структуры журнала: Дата, Время и т.д.)
@@ -638,7 +638,7 @@ extern TGroupT *GrT;
 	True, False, POS_UNDEF, 0, \
 	&Ram.GroupB.BreakMode, \
 	&Calib, \
-	0, 0, 0, vcwNone, 0, 0, 0, 0,\
+	0, 0, 0, 0, vcwNone, 0, 0, 0, 0,\
 	&StopPowerControl, \
 	&StartPowerControl \
 }
