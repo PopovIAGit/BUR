@@ -1487,8 +1487,25 @@ void TsSignalization(void) //ТС
 
 	#else 
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
-		Reg->bit.Dout1 = GrH->BtnStopFlag ? 0 : IsClosed() ^ (Uns)GrB->OutputMask.bit.closed;	//	закрыто
-		Reg->bit.Dout2 = GrH->BtnStopFlag ? 0 : IsOpened() ^ (Uns)GrB->OutputMask.bit.opened;	//	открыто
+
+		if (GrB->OutputMask.bit.closed)			// Если выход открыто проинвертирован
+		{										// выставляем сигнал с учетом BtnStopFlag
+			Reg->bit.Dout1 = GrH->BtnStopFlag ? 0 : IsClosed() ^ (Uns)GrB->OutputMask.bit.closed;	//	закрыто
+		}
+		else									// Если выход не инвентированый
+		{										// выставляем сигнал таким, какой он есть
+			Reg->bit.Dout1 = IsClosed();		//	закрыто
+		}
+
+		if (GrB->OutputMask.bit.opened)			// Если выход закрыто проинвертирован
+		{										// выставляем сигнал с учетом BtnStopFlag
+			Reg->bit.Dout2 = GrH->BtnStopFlag ? 0 : IsOpened() ^ (Uns)GrB->OutputMask.bit.opened;	//	открыто
+		}
+		else									// Если выход не инвентированый
+		{										// выставляем сигнал таким, какой он есть
+			Reg->bit.Dout2 = IsOpened();
+		}
+
 		#if BUR_90
 		Reg->bit.Dout3 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
 		#else
