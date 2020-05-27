@@ -1253,17 +1253,33 @@ void RemoteControl(void) //24 - 220 + маски,
 						{		
 								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 1;
-								GrA->Faults.Proc.bit.MuDuDef = 0;
-								  mudustatedefect = 0;
-								  //mudustatefault = 0;
+								if (mudustatefault == 1)
+			                    {
+			                        GrA->Faults.Proc.bit.MuDuDef = 0;
+			                        mudustatefault = 0;
+			                    }
+
+			                    if(mudustatedefect == 1)
+			                    {
+			                        GrA->Faults.Proc.bit.MuDuDef = 0;
+			                        mudustatedefect = 0;
+			                    }
 						}
 						else if(!GrH->Inputs.bit.Mu && GrH->Inputs.bit.Du) 
 						{ 		
 								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 0;
-								GrA->Faults.Proc.bit.MuDuDef = 0;
-								  mudustatedefect = 0;
-								  //mudustatefault = 0;
+								if (mudustatefault == 1)
+								{
+									GrA->Faults.Proc.bit.MuDuDef = 0;
+									mudustatefault = 0;
+								}
+
+								if(mudustatedefect == 1)
+								{
+									GrA->Faults.Proc.bit.MuDuDef = 0;
+									mudustatedefect = 0;
+								}
 						}
 						else if(GrH->Inputs.bit.Mu  && GrH->Inputs.bit.Du)  
 						{		

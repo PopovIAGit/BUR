@@ -4,7 +4,7 @@
 
 // Модификация блока БУР
 #define BUR_M		0
-#define PLAT_VERSION_7  0
+#define PLAT_VERSION_7  1
 #define BUR_90		0
 
 
