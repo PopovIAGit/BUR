@@ -250,6 +250,11 @@ void DataSetting(void)	//???
 			&&(DefAddr != REG_I_NOM)			// Не номинальный ток
 			&&(DefAddr != REG_DRIVE_TYPE)		// Не тип электропривода
 			&&(DefAddr != REG_ENCODER_TYPE)		// Не тип датчика положения
+#if BUR_90
+			&&(DefAddr != REG_CUR_IU)     // Не корректировка тока U
+			&&(DefAddr != REG_CUR_IV)     // Не корректировка тока V
+			&&(DefAddr != REG_CUR_IW)     // Не корректировка тока W
+#endif
 			&&(DefAddr != REG_GEAR_RATIO) )		// Не КП редуктора
 		{
 	 		*(ToUnsPtr(&Ram) + DefAddr) = Dcr.Def;
@@ -1240,7 +1245,7 @@ void RemoteControl(void) //24 - 220 + маски,
 					{
 						if(!GrH->Inputs.bit.Mu && !GrH->Inputs.bit.Du)
 						{	 	
-								if (++MuDuDefTimer > (2 * PRD_50HZ))
+								if (++MuDuDefTimer > (3 * PRD_50HZ))
 								{
 									Mcu.MuDuInput = 0;
 									GrA->Faults.Proc.bit.MuDuDef = 1;
@@ -1253,7 +1258,7 @@ void RemoteControl(void) //24 - 220 + маски,
 						{		
 								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 1;
-								GrA->Faults.Proc.bit.MuDuDef = 0;
+						 		if (!mudustatefault) GrA->Faults.Proc.bit.MuDuDef = 0;
 								  mudustatedefect = 0;
 								  //mudustatefault = 0;
 						}
@@ -1261,13 +1266,13 @@ void RemoteControl(void) //24 - 220 + маски,
 						{ 		
 								MuDuDefTimer  = 0;
 						 		Mcu.MuDuInput = 0;
-								GrA->Faults.Proc.bit.MuDuDef = 0;
+								if (!mudustatefault) GrA->Faults.Proc.bit.MuDuDef = 0;
 								  mudustatedefect = 0;
 								  //mudustatefault = 0;
 						}
 						else if(GrH->Inputs.bit.Mu  && GrH->Inputs.bit.Du)  
 						{		
-								if (++MuDuDefTimer > (1 * PRD_50HZ))
+								if (++MuDuDefTimer > (3 * PRD_50HZ))
 								{
 									Mcu.MuDuInput = 0;
 									GrA->Faults.Proc.bit.MuDuDef = 1;

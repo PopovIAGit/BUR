@@ -269,7 +269,7 @@ __inline void InitGpio(void)
 	GpioDataRegs.GPBDAT.bit.GPIO33 	= 1;
 
 	GpioCtrlRegs.GPBDIR.bit.GPIO34 	= 1; // DRV_ON_OFF
-	GpioDataRegs.GPBDAT.bit.GPIO34 	= 1;
+	GpioDataRegs.GPBDAT.bit.GPIO34 	= 0;
 
 	EDIS;
 }

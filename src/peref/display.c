@@ -113,11 +113,11 @@ __inline void DisplayOn(TDisplay *p)
 				{
 					PutComm(FUTABA_FUNCTION_SET);	
 				}
-				p->PauseTimer = DISPL_PAUSE_TIME;		break;
-		case 2:  PutComm(DISPLAY_OFF);	p->PauseTimer = DISPL_PAUSE_TIME;		break;
-		case 3:  PutComm(__CLR);		p->PauseTimer = DISPL_PAUSE_TIME;		break;
+				p->PauseTimer = DISPL_PAUSE_TIME;									break;
+		case 2:  PutComm(DISPLAY_OFF);		p->PauseTimer = DISPL_PAUSE_TIME;		break;
+		case 3:  PutComm(__CLR);			p->PauseTimer = DISPL_PAUSE_TIME;		break;
 		case 4:  PutComm(ENTRY_MODE_SET);	p->PauseTimer = DISPL_PAUSE_TIME;		break;
-		case 5:  PutComm(DISPLAY_ON);	p->PauseTimer = DISPL_PAUSE_TIME;		break;
+		case 5:  PutComm(DISPLAY_ON);		p->PauseTimer = DISPL_PAUSE_TIME;		break;
 		case 6: PutComm(0x00|__CGADDR);		p->PauseTimer = DISPL_PAUSE_TIME;
 				p->CursorAddr = 0;
 				p->Data = &Symbols[0][0];

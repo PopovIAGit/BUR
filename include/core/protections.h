@@ -19,7 +19,7 @@
 
 #if BUR_M
 #define UV_DEFAULT(Input, Bit) { \
-	PRT_CFG_SET(0,0,Bit,20), \
+	PRT_CFG_SET(1,0,Bit,20), \
 	ToPtr(Input), \
 	&Ram.GroupH.FaultsNet.all, \
 	ToPtr(&Ram.GroupC.UvLevel), \
@@ -37,7 +37,7 @@
 }
 
 #define OV_DEFAULT(Input, Bit) { \
-	PRT_CFG_SET(0,1,Bit,20), \
+	PRT_CFG_SET(1,1,Bit,20), \
 	ToPtr(Input), \
 	&Ram.GroupH.FaultsNet.all, \
 	ToPtr(&Ram.GroupC.OvLevel), \
@@ -55,7 +55,7 @@
 }
 
 #define OV_MAX_DEFAULT(Input, Bit) { \
-	PRT_CFG_SET(0,1,Bit,20), \
+	PRT_CFG_SET(1,1,Bit,20), \
 	ToPtr(Input), \
 	&Ram.GroupH.FaultsNet.all, \
 	ToPtr(&Ram.GroupC.OvLevel_max), \
@@ -83,7 +83,7 @@
 
 #else
 #define UV_DEFAULT(Input, Bit) { \
-	PRT_CFG_SET(0,0,Bit,20), \
+	PRT_CFG_SET(1,0,Bit,20), \
 	ToPtr(Input), \
 	&Ram.GroupH.FaultsNet.all, \
 	ToPtr(&Ram.GroupC.UvLevel), \
@@ -101,7 +101,7 @@
 }
 
 #define OV_DEFAULT(Input, Bit) { \
-	PRT_CFG_SET(0,1,Bit,20), \
+	PRT_CFG_SET(1,1,Bit,20), \
 	ToPtr(Input), \
 	&Ram.GroupH.FaultsNet.all, \
 	ToPtr(&Ram.GroupC.OvLevel), \
@@ -119,7 +119,7 @@
 }
 
 #define OV_MAX_DEFAULT(Input, Bit) { \
-	PRT_CFG_SET(0,1,Bit,20), \
+	PRT_CFG_SET(1,1,Bit,20), \
 	ToPtr(Input), \
 	&Ram.GroupH.FaultsNet.all, \
 	ToPtr(&Ram.GroupC.OvLevel_max), \

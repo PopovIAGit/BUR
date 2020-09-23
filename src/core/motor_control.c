@@ -174,10 +174,15 @@ __inline void DmcPrepare(void){	//18kHz
 		UR.Input = ADC_CONV(_IQtoIQ16(URfltr.Output), GrH->UR_Mpy, GrH->UR_Offset);
 		US.Input = ADC_CONV(_IQtoIQ16(USfltr.Output), GrH->US_Mpy, GrH->US_Offset);
 		UT.Input = ADC_CONV(_IQtoIQ16(UTfltr.Output), GrH->UT_Mpy, GrH->UT_Offset);
+#if BUR_90
+		IU.Input = ADC_CONV(_IQtoIQ16(IUfltr.Output), GrC->IU_Mpy, GrH->IU_Offset);
+		IV.Input = ADC_CONV(_IQtoIQ16(IVfltr.Output), GrC->IV_Mpy, GrH->IV_Offset);
+		IW.Input = ADC_CONV(_IQtoIQ16(IWfltr.Output), GrC->IW_Mpy, GrH->IW_Offset);
+#else
 		IU.Input = ADC_CONV(_IQtoIQ16(IUfltr.Output), GrH->IU_Mpy, GrH->IU_Offset);
 		IV.Input = ADC_CONV(_IQtoIQ16(IVfltr.Output), GrH->IV_Mpy, GrH->IV_Offset);
 		IW.Input = ADC_CONV(_IQtoIQ16(IWfltr.Output), GrH->IW_Mpy, GrH->IW_Offset);
-
+#endif
 		// автоподстройка датчиков тока
 
 		if (IsStopped())
@@ -223,7 +228,7 @@ void DmcIndication1(void)
 {
 	Uns koef1 = 1, koef2 = 1;
 #if BUR_90
-	if (GrC->Drive_Type == dt100_A50_S)
+	/*if (GrC->Drive_Type == dt100_A50_S)
 	{
 		koef1 = 5;
 		koef2 = 1;
@@ -237,12 +242,12 @@ void DmcIndication1(void)
 	{
 		koef1 = 5;
 		koef2 = 3;
-	}
+	}*/
 #endif
 	// токи нагрузки в А
-	Iload[0] = (I_RMS_CALC(IU.Output)*koef2)/koef1;
-	Iload[1] = (I_RMS_CALC(IV.Output)*koef2)/koef1;
-	Iload[2] = (I_RMS_CALC(IW.Output)*koef2)/koef1;
+	Iload[0] = I_RMS_CALC(IU.Output);
+	Iload[1] = I_RMS_CALC(IV.Output);
+	Iload[2] = I_RMS_CALC(IW.Output);
 	if (IsStopped() && !IsTestMode()) memset(Iload, 0, 3);		// если стоп и не тест то 0
 
 	// токи нагрузки в %
@@ -693,7 +698,7 @@ register Uns Tmp;
 	#endif
 
 #if BUR_90
-	DRV_ON = 0;		// Разрешаем управление тиристорами
+	DRV_ON = 1;		// Разрешаем управление тиристорами
 #endif
 	waitStartVoltageFlag = true; 		// Выставляем флаг ожидания напряжения при старте
 }
@@ -820,7 +825,7 @@ __inline void StopMode(void)		// стм. стоп
 	Dmc.RequestDir = 0;
 
 #if BUR_90
-	DRV_ON = 1;						// Отключаем управление тиристорами
+	DRV_ON = 0;						// Отключаем управление тиристорами
 #endif
 	
 	waitStartVoltageFlag = false;	// Снимаем флаг ожидания напржения
@@ -1145,9 +1150,11 @@ __inline void TorqueObsInit(void)
 		case dt100_A25_U: PFUNC_blkRead(&drive1,   			(Int *)(&Ram.GroupH.TqCurr), LENGTH_TRQ);
 						  PFUNC_blkRead(&TransCurrDef[0], 	(Int *)(&Ram.GroupH.TransCurr),		  1);
 						  GrH->UporOnly = 1;
-					      #if BUR_90
+
+						  #if BUR_90
 						  GrH->PP90Reg.bit.DevOn = 0;
 						  #endif
+
 						  if ((GrC->Inom != InomDefU[0])||(GrC->MaxTorque != MomMaxDef[0]))
 						  {
 						  	if (IsMemParReady())

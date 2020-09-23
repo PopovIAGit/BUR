@@ -153,9 +153,17 @@ typedef struct _TGroupC
 	Uns			    Dac_Mpy;			// 47.Корректировка ЦАП
 	Int			    Dac_Offset;			// 48.Смещение ЦАП
 	Uns				IndicatorType;		// 49.Тип индикатора
-	Uns				EncoderType;		// 50.Тип энкодера
-	Uns             Rsvd16[3];       	// 51-53.резерв
-//----------------------Конфигурация защит(Напряжение)----------------------
+	Uns				EncoderType;		// 50.Тип энкодер
+#if BUR_90
+	Uns             IU_Mpy;              // C51.  Корректировка тока фазы U
+	Uns             IV_Mpy;              // C52.  Корректировка тока фазы V
+	Uns             IW_Mpy;              // C53. Корректировка тока фазы W
+#else
+	Uns             Rsvd51;
+	Uns             Rsvd52;
+	Uns             Rsvd53;
+#endif
+	//----------------------Конфигурация защит(Напряжение)----------------------
 	TPrtMode        Ov;					// 54.Защита от превышения напряжения
 	Uns             OvLevel_max;        // 55.Уровень превышения напряжения при 47% превышения (320В)
 	Uns             OvTime_max;     	// 56.Время превышения напряжения при 47% превышения (1с) 
@@ -293,10 +301,16 @@ typedef struct _TGroupH
 	TOutputReg      Outputs;          	 // 95.Состояние дискретных выходов
 	Uns				Rsvd96;         	 // 96.Тип реверса
 	Uns             TuReleMode;          // 97.Релейный режим
+#if BUR_90
+	Uns             Rsvd98;
+    Uns             Rsvd99;
+    Uns             Rsvd100;
+#else
 	Uns             IU_Mpy;              // H98.  Корректировка тока фазы U
 	Uns             IV_Mpy;              // H99.  Корректировка тока фазы V
 	Uns             IW_Mpy;              // H100. Корректировка тока фазы W
-	Uns             IU_Offset;           // H101. Смещение тока фазы U
+#endif
+    Uns             IU_Offset;           // H101. Смещение тока фазы U
 	Uns             IV_Offset;           // H102. Смещение тока фазы V
 	Uns             IW_Offset;           // H103. Смещение тока фазы W
 	Uns             UR_Mpy;              // H104. Корректировка напряжения фазы
@@ -517,6 +531,10 @@ extern TGroupT *GrT;
 #define REG_DEV_DATE			GetAdr(GroupB.DevDate)
 #define REG_DEV_TIME			GetAdr(GroupB.DevTime)
 #define REG_INDICATOR_TYPE		GetAdr(GroupC.IndicatorType)
+
+#define REG_CUR_IU      GetAdr(GroupC.IU_Mpy)
+#define REG_CUR_IV      GetAdr(GroupC.IV_Mpy)
+#define REG_CUR_IW      GetAdr(GroupC.IW_Mpy)
 
 #define REG_CYCLE_CNT			GetAdr(GroupH.CycleCnt)
 #define REG_CONTROL				GetAdr(GroupD.ControlWord)

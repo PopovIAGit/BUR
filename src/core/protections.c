@@ -136,7 +136,7 @@ void ProtectionsEnable(void)	// 50 Гц проверка включения защит ЭД
 		case 2: 				// включение по напряжению
 			
 			#if BUR_M
-				Enable =!IsStopped() && (GrC->Uv != pmOff) && !GrG->TestCamera;;
+				Enable =!IsStopped() && (GrC->Uv != pmOff) && !GrG->TestCamera;
 		//	else Enable = 0;
 			#else
 				Enable = (GrC->Uv != pmOff) && ((GrG->TestCamera && GrA->Status.bit.Power) == 0);
@@ -273,7 +273,7 @@ void ProtectionsReset(void)	// сброс силовых защит(для возможного пуска двигател
 #endif
 	GrH->FaultsLoad.all  &= ~LOAD_RESET_MASK;	// сбросили ошибки нагрузки (все)
 	#if BUR_M
-	GrH->FaultsNet.all   &= ~NET_RESET_MASK;					
+	//GrH->FaultsNet.all   &= ~NET_RESET_MASK;
 	#endif
 }
 
@@ -459,7 +459,29 @@ __inline void DefDriveFaults(void)		// реакция на ошибки, системой
 		//	else Mcu.EvLog.Value = CMD_DEFSTOP;
 		}
 		
+#if BUR_90
+
+#if BUR_M
+		if (Ram.GroupA.Faults.Net.bit.VSk && (Ram.GroupA.Faults.Load.bit.PhlU || Ram.GroupA.Faults.Load.bit.PhlV||Ram.GroupA.Faults.Load.bit.PhlW))
+		{
+			if (Ram.GroupA.Faults.Load.bit.PhlU)
+				Ram.GroupH.DefectsNet.bit.BvR = 1;
+			if (Ram.GroupA.Faults.Load.bit.PhlV)
+				Ram.GroupH.DefectsNet.bit.BvS = 1;
+			if (Ram.GroupA.Faults.Load.bit.PhlW)
+				Ram.GroupH.DefectsNet.bit.BvT = 1;
+
+		}
+#endif
+#endif
 	}
+	else
+	{
+		Ram.GroupH.DefectsNet.bit.BvR = 0;
+		Ram.GroupH.DefectsNet.bit.BvS = 0;
+		Ram.GroupH.DefectsNet.bit.BvT = 0;
+	}
+
 }
 
 Bool IsDefectExist(TPrtMode Mode) // неисправность

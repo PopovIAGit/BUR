@@ -6,3 +6,4 @@
 *.mk
 /Debug/makefile
 /Debug/Bur1_pp_linkInfo.xml
+/Debug/
