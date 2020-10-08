@@ -137,7 +137,11 @@ const struct MENU_PARAM params[] = {
 #else
 "B36.пеюй мю ярно", "    ", 	0,      1,  	0, MT_STR|M_PWP1|M_NVM|M_SADR(218),		//76
 #endif
+#if BUR_90
+"B37.90б60       ", "    ", 	0,      1,  	1, M_LIST|M_SADR(188),		//77
+#else
 "   B37.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//77
+#endif
 "   B38.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//78
 "   B39.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//79
 "   B40.пегепб   ", "    ", 	0,  65535,  	0, M_SHOW|M_RMAX(4),		//80

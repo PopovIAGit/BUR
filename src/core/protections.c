@@ -267,9 +267,24 @@ void ProtectionsReset(void)	// сброс силовых защит(для возможного пуска двигател
 	
 	GrA->Faults.Proc.all &= ~PROC_RESET_MASK;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто)
 #else
+	if (GrB->BurM90to60 == 1)
+	{
+		MuffFlag = 0;
+		GrA->Status.all &= ~STATUS_RESET_MASK;
+
+		GrA->Faults.Proc.all &= ~PROC_RESET_MASK;
+
+	}
+	else
+	{
+		GrA->Status.all &= ~STATUS_RESET_MASK_90;
+		GrA->Faults.Proc.all &= ~PROC_RESET_MASK_90;
+	}
+
+
 	mudustatedefect = 0;							// Если это БУР 90, то "муфту" и "нет движения" не сбрасываем
-	GrA->Status.all &= ~STATUS_RESET_MASK_90;
-	GrA->Faults.Proc.all &= ~PROC_RESET_MASK_90;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто)
+	//GrA->Status.all &= ~STATUS_RESET_MASK_90;
+	//GrA->Faults.Proc.all &= ~PROC_RESET_MASK_90;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто)
 #endif
 	GrH->FaultsLoad.all  &= ~LOAD_RESET_MASK;	// сбросили ошибки нагрузки (все)
 	#if BUR_M

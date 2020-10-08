@@ -1476,7 +1476,16 @@ void TsSignalization(void) //ТС
 		Reg->bit.Dout5 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
 		Reg->bit.Dout6 = IsClosed()		 ^ 		(Uns)GrB->OutputMask.bit.closed;	//  Закрыто
 		Reg->bit.Dout7 = IsOpened()		 ^ 		(Uns)GrB->OutputMask.bit.opened;	//  Открыто
-		Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
+
+
+		if(GrB->BurM90to60 == 1)
+		{
+			Reg->bit.Dout8 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;	//  МУФТА!!!!!
+		}
+		else
+		{
+			Reg->bit.Dout8 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
+		}
 
 		if ((GrC->ReversKVOKVZ == 0) && (GrH->ContGroup != cgStopKvoKvz))
 		{
@@ -1860,7 +1869,7 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 			}
 			else								// если СТОП ушел, то снимаем все флаги
 			{
-				p->timer = 0;					// снимаем флаг разрыва КВО и КВЗ
+				p->timer = 10;					// снимаем флаг разрыва КВО и КВЗ
 				p->offFlag = false;				// и выставляем флаг задержки, чтобы выждать паузу, прежде чем опять смотреть на состояние ТУ и Кнопок
 				p->delayFlag = true;
 			}
