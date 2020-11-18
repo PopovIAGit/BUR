@@ -149,6 +149,8 @@ void InterfaceInit(void)
 	GrG->SimulSpeedMode = 0;	// И всякий случай выключаем режим симуляции скорости
 	GrH->initComplete = false;	// Снимаем флаг завершения инициализации
 
+	if (GrC->ModbusPauseStart == 0) GrC->ModbusPauseStart = 3; 		// 3 = 0,3 сек
+
 	if (GrH->ScFaults) LowPowerReset |= BIT0;
 
 	RefreshData(0);
@@ -250,6 +252,7 @@ void DataSetting(void)	//???
 			&&(DefAddr != REG_I_NOM)			// Не номинальный ток
 			&&(DefAddr != REG_DRIVE_TYPE)		// Не тип электропривода
 			&&(DefAddr != REG_ENCODER_TYPE)		// Не тип датчика положения
+			&&(DefAddr != REG_versionPO_PUE)	// Не версия ПО ПУЭ
 #if BUR_90
 			&&(DefAddr != REG_CUR_IU)     // Не корректировка тока U
 			&&(DefAddr != REG_CUR_IV)     // Не корректировка тока V

@@ -8,9 +8,9 @@
 extern "C" {
 #endif
 
-#define ENC_PRD							50						// Период вызова драйвера
+#define ENC_PRD							200						// Период вызова драйвера
 #define ENC_STARTUP_LEVEL 				(2.000 * ENC_PRD)		// Задержка при включении энкодера
-#define ENC_RESET_DELAY_LEVEL			(0.300 * ENC_PRD)		// Задержка перед сбросом энкодера
+#define ENC_RESET_DELAY_LEVEL			(0.800 * ENC_PRD)		// Задержка перед сбросом энкодера
 #define ENC_RESET_LEVEL					20						// Число возможных сбросов датчика положения
 #define ENC_ATMEGA_SPI_DELAY_US			5						// Задержка между посылками по SPI
 #define LIR_DA237_CLOCK_DELAY			8						// Время задержки (t1) после чип-селекта, перед началом генерации клоков (10,4 мкСек)

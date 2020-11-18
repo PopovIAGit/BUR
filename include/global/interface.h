@@ -150,7 +150,12 @@ typedef struct _TGroupC
 	Uns			    CoefVoltFltr;		// 38.Коэффициент фильтрации входного напряжения
 	Uns			    CoefCurrFltr;		// 39.Коэффициент фильтрации тока нагрузки 
 	Uns				TrqViewTime;		// 40.Коэффициент фильтрации момента
-	Uns             Rsvd8[2];       	// 41-42.резерв
+	Uns             Rsvd8;       		// 41.резерв
+#if BUR_90
+	Uns				Rsvd42;				// 42.резерв
+#else
+	Uns				versionPO_PUE;		// 42.Версия ПО платы ПУЭ. Влияет на протокол обмена данными с энкодером. Добавлен 16.11.20
+#endif
 	Uns				PosDividerOn;		// 43 Делитель модбас для Казахстана
 	Uns				ModbusConfiguration;// 44 Конфигурация модбас ДЛЯ ВЕРСИИ 1.112
 	Uns				MbOffsetMode;		// 45.Режим сдвига адреов для лбщих регистров на 40000
@@ -532,6 +537,7 @@ extern TGroupT *GrT;
 #define REG_I_NOM				GetAdr(GroupC.Inom)
 #define REG_GEAR_RATIO			GetAdr(GroupC.GearRatio)
 #define REG_DRIVE_TYPE			GetAdr(GroupB.DriveType)
+#define REG_versionPO_PUE		GetAdr(GroupC.versionPO_PUE)
 #define REG_ENCODER_TYPE		GetAdr(GroupC.EncoderType)
 #define REG_DEV_DATE			GetAdr(GroupB.DevDate)
 #define REG_DEV_TIME			GetAdr(GroupB.DevTime)

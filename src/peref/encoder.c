@@ -7,8 +7,8 @@
 #define SetCs()	p->CsFunc(0)
 #define ClrCs()	p->CsFunc(1)
 
-Uns initTimer = 1;	// Таймер инициализации энкодера, 0.5 секунд. Пока он не равен 0,
-						//положение в core не передается и защита от сбоя энкодера не работает
+Uns initTimer = 40;		// Таймер инициализации энкодера, 0.2 секунд. Пока он не равен 0,
+						// положение в core не передается и защита от сбоя энкодера не работает
 LgUns Revolution = 0;
 
 
@@ -16,7 +16,7 @@ LgUns Revolution = 0;
 // Функция обработки энкодера
 void EncoderUpdate(void)			// 200 Hz
 {
-		Ram.GroupH.PP90Reg.bit.EncOn = 1;	// Запитали энкодер
+	Ram.GroupH.PP90Reg.bit.EncOn = 1;	// Запитали энкодер
 
 	if (GrC->EncoderType == 0)		// encoder Avago
 	{
@@ -53,73 +53,105 @@ void EncoderUpdate(void)			// 200 Hz
 }
 
 
-
-
 // функция обработки энкодера.
 // Функция защиты от сбоя энкодера - новый метод
 void AtMegaAvagoEncoderUpdate(ENCODER *p)	// 200 Гц
 {
 	Int Delta;
 	Uns absDelta;
-//-------------Заплатка на скаущую Атмегу-------------------------
+
     static  Uns  Data;
     static  Uns  Data1, Data2, Data3 = 0;
     static  Uns  counter = 1;
     static  Uns  Error_counter = 0;
 
-	// Запрос данных с энкодера
-	SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
-	switch (counter)
-	    {
-	    case 1:
-	            SetCs();                                                // Запрос данных с энкодера
-	            DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	            Data1  = SPI_send(p->SpiId, 0x00) << 8;
-	            Data1 |= SPI_send(p->SpiId, 0x00);
-	            ClrCs();
-	            counter = 2;
-	        break;
-	    case 2:
-	            SetCs();                                                // Запрос данных с энкодера
-	            DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	            Data2  = SPI_send(p->SpiId, 0x00) << 8;
-	            Data2 |= SPI_send(p->SpiId, 0x00);
-	            ClrCs();
-	            counter = 3;
-	        break;
-	    case 3:
-	            SetCs();                                                // Запрос данных с энкодера
-	            DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	            Data3  = SPI_send(p->SpiId, 0x00) << 8;
-	            Data3 |= SPI_send(p->SpiId, 0x00);
-	            ClrCs();
+	if (GrC->versionPO_PUE == 1)	// Если версия ПО ПУЭ - 0.014
+	{
+		// -------- Считывание данных энкодера-------------
+		SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
 
-	            if ((Data1 == Data2) && (Data2== Data3))
-	            {
-	                Data = Data3;
-	                Error_counter = 0;
-	            }
-	            else if ((Data1 != Data2)&&(Data1 != Data3)&&(Data3 != Data2))
-	            {
-	                Error_counter++;
-	                if (Error_counter >= 8 ) // 8 - 4 опроса на 1 оборот энкодера = если 2 оборота с косяками то авария
-	                {
-	                    p->Error = 1;
-	                    Error_counter = 0;
-	                }
-	            }
-	            else
-	            {
-	                if (Data1 == Data2) Data = Data2;
-	                if (Data2 == Data3) Data = Data3;
-	                if (Data1 == Data3) Data = Data3;
+		SetCs();												// Запрос данных с энкодера
+		DelayUs(ENC_ATMEGA_SPI_DELAY_US);
 
-	                Error_counter = 0;
+		// 1 байт - dummy (пустой RX)
+		SpiaRegs.SPITXBUF = 0x00;
+		while(!SpiaRegs.SPISTS.bit.INT_FLAG);
+		DelayUs(1);
+		Data  = SpiaRegs.SPIRXBUF;
 
-	            }
-	            counter = 1;
-	        break;
-	    }
+		// 2 байт - старшая часть
+		SpiaRegs.SPITXBUF = 0x00;
+		while(!SpiaRegs.SPISTS.bit.INT_FLAG);
+		DelayUs(1);
+		Data  = SpiaRegs.SPIRXBUF << 8;
+
+		// 3 байт - младшая часть
+		SpiaRegs.SPITXBUF = 0x00;
+		while(!SpiaRegs.SPISTS.bit.INT_FLAG);
+		DelayUs(1);
+		Data  |= SpiaRegs.SPIRXBUF;
+
+		ClrCs();
+	}
+	else
+	{
+
+	//-------------Заплатка на скаущую Атмегу-------------------------
+		// Запрос данных с энкодера
+		SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
+		switch (counter)
+		{
+		case 1:
+				SetCs();                                                // Запрос данных с энкодера
+				DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+				Data1  = SPI_send(p->SpiId, 0x00) << 8;
+				Data1 |= SPI_send(p->SpiId, 0x00);
+				ClrCs();
+				counter = 2;
+			break;
+		case 2:
+				SetCs();                                                // Запрос данных с энкодера
+				DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+				Data2  = SPI_send(p->SpiId, 0x00) << 8;
+				Data2 |= SPI_send(p->SpiId, 0x00);
+				ClrCs();
+				counter = 3;
+			break;
+		case 3:
+				SetCs();                                                // Запрос данных с энкодера
+				DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+				Data3  = SPI_send(p->SpiId, 0x00) << 8;
+				Data3 |= SPI_send(p->SpiId, 0x00);
+				ClrCs();
+
+				if ((Data1 == Data2) && (Data2== Data3))
+				{
+					Data = Data3;
+					Error_counter = 0;
+				}
+				else if ((Data1 != Data2)&&(Data1 != Data3)&&(Data3 != Data2))
+				{
+					Error_counter++;
+					if (Error_counter >= 8 ) // 8 - 4 опроса на 1 оборот энкодера = если 2 оборота с косяками то авария
+					{
+						p->Error = 1;
+						Error_counter = 0;
+					}
+				}
+				else
+				{
+					if (Data1 == Data2) Data = Data2;
+					if (Data2 == Data3) Data = Data3;
+					if (Data1 == Data3) Data = Data3;
+
+					Error_counter = 0;
+
+				}
+				counter = 1;
+			break;
+		}
+
+	}
 //-----------------------------------------------------------------------
 	// Инициализация
 	if (initTimer)
@@ -227,64 +259,104 @@ void AtMegaAvagoEncoderCalc(ENCODER *p) // 200 Hz
 	static Uns alarmTimer = 0;		// Таймер задержки на срабатывании аварии (1 секунда)
 	Uns  Delta;
 
-	//-------------Заплатка на скаущую Атмегу-------------------------
-	    static  Uns  Data;
-	    static  Uns  Data1, Data2, Data3 = 0;
-	    static  Uns  counter = 1;
-	    static  Uns  Error_counter = 0;
+	static  Uns  Data;
+	static  Uns  Data1, Data2, Data3 = 0;
+	static  Uns  counter = 1;
+	static  Uns  Error_counter = 0;
 
+	if (GrC->versionPO_PUE == 1)	// Если версия ПО ПУЭ - 0.014
+	{
+		// -------- Считывание данных энкодера-------------
+		SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
+
+		SetCs();												// Запрос данных с энкодера
+		DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+
+		// 1 байт - dummy (пустой RX)
+		SpiaRegs.SPITXBUF = 0x00;
+		while(!SpiaRegs.SPISTS.bit.INT_FLAG);
+		DelayUs(1);
+		Data  = SpiaRegs.SPIRXBUF;
+
+		// 2 байт - старшая часть
+		SpiaRegs.SPITXBUF = 0x00;
+		while(!SpiaRegs.SPISTS.bit.INT_FLAG);
+		DelayUs(1);
+		Data  = SpiaRegs.SPIRXBUF << 8;
+
+		// 3 байт - младшая часть
+		SpiaRegs.SPITXBUF = 0x00;
+		while(!SpiaRegs.SPISTS.bit.INT_FLAG);
+		DelayUs(1);
+		Data  |= SpiaRegs.SPIRXBUF;
+
+		ClrCs();
+	}
+	else
+	{
+		//-------------Заплатка на скаущую Атмегу-------------------------
 	    // Запрос данных с энкодера
 	    SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
 	    switch (counter)
-	        {
-	        case 1:
-	                SetCs();                                                // Запрос данных с энкодера
-	                DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	                Data1  = SPI_send(p->SpiId, 0x00) << 8;
-	                Data1 |= SPI_send(p->SpiId, 0x00);
-	                ClrCs();
-	                counter = 2;
-	            break;
-	        case 2:
-	                SetCs();                                                // Запрос данных с энкодера
-	                DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	                Data2  = SPI_send(p->SpiId, 0x00) << 8;
-	                Data2 |= SPI_send(p->SpiId, 0x00);
-	                ClrCs();
-	                counter = 3;
-	            break;
-	        case 3:
-	                SetCs();                                                // Запрос данных с энкодера
-	                DelayUs(ENC_ATMEGA_SPI_DELAY_US);
-	                Data3  = SPI_send(p->SpiId, 0x00) << 8;
-	                Data3 |= SPI_send(p->SpiId, 0x00);
-	                ClrCs();
+		{
+		case 1:
+				SetCs();                                                // Запрос данных с энкодера
+				DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+				Data1  = SPI_send(p->SpiId, 0x00) << 8;
+				Data1 |= SPI_send(p->SpiId, 0x00);
+				ClrCs();
+				counter = 2;
+			break;
+		case 2:
+				SetCs();                                                // Запрос данных с энкодера
+				DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+				Data2  = SPI_send(p->SpiId, 0x00) << 8;
+				Data2 |= SPI_send(p->SpiId, 0x00);
+				ClrCs();
+				counter = 3;
+			break;
+		case 3:
+				SetCs();                                                // Запрос данных с энкодера
+				DelayUs(ENC_ATMEGA_SPI_DELAY_US);
+				Data3  = SPI_send(p->SpiId, 0x00) << 8;
+				Data3 |= SPI_send(p->SpiId, 0x00);
+				ClrCs();
 
-	                if ((Data1 == Data2) && (Data2== Data3))
-	                {
-	                    Data = Data3;
-	                    Error_counter = 0;
-	                }
-	                else if ((Data1 != Data2)&&(Data1 != Data3)&&(Data3 != Data2))
-	                {
-	                    Error_counter++;
-	                    if (Error_counter >= 8 ) // 8 - 4 опроса на 1 оборот энкодера = если 2 оборота с косяками то авария
-	                    {
-	                        p->Error = 1;
-	                    }
-	                }
-	                else
-	                {
-	                    if (Data1 == Data2) Data = Data2;
-	                    if (Data2 == Data3) Data = Data3;
-	                    if (Data1 == Data3) Data = Data3;
+				if ((Data1 == Data2) && (Data2== Data3))
+				{
+					Data = Data3;
+					Error_counter = 0;
+				}
+				else if ((Data1 != Data2)&&(Data1 != Data3)&&(Data3 != Data2))
+				{
+					Error_counter++;
+					if (Error_counter >= 8 ) // 8 - 4 опроса на 1 оборот энкодера = если 2 оборота с косяками то авария
+					{
+						p->Error = 1;
+					}
+				}
+				else
+				{
+					if (Data1 == Data2) Data = Data2;
+					if (Data2 == Data3) Data = Data3;
+					if (Data1 == Data3) Data = Data3;
 
-	                    Error_counter = 0;
+					Error_counter = 0;
 
-	                }
-	                counter = 1;
-	            break;
-	        }
+				}
+				counter = 1;
+			break;
+		}
+	}
+
+	//-----------------------------------------------------------------------
+	// Инициализация
+	if (initTimer)
+	{
+		initTimer--;
+		p->RevData = Data;
+		return;
+	}
 	//-----------------------------------------------------------------------
 
 	Delta = abs(Data - (Uns)p->RevData);
@@ -338,4 +410,6 @@ void AtMegaAvagoEncoderCalc(ENCODER *p) // 200 Hz
 	else
 		alarmTimer = 0;
 }
+
+
 
