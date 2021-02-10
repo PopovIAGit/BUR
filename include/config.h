@@ -4,10 +4,10 @@
 // Глобальные настройки
 
 #define DEVICE_GROUP			1 
-#define VERSION					138
+#define VERSION					139
 #define MODULE_VERSION			70
 #define MODULE_VERSION_OLD		50
-#define SUBVERSION				10
+#define SUBVERSION				1
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)

@@ -101,7 +101,12 @@ typedef struct _TGroupB
 	TDriveType      DriveType;          // 34.Тип привода
  	Uns             SleepTime;          // 35.Дежурный режим
  	Uns				KvoKvzOffOnStop;	// 36.Размыкание КВО и КВЗ при СТОП, 0 - Нет, 1 - Да
-	Uns 			Rsvd[13];
+#if BUR_90
+ 	Uns				BurM90to60;
+#else
+ 	Uns				Rsvd37;
+#endif
+ 	Uns 			Rsvd[12];
 } TGroupB;
 
 // Группа C (Адрес = 90, Количество = 120) - Заводские параметры

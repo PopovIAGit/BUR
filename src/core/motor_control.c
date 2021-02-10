@@ -63,6 +63,7 @@ Bool	calibStopFlag = 0; 				// Флаг который выставляется, если электропривод был
 TValveCmd SaveContGroup = vcwNone;
 Uns secflag = 0;
 Uns secpausetimer = 0;
+Uns  PreStartmodeTimer = 0;		// счетчик для выборки зазора
 // ----------------------------------------	
 Int InomDefU[11]  	 = {13,11,18,52,52,47,56,110,85,148,27};					// default значения для Inom для разных приводов уфа
 Int InomDefS[10]	 = {11,9,13,32,32,33,73,85,95,150};						// Сарапуль
@@ -99,6 +100,7 @@ __inline void KickMode(void);
 __inline void SpeedTestMode(void);
 __inline void DynBrakeMode(void);
 __inline void DmcTest(void);
+__inline void PreStartMode(void);
 
 static  void  ClkThyrControl(Uns State);
 // Логика управления тиристорами для динамического торможения:
@@ -747,6 +749,7 @@ void ControlMode(void) // 200Hz
 		case wmKick:       KickMode();       break;
 		case wmSpeedTest:  SpeedTestMode();  break;
 		case wmDynBrake:   DynBrakeMode();   break;
+		case wmPreStart:   PreStartMode();	 break;
 	}
 	
 	if (ZazorTimer > 0) ZazorTimer--;	// если есть обработка зазора
@@ -847,10 +850,39 @@ __inline void TestPhMode(void)		// стм. тест фаз
 
 	if (++TestModeTimer >= (Uns)TEST_STATE_TIME)// считаем время теста 0.04 сек
 	{
-		Dmc.WorkMode = wmUporStart;				// переходим на стм. упор (режим ограничения момента на старте)
+		Dmc.WorkMode = wmPreStart;				// переходим на стм. выборки зазора (режим ограничения момента на старте)
 		TestModeTimer = 0;						// сбрасываем таймер тестового режима
 	}
 }
+
+// -----------------------------------------------------------------
+// Режим выборки зазора
+__inline void PreStartMode(void) // 200 Hz
+{
+	Sifu.SetAngle   = 105;			// Выставляем угол зазора
+	Sifu.OpenAngle = 105;
+	Sifu.AccelTime  = GrC->VoltAcc;
+	GrA->Torque = 9;				// момент не показываем
+	Torq.Indication = 9;
+
+	PreStartmodeTimer++;
+	if (PreStartmodeTimer < (Uns)PRESTART_STATE_TIME/2)
+	{
+		Sifu.SetAngle  = 105;			// Выставляем угол зазора
+		Sifu.OpenAngle = 105;
+	}
+	else if (PreStartmodeTimer < (Uns)PRESTART_STATE_TIME)
+	{
+		Sifu.SetAngle  = 100;			// Выставляем угол зазора
+		Sifu.OpenAngle = 100;
+	}
+	else
+	{
+		Dmc.WorkMode = wmUporStart;				// переходим на стм. упор (режим ограничения момента на старте)
+		PreStartmodeTimer = 0;						// сбрасываем таймер тестового режима
+	}
+}
+
 // -----------------------------------------------------------------
 __inline void UporStartMode(void)	// стм. Упор старт
 {

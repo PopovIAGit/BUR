@@ -57,6 +57,8 @@ timings.h
 #define DMC_TORQF_TS			(1.000 / PRD_200HZ)		// Постоянная дискретизации фильтра расчета момента
 #define START_PAUSE				(2.000 * PRD_200HZ)		// тест линейного КЗ
 #define DEBUG_START_TIME		(2.000 * PRD_200HZ)      // таймер для повторного включения ПП без источника
+#define PRESTART_STATE_TIME 	(2.000 * PRD_200HZ)	// Огранияение времени на выборку люфта
+
 
 #define NET_MON_START_TIME		(1.000 * PRD_50HZ)		// Задержка перед пуском по наличию напряжения
 #define NET_MON_STOP_TIME2 		(0.500 * PRD_50HZ)		// Задержка перед перед стопом при пропаже напряжения
