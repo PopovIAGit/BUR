@@ -512,7 +512,7 @@ typedef enum {
 }TTenMode;
 
 // Режимы работы при цифровом управлении приводом
-#define wmMuffEnable	(wmUporStart|wmMove|wmPause|wmUporFinish)
+#define wmMuffEnable	(wmUporStart|wmMove|wmPause|wmUporFinish|wmPreStart)
 #define wmPhlDisable	(wmPause|wmTestPh)
 #define wmShCDisable	(wmPause|wmKick)
 typedef enum {

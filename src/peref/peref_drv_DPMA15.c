@@ -52,7 +52,7 @@ void EncoderTitanUpdate(EN_DPMA15 *p)
 	// Запрос данных с энкодера
 	SPI_init(p->SpiId, SPI_MASTER, 2, p->SpiBaud, 8);
 	SetCs(); 												// Запрос данных с энкодера
-	DelayUs(0);
+
 	Data1 = SPI_send(p->SpiId, 0x00);
 	Data2 = SPI_send(p->SpiId, 0x00);
 	Data3 = SPI_send(p->SpiId, 0x00);
@@ -95,7 +95,7 @@ void encoder_DPMA15_GetData(EN_DPMA15 *p) // 50 Hz
 	SPI_init(p->SpiId, SPI_MASTER, 0, p->SpiBaud, 8);
 
 	SetCs();
-
+	DelayUs(1);
 	Data = SPI_send(p->SpiId, 0x00) << 8;	// Особенность посылки: есть всегда старший бит
 	Data |= SPI_send(p->SpiId, 0x00);
 	ClrCs();

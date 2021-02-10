@@ -1422,8 +1422,8 @@ void TsSignalization(void) //ТС
 	}
 	else	
 	{ 
-	#if BUR_M
-#if !BUR_90
+#if BUR_M
+	#if !BUR_90
 		if(PauseModbus > 0)
 		{
 		    Reg->bit.Dout2 = 0;					//  Муфта
@@ -1473,7 +1473,7 @@ void TsSignalization(void) //ТС
 			}
 
 		}
-#else
+	#else
 		Reg->bit.Dout2 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
 		Reg->bit.Dout3 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
 		Reg->bit.Dout5 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
@@ -1500,9 +1500,9 @@ void TsSignalization(void) //ТС
 		    Reg->bit.Dout9 =  (IsOpened() 	||	(!IsOpened()&& !IsClosed()));		//  КВЗ
 		    Reg->bit.Dout10 = (IsClosed() 	||	(!IsOpened()&& !IsClosed()));		//  КВО
 		}
-#endif
+	#endif
 
-	#else 
+#else
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
 
 		if (GrB->OutputMask.bit.closed)			// Если выход открыто проинвертирован
