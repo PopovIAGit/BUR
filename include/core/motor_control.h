@@ -94,7 +94,8 @@ extern Int
 	drive1,  drive2,  drive3,	drive4,	drive5,
 	drive6,  drive7,  drive8,  drive9,	drive10,
 	drive11, drive12, drive13, drive14,	drive15,
-	drive16, drive17, drive18, drive19, drive20, drive21, drive22;
+	drive16, drive17, drive18, drive19, drive20,
+	drive21, drive22, drive23;
 
 void MotorControlInit(void);
 void MotorControlUpdate(void);
