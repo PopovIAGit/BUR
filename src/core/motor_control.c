@@ -70,8 +70,7 @@ Int InomDefS[11]	 = {11,9,13,32,32,33,73,85,95,150,28};						// Сарапуль
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
 Int TransCurrDef[10] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100};	//					для TransCur править
 Int TransCurr100A25 = 2000;
-Int GearRatioDef[5]	 = {5250,7360,15675,16016,16016};						//для передаточного числа редуктора 
-
+Int GearRatioDef[6]	 = {5250,7360,15675,16016,16016,5320};						//для передаточного числа редуктора
 
 Uns TimerInterp = 0;
 Uns AngleInterp(Uns StartValue, Uns EndValue, Uns Time); 
@@ -1247,7 +1246,7 @@ __inline void TorqueObsInit(void)
 						  {
 						  	if (IsMemParReady())
 						  	{
-								GrC->GearRatio = GearRatioDef[1];
+								GrC->GearRatio = GearRatioDef[5];
 								GrC->Inom = InomDefU[3];
 								GrC->MaxTorque = MomMaxDef[3];
 						  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3); 
@@ -1432,7 +1431,7 @@ __inline void TorqueObsInit(void)
 								  {
 								  	if (IsMemParReady())
 								  	{
-										GrC->GearRatio = GearRatioDef[1];
+										GrC->GearRatio = GearRatioDef[5];
 										GrC->Inom = InomDefS[3];
 										GrC->MaxTorque = MomMaxDef[3];
 								  		WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
@@ -1574,12 +1573,12 @@ __inline void TorqueObsInit(void)
 					GrH->PP90Reg.bit.DevOn = 0;
 					#endif
 
-					if ((GrC->Inom != InomDefS[11]) || (GrC->MaxTorque != MomMaxDef[2]))
+					if ((GrC->Inom != InomDefS[10]) || (GrC->MaxTorque != MomMaxDef[2]))
 					{
 					    if (IsMemParReady())
 					    {
 						GrC->GearRatio = GearRatioDef[1];
-						GrC->Inom = InomDefS[11];
+						GrC->Inom = InomDefS[10];
 						GrC->MaxTorque = MomMaxDef[2];
 						WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
 
