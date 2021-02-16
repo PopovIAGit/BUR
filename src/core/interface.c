@@ -252,7 +252,9 @@ void DataSetting(void)	//???
 			&&(DefAddr != REG_I_NOM)			// Не номинальный ток
 			&&(DefAddr != REG_DRIVE_TYPE)		// Не тип электропривода
 			&&(DefAddr != REG_ENCODER_TYPE)		// Не тип датчика положения
+#if !BUR_90
 			&&(DefAddr != REG_versionPO_PUE)	// Не версия ПО ПУЭ
+#endif
 #if BUR_90
 			&&(DefAddr != REG_CUR_IU)     // Не корректировка тока U
 			&&(DefAddr != REG_CUR_IV)     // Не корректировка тока V

@@ -55,6 +55,7 @@ void EncoderUpdate(void)			// 200 Hz
 
 // функция обработки энкодера.
 // Функция защиты от сбоя энкодера - новый метод
+
 void AtMegaAvagoEncoderUpdate(ENCODER *p)	// 200 Гц
 {
 	Int Delta;
@@ -65,6 +66,7 @@ void AtMegaAvagoEncoderUpdate(ENCODER *p)	// 200 Гц
     static  Uns  counter = 1;
     static  Uns  Error_counter = 0;
 
+#if !BUR_90
 	if (GrC->versionPO_PUE == 1)	// Если версия ПО ПУЭ - 0.014
 	{
 		// -------- Считывание данных энкодера-------------
@@ -212,6 +214,7 @@ void AtMegaAvagoEncoderUpdate(ENCODER *p)	// 200 Гц
 		}
 	}
 	p->RevData = Data;
+#endif
 }
 
 // функция защиты от сбоя датчика положения (новый метод)
@@ -252,13 +255,14 @@ Uns encoderReset = 0;		// Флаг "пересброса" энкодера
 Uns ResetTimer = 0;
 Uns goodPacket = true;		// Флаг "хорошего пакета"
 
+
 void AtMegaAvagoEncoderCalc(ENCODER *p) // 200 Hz
 {
 	static Uns errorCount = 0;		// Еоличество "ошибочных" пакетов
 	static Uns packetCount = 0;		// Общее количество пакетов
 	static Uns alarmTimer = 0;		// Таймер задержки на срабатывании аварии (1 секунда)
 	Uns  Delta;
-
+#if !BUR_90
 	static  Uns  Data;
 	static  Uns  Data1, Data2, Data3 = 0;
 	static  Uns  counter = 1;
@@ -409,6 +413,7 @@ void AtMegaAvagoEncoderCalc(ENCODER *p) // 200 Hz
 	}
 	else
 		alarmTimer = 0;
+#endif
 }
 
 
