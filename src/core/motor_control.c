@@ -859,8 +859,8 @@ __inline void TestPhMode(void)		// стм. тест фаз
 // Режим выборки зазора
 __inline void PreStartMode(void) // 200 Hz
 {
-	Sifu.SetAngle   = 105;			// Выставляем угол зазора
-	Sifu.OpenAngle = 105;
+	Sifu.SetAngle   = 100;			// Выставляем угол зазора
+	Sifu.OpenAngle = 100;
 	Sifu.AccelTime  = GrC->VoltAcc;
 	GrA->Torque = 9;				// момент не показываем
 	Torq.Indication = 9;
@@ -868,13 +868,13 @@ __inline void PreStartMode(void) // 200 Hz
 	PreStartmodeTimer++;
 	if (PreStartmodeTimer < (Uns)PRESTART_STATE_TIME/2)
 	{
-		Sifu.SetAngle  = 105;			// Выставляем угол зазора
-		Sifu.OpenAngle = 105;
+		Sifu.SetAngle  = 100;			// Выставляем угол зазора
+		Sifu.OpenAngle = 100;
 	}
 	else if (PreStartmodeTimer < (Uns)PRESTART_STATE_TIME)
 	{
-		Sifu.SetAngle  = 100;			// Выставляем угол зазора
-		Sifu.OpenAngle = 100;
+		Sifu.SetAngle  = 95;			// Выставляем угол зазора
+		Sifu.OpenAngle = 95;
 	}
 	else
 	{
