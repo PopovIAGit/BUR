@@ -417,9 +417,7 @@ void LogEvControl(void)
 
 	LogEv.Enable = !Timer;
 
-	#if !BUR_M
 	GrA->Faults.Dev.bit.LowPower = !PowerEnable;								// Выставляем бит здесь, т.к. он может сказать на работе, а по сути он нужен только для записи
-	#endif
 
 	LogEv.FaultsState[0] = GrA->Faults.Proc.all & PROCESS_EVLOG_MASK;		// Забираем значения регистров событий
 	LogEv.FaultsState[1] = GrA->Faults.Net.all  & NET_EVLOG_MASK;
@@ -429,9 +427,7 @@ void LogEvControl(void)
 //--------------------------------------------------------------------------------
 	LogEvUpdate(&LogEv);													// Вызываем функцию формирования первой ячейки журнала событий
 
-	#if !BUR_M
 	GrA->Faults.Dev.bit.LowPower = 0;											// Сбрасываем бит, чтобы он отсутствовал при пуске
-	#endif
 //--------------------------------------------------------------------------------
 	if (IsMemParReady())
 	{
