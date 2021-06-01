@@ -100,7 +100,7 @@ void PiUpdate(void)
 {
 	register Uns CRC;
 
-	if (PauseModbus > 5) return;
+	if (PauseModbus > 0) return;
 
 #if BUR_90
 	// Если инициализация еще не завершена, или питание потеряно, не связываемся с ПИ

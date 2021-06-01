@@ -460,6 +460,8 @@ void NetMonitor(void)
 			PowerLostTimer2   = 0;
 		}		
 	}
+	else PowerLostTimer2   = 0;
+
 	if ((PhEl.Direction == 0)&&(IsPowerOn()))  //  если есть хоть одно напр€жение, а чсередование фаз не определено
 	{
 		 BreakVoltFlag = 1;

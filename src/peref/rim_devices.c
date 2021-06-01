@@ -499,7 +499,11 @@ void TekModbusParamsUpdate(void)
 		GrT->ComReg.all = 0;
 
 
-	if (!GrC->PosDividerOn)
+	if (GrA->PositionPr < 0)
+	{
+		GrT->PositionPr = 0;
+	}
+	else if (!GrC->PosDividerOn)
 	{
 		GrT->PositionPr 	 	= GrA->PositionPr;
 	}
@@ -645,5 +649,12 @@ void TekModbusParamsUpdate(void)
 		GrH->Outputs.bit.Dout7 = GrT->TsTu.bit.OutNeispr;
 		#endif
 	}
+
+	if (PauseModbus > 0)
+	{
+		GrT->DefReg.all = 0;
+		GrT->FaultReg.all = 0;
+	}
+
 }
 
