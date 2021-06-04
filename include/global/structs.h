@@ -260,7 +260,8 @@ typedef enum {
 	dt10000_D6_S  	= 19,
 	dt10000_D12_S 	= 20,
 	dt400_B40_U 	= 21,
-	dt400_B20_S2 	= 22
+	dt400_B20_S2 	= 22,
+	dt10000_D12_U2 	= 23
 }TDriveType;
 
 #if BUR_90
