@@ -4,8 +4,14 @@
 
 // Модификация блока БУР
 #define BUR_M			1
-#define PLAT_VERSION_7  1
 #define BUR_90			1
+
+#if BUR_90
+#define PLAT_VERSION_7  1 // может быть только 1
+#else
+#define PLAT_VERSION_7  1 // менять в зависимости от версии
+#endif
+
 
 
 // Идентификатор блока

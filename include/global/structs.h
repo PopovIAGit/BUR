@@ -152,12 +152,8 @@ typedef union _TDeviceReg {
 		Uns Th:1;			// 5     Перегрев блока
 		Uns Tl:1;			// 6     Переохлождение блока
 		Uns AVRcon:1;		// 7     связь до АВРки
-	#if BUR_M
-		Uns Rsvd1:3;		// 8-10  Резерв
-	#else
 		Uns LowPower:1;		// 8 	 Режим сохранения энергии
 		Uns Rsvd1:2;		// 9-10  Резерв
-	#endif
 		Uns Th_Err:1;		// 11 	 Температура блока свыше 110 град
 		Uns TimeNotSet:1;	// 12    Время не настроено
      	Uns Rsvd:3;       	// 12-15 Резерв
@@ -264,7 +260,8 @@ typedef enum {
 	dt10000_D6_S  	= 19,
 	dt10000_D12_S 	= 20,
 	dt400_B40_U 	= 21,
-	dt400_B20_S2 	= 22
+	dt400_B20_S2 	= 22,
+	dt10000_D12_U2 	= 23
 }TDriveType;
 
 #if BUR_90
