@@ -1594,14 +1594,14 @@ __inline void TorqueObsInit(void)
 					GrH->PP90Reg.bit.DevOn = 0;
 					#endif
 
-					if ((GrC->Inom != InomDefS[11]) || (GrC->MaxTorque != MomMaxDef[2]))
+					if ((GrC->Inom != InomDefS[11]) || (GrC->MaxTorque != MomMaxDef[9]))
 					{
 					    if (IsMemParReady())
 					    {
-						GrC->GearRatio = GearRatioDef[4];
-						GrC->Inom = InomDefS[11];
-						GrC->MaxTorque = MomMaxDef[9];
-						WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+					    	GrC->GearRatio = GearRatioDef[4];
+					    	GrC->Inom = InomDefS[11];
+					    	GrC->MaxTorque = MomMaxDef[9];
+					    	WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
 
 					    }
 					}
