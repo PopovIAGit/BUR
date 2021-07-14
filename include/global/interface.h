@@ -677,7 +677,7 @@ extern TGroupT *GrT;
 	False, False, 0, 0, 0, 0, 0, 0, 0, \
 	MUFF_CLB_TIME, 0, 0, 0, 0, 0, 0, 0, \
 	&Ram.GroupC.PosSensPow, \
-	&Ram.GroupB.PositionAcc, \
+	&PositionAccTmp, \
 	ToPtr(&Ram.GroupB.RodType), \
 	&Revolution, \
 	&Ram.GroupA.PositionPr, \

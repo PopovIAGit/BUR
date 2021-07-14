@@ -178,8 +178,8 @@ void DefineCalibParams(CALIBS *p)						// обработка параметров калибровки ДП и п
 					p->LinePos = p->LinePos - p->RevMax - 1;
 			}
 			
-			*p->CurWay = CalcClbGearRev(p, p->LinePos);		// пересчитываем на из линейного перемещения вала дв. в линейное перемещение выходного звена
-			if (*p->CurWay <= (Int)*p->PositionAcc) p->Zone |= CLB_CLOSE; // если текущее положени выходного звена меньше 
+			*p->CurWay = CalcClbGearRev(p, p->LinePos);						// пересчитываем на из линейного перемещения вала дв. в линейное перемещение выходного звена
+			if (*p->CurWay <= (Int)*p->PositionAcc) p->Zone |= CLB_CLOSE; 	// если текущее положени выходного звена меньше
 			if (*p->CurWay >= ((Int)*p->FullWay - (Int)*p->PositionAcc)) p->Zone |= CLB_OPEN; // если текущее положение выходного звена
 			
 			*p->PositionPr = DivKQ1(p->LinePos, p->FullStep, 1000, 0);				// считаем текущее положение в процентах (0-открыто 100-закрыто)
