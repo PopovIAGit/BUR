@@ -16,6 +16,8 @@ TLogEvBuffer	LogEvBuffer[LOG_EV_BUF_CELL_COUNT];		// Ѕуфер параметров, которое з
 TLogCmd			LogCmd = LOG_CMD_DEFAULTS;				// Ёкземпл€р структуры журнала команд
 TLogParam 		LogParam = LOG_PARAM_DEFAULTS;			// Ёкземпл€р структуры журнала изменени€ параметров
 
+Uns 		PositionAccTmp = 0;
+
 CALIBS      Calib = CALIBS_DEFAULT;
 TVlvDrvCtrl Mcu   = DRIVE_CTRL_DEFAULT;
 //TOutputReg  Dout  = {0x00};
@@ -1397,6 +1399,17 @@ void TsSignalization(void) //“—
 	
 	GrA->Status.bit.TsIndic  = IsFaultExist(pmBlkTsSign);// в статус о работе индикации “”
 	GrA->Status.bit.TsDefect  = IsDefectExist(pmBlkTsSign);// в статус о работе индикации “”
+
+	// 30/06/21 ---------- PositionAcc передаетьс€ только когдапривод в стопе
+	if (IsStopped())
+	{
+		PositionAccTmp = GrB->PositionAcc;
+	}
+	else
+	{
+		PositionAccTmp = 0;
+	}
+
 
 	// —брасываем “— перед выставлением.
 

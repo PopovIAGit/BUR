@@ -1150,7 +1150,7 @@ void TorqueCalc(void)	// расчет момента по кубу
 		Tmp = Tmp + GrC->UporAddOpen;
 	}
 
-	if (Tmp < TORQ_MIN_PR) Tmp = TORQ_MIN_PR;	// проверяем на вхождение в зону от 
+	if (Tmp < GrC->TrqMinPr) Tmp = GrC->TrqMinPr;	// проверяем на вхождение в зону от
 	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 0 до 110 %
 	
 	Torq.Indication = PU0ToValue(Tmp, GrC->MaxTorque * 10);// переводим проценты в Нм относительно максимального М
@@ -1594,14 +1594,14 @@ __inline void TorqueObsInit(void)
 					GrH->PP90Reg.bit.DevOn = 0;
 					#endif
 
-					if ((GrC->Inom != InomDefS[11]) || (GrC->MaxTorque != MomMaxDef[2]))
+					if ((GrC->Inom != InomDefS[11]) || (GrC->MaxTorque != MomMaxDef[9]))
 					{
 					    if (IsMemParReady())
 					    {
-						GrC->GearRatio = GearRatioDef[4];
-						GrC->Inom = InomDefS[11];
-						GrC->MaxTorque = MomMaxDef[9];
-						WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+					    	GrC->GearRatio = GearRatioDef[4];
+					    	GrC->Inom = InomDefS[11];
+					    	GrC->MaxTorque = MomMaxDef[9];
+					    	WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
 
 					    }
 					}
