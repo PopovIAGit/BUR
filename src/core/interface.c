@@ -1516,6 +1516,29 @@ void TsSignalization(void) //ТС
 #else
 		Reg->bit.Dout0 = IsTsFault()	 ^ 		(Uns)GrB->OutputMask.bit.fault;		//	тс аларм
 
+	#if BUR_90
+		if (GrB->OutputMask.bit.closed)			// Если выход открыто проинвертирован
+		{										// выставляем сигнал таким, какой он есть
+			Reg->bit.Dout1 = IsClosed() ^ (Uns)GrB->OutputMask.bit.closed;	//	закрыто
+		}
+		else									// Если выход не инвентированый
+		{										// выставляем сигнал с учетом BtnStopFlag
+			Reg->bit.Dout1 = GrH->BtnStopFlag ? 1 : IsClosed();		//	закрыто
+		}
+
+		if (GrB->OutputMask.bit.opened)			// Если выход закрыто проинвертирован
+		{										// выставляем сигнал таким, какой он есть
+			Reg->bit.Dout2 = IsOpened() ^ (Uns)GrB->OutputMask.bit.opened;	//	открыто
+		}
+		else									// Если выход не инвентированый
+		{										// выставляем сигнал с учетом BtnStopFlag
+			Reg->bit.Dout2 = GrH->BtnStopFlag ? 1 : IsOpened(); 	//	открыто
+		}
+
+		Reg->bit.Dout3 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
+
+	#else
+
 		if (GrB->OutputMask.bit.closed)			// Если выход открыто проинвертирован
 		{										// выставляем сигнал с учетом BtnStopFlag
 			Reg->bit.Dout1 = GrH->BtnStopFlag ? 0 : IsClosed() ^ (Uns)GrB->OutputMask.bit.closed;	//	закрыто
@@ -1534,20 +1557,18 @@ void TsSignalization(void) //ТС
 			Reg->bit.Dout2 = IsOpened();
 		}
 
-		#if BUR_90
-		Reg->bit.Dout3 = IsMVOactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в открытие
-		#else
 		Reg->bit.Dout3 = IsMuffActive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//	муфта
-		#endif
+	#endif
+
 		Reg->bit.Dout4 = IsClosing()	 ^ 		(Uns)GrB->OutputMask.bit.closing;	//	закрывается
 		Reg->bit.Dout5 = IsOpening()	 ^ 		(Uns)GrB->OutputMask.bit.opening;	//	открывается
 		Reg->bit.Dout6 = !IsLocalControl()^ 	(Uns)GrB->OutputMask.bit.muDu; 		//	МУ/ДУ
 		Reg->bit.Dout7 = IsTsDefect()	 ^ 		(Uns)GrB->OutputMask.bit.defect;	//  Неисправность
-		#if BUR_90
+	#if BUR_90
 		Reg->bit.Dout8 = IsMVZactive()	 ^ 		(Uns)GrB->OutputMask.bit.mufta;		//  Муфта в закрытие
 		Reg->bit.Dout9 = !GrB->InputType;											// Тип входного сигнала
-		#endif
 	#endif
+#endif
 	}
 
 	#if BUR_M
@@ -1862,7 +1883,7 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 	else if (!p->offFlag) 						// Если флаг размыкания КВО и КВЗ снят
 	{											// то смотрим на состояние кнопок и ТУ
 		if ((p->ButtonsState == KEY_STOP)||	// Если нажата кнопка СТОП на МПУ то выставляем флаг разрывани КВО и КВЗ
-			(p->TuState & TU_STOP)||			// Если пришел СТОП по ТУ - аналогично
+			((p->TuState & TU_STOP) && (Mcu.ActiveControls & CMD_SRC_DIGITAL))||	// Если пришел СТОП по ТУ в режиме дистанции - аналогично
 			(p->PduKeyState == KEY_STOP) )		// Если команда с ПДУ - аналогично
 		{
 			if (!GrA->Status.bit.Closing && !GrA->Status.bit.Opening)
@@ -1876,7 +1897,7 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 		if(p->timer++ >= p->onTimeout)		// Отсчитываем таймер.
 		{										// по окончанию таймера, проверяем, ушел ли стоп
 			if ((p->ButtonsState == KEY_STOP)||
-				(p->TuState & TU_STOP)||
+				((p->TuState & TU_STOP) && (Mcu.ActiveControls & CMD_SRC_DIGITAL))||
 				(p->PduKeyState == KEY_STOP) )
 			{									// если СТОП не ушел, то удерживаем таймер
 				p->timer = p->onTimeout;

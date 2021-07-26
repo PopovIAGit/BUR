@@ -7,7 +7,7 @@
 #define VERSION					141
 #define MODULE_VERSION			70
 #define MODULE_VERSION_OLD		50
-#define SUBVERSION				01
+#define SUBVERSION				02
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)
