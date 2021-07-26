@@ -645,5 +645,12 @@ void TekModbusParamsUpdate(void)
 		GrH->Outputs.bit.Dout7 = GrT->TsTu.bit.OutNeispr;
 		#endif
 	}
+
+	if (PauseModbus > 0)
+	{
+		GrT->DefReg.all = 0;
+		GrT->FaultReg.all = 0;
+	}
+
 }
 

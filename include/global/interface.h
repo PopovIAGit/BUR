@@ -405,7 +405,7 @@ typedef struct _TGroupT
 {
 	TTEK_TechReg 		TechReg;		// 0 Технологический регистр
 	TTEK_DefReg  		DefReg;			// 1 Регистр дефектов
-	Uns 		 	PositionPr;		// 2 Текущее положение %
+	Int 		 	PositionPr;		// 2 Текущее положение %
 	TTEK_ComReg  		ComReg;			// 3 Регистр команд
 	Uns 		 	CycleCnt;		// 4 Счетчик циклов
 	Uns				StopButtonState;	// 5 Состояние ручки СТОП (0 - Ручка не нажата, 1 - Ручка нажата)
