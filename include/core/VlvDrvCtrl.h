@@ -76,6 +76,11 @@ typedef struct {
 	Bool				 WaitConfirmFlag;		// Флаг того, что мы ожидаем подтверждение команды управления с ПДУ
 	Bool				 CancelFlag;			// Флаг отмена команды
 	Bool				 MpuBlockedFlag;		// Флаг отмены команды из-за блокировки МПУ
+	Bool				 CorrPasswordFlag;		// Флаг правильно введенного пароля
+	Bool				 WrongPasswordFlag;		// Флаг неправильного пароля
+	Bool				 PasswordResetFlag;		// Флаг того, что пароль был сброшен
+	Bool				 EditDisableFlag;		// Флаг ввода нового пароля
+	Bool				 CodesDontMatch;		// Флаг того, что пароли не совпадают
 } TMpuControl;
 
 // Структура для работы с телеуправлением

@@ -132,6 +132,8 @@ __inline void StartState(MENU *p)
 		p->Group.Position  = p->Group.Count - 1;
 		ChangeCoordinate(p, KEY_UP, TRUE);
 	}
+
+	if (GrH->extraPassword) GrH->extraPassword = 0;
 }
 
 __inline void SelectGroup(MENU *p)
@@ -184,6 +186,13 @@ __inline void SelectGroup(MENU *p)
 __inline void SelectParam(MENU *p)
 {
 	struct MENU_VAL_CFG *Val = &p->Dcr.Config.Val;
+
+	if (GrH->extraPassword)
+	{
+		p->State = MS_EDITPAR;
+		p->Blink = FALSE;
+		p->Rate  = 0;
+	}
 	
 	switch (p->Key)
 	{
@@ -227,7 +236,10 @@ __inline void EditParam(MENU *p)
 		   break;
 	   case KEY_LEFT:   if (p->Rate < p->EditRate) p->Rate++; else p->Rate = 0; break;
 	   case KEY_RIGHT:  if (p->Rate > 0) p->Rate--; else p->Rate = p->EditRate; break;
-	   case KEY_ESCAPE: p->State = MS_SELPAR; break;
+	   case KEY_ESCAPE:
+		   p->State = MS_SELPAR;
+		   if (GrH->extraPassword) {GrH->extraPassword = 0; p->Update = true;}
+		   break;
 	   case KEY_ENTER:
 		   if (!CheckRange(p->Value, p->Dcr.Min, p->Dcr.Max)) break;
 		   if (p->State == MS_EXPRESS)
@@ -509,6 +521,7 @@ __inline void EditStr(MENU *p, Char Key)
 {
 	Uns  Value, Count, RsvdLen, MaxLen;
 	Char Tmp, *BufAddr, *BufPtr;
+	Uns Position = p->Param.Position + p->Param.Addr;
 	
 	Value   = p->Value;
 	Count   = p->Dcr.Max - p->Dcr.Min + 1;
@@ -524,6 +537,13 @@ __inline void EditStr(MENU *p, Char Key)
 	   	case KEY_UP:   if (Value < p->Dcr.Max) Value++; else Value = p->Dcr.Min; break;
 		   case KEY_DOWN: if (Value > p->Dcr.Min) Value--; else Value = p->Dcr.Max; break;
 		}
+
+		#if BUR_M	// Заплатка для БУР М: при редактировании параметра "В17. Режим МУ/ДУ" пролистываем значения "выбор режима" и "только МУ"
+			if (Position == REG_MUDUSETUP)
+			{
+				if (Value == mdSelect || Value == mdMuOnly) Value = mdDuOnly;
+			}
+		#endif
 
 		PFUNC_blkRead((Int *)p->Values[p->Dcr.Config.Str.Addr + Value].Str, (Int *)p->BufTmp, 16);
 		if (p->ShowReserved) break;
@@ -886,6 +906,8 @@ static void ShowParam(MENU *p, Bool Edit)
 	
 	if (p->Update) PFUNC_blkRead((Int *)p->Params[Position].Name, (Int *)p->HiString, 16);
 	
+	if (GrH->extraPassword) strcpy(p->HiString," ПОВТОРИТЕ КОД  ");
+
 	ShowValue(p, Position, Edit);
 }
 

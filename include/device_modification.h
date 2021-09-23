@@ -3,7 +3,7 @@
 
 
 // Модификация блока БУР
-#define BUR_M			1
+#define BUR_M			0
 #define BUR_90			1
 
 #if BUR_90

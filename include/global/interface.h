@@ -294,7 +294,7 @@ typedef struct _TGroupH
 	Uns             ScFaults;            // 8.Аварии КЗ
 	Uns				UporOnly;			 // 9.Параметр включающий работу только на упоре
 	Uns             CycleCnt;            // 10.Счетчик циклов
-	Uns             reservH11;       	 // 11.Резерв
+	Uns             extraPassword;       // 11.Дополнительный пароль. Используется для подтверждения введенного пароля
 	Uns			    reservH12;		 	 // 12.Резерв
 	Uns				KickCount;			 // 13.Колличество ударов
 	TLedsReg        LedsReg;             // 14.Состояние светодиодов блока
@@ -543,6 +543,7 @@ extern TGroupT *GrT;
 #define REG_DEV_DATE			GetAdr(GroupB.DevDate)
 #define REG_DEV_TIME			GetAdr(GroupB.DevTime)
 #define REG_INDICATOR_TYPE		GetAdr(GroupC.IndicatorType)
+#define REG_MUDUSETUP			GetAdr(GroupB.MuDuSetup)
 
 #define REG_CUR_IU      GetAdr(GroupC.IU_Mpy)
 #define REG_CUR_IV      GetAdr(GroupC.IV_Mpy)
@@ -657,7 +658,7 @@ extern TGroupT *GrT;
 	&Ram.GroupB.MuDuSetup, \
 	&Ram.GroupB.DuSource, \
 	&Ram.GroupC.ReverseType, \
-	True, 0, 0, 0, False, False, \
+	True, 0, 0, 0, False, False, False, False, False, False, False, \
 	True, False, 0, True, False, True,\
 	&Ram.GroupH.TuReleMode, \
 	&Ram.GroupB.TuLockSeal, \

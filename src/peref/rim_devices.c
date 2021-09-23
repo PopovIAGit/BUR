@@ -57,6 +57,8 @@ Uns	RevMax = 0x3FFF;
 
 Byte DisplTesNum = 0;
 Uns PauseModbus = 0;
+extern  Int  	lastDirection;
+
 __inline void DisplTest(void);
 __inline void TenControl(void);
 void SetPlisAddr(Uns Addr);
@@ -365,8 +367,22 @@ void TekModbusParamsUpdate(void)
 	// Заполняем технологический регистр
 	GrT->TechReg.bit.Opened  = GrA->Status.bit.Opened;
 	GrT->TechReg.bit.Closed  = GrA->Status.bit.Closed;
+
+#if BUR_90
+	if (GrB->BurM90to60)
+	{
+		GrT->TechReg.bit.Mufta1  = GrA->Status.bit.Mufta;
+		GrT->TechReg.bit.Mufta2  = 0;
+	}
+	else
+	{
+		GrT->TechReg.bit.Mufta1  = IsMVOactive();
+		GrT->TechReg.bit.Mufta2  = IsMVZactive();
+	}
+#else
 	GrT->TechReg.bit.Mufta1  = GrA->Status.bit.Mufta;
 	GrT->TechReg.bit.Mufta2  = 0;
+#endif
 	GrT->TechReg.bit.MuDu    = !GrA->Status.bit.MuDu;
 	GrT->TechReg.bit.Opening = GrA->Status.bit.Opening;
 	GrT->TechReg.bit.Closing = GrA->Status.bit.Closing;
@@ -376,8 +392,13 @@ void TekModbusParamsUpdate(void)
 	GrT->TechReg.bit.Rsvd4   = 0;
 	GrT->TechReg.bit.Rsvd5   = 0;
 	GrT->TechReg.bit.Rsvd6   = 0;
+#if BUR_M
+	GrT->TechReg.bit.KVO  = !PowerEnable ? 0 : !GrA->Status.bit.Opened;
+	GrT->TechReg.bit.KVZ  = !PowerEnable ? 0 : !GrA->Status.bit.Closed;
+#else
 	GrT->TechReg.bit.KVO  = GrH->BtnStopFlag ? 0 : !GrA->Status.bit.Opened;
 	GrT->TechReg.bit.KVZ  = GrH->BtnStopFlag ? 0 : !GrA->Status.bit.Closed;
+#endif
 	GrT->TechReg.bit.Rsvd14  = 0;
 
 	

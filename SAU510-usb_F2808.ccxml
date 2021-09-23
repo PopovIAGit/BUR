@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <configurations XML_version="1.2" id="configurations_0">
-<configuration XML_version="1.2" id="Texas Instruments XDS100v2 USB Emulator_0">
-        <instance XML_version="1.2" desc="Texas Instruments XDS100v2 USB Emulator_0" href="connections/TIXDS100v2_Connection.xml" id="Texas Instruments XDS100v2 USB Emulator_0" xml="TIXDS100v2_Connection.xml" xmlpath="connections"/>
-        <connection XML_version="1.2" id="Texas Instruments XDS100v2 USB Emulator_0">
-            <instance XML_version="1.2" href="drivers/tixds100v2c28x.xml" id="drivers" xml="tixds100v2c28x.xml" xmlpath="drivers"/>
+<configuration XML_version="1.2" id="Sauris SAU510-USB Iso Plus v.2 Emulator_0">
+        <instance XML_version="1.2" desc="Sauris SAU510-USB Iso Plus v.2 Emulator_0" href="connections/SAU510USBIsoPlusV2_Connection.xml" id="Sauris SAU510-USB Iso Plus v.2 Emulator_0" xml="SAU510USBIsoPlusV2_Connection.xml" xmlpath="connections"/>
+        <connection XML_version="1.2" id="Sauris SAU510-USB Iso Plus v.2 Emulator_0">
+            <instance XML_version="1.2" href="drivers/sau510c28x.xml" id="drivers" xml="sau510c28x.xml" xmlpath="drivers"/>
             <platform XML_version="1.2" id="platform_0">
                 <instance XML_version="1.2" desc="TMS320F2808_0" href="devices/f2808.xml" id="TMS320F2808_0" xml="f2808.xml" xmlpath="devices"/>
             </platform>

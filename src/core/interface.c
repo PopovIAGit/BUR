@@ -150,6 +150,7 @@ void InterfaceInit(void)
 
 	GrG->SimulSpeedMode = 0;	// И всякий случай выключаем режим симуляции скорости
 	GrH->initComplete = false;	// Снимаем флаг завершения инициализации
+	GrH->extraPassword = 0;
 
 	if (GrC->ModbusPauseStart == 0) GrC->ModbusPauseStart = 3; 		// 3 = 0,3 сек
 
@@ -165,6 +166,7 @@ void InterfaceInit(void)
 
 	#if BUR_M
 	GrB->DuSource = mdsSerial;
+	GrB->KvoKvzOffOnStop = 0;
 	#endif
 
 	//memset(&RamTek, 0, sizeof(TTEKDriveData));
@@ -925,17 +927,49 @@ static void UpdateCode(Uns Addr, Uns *Code, Uns Def)
 		if (*Code == *Password)
 		{
 			*Code = 0; *Password = 0;
+			Mcu.Mpu.CorrPasswordFlag = true; // Выводим сообщение, что пароль введен верно
 			//WriteFlag = True;
 		}
-		if (*Code == Def)
+		else if (*Code == Def)
 		{
 			*Code = 0; *Password = 0;
+			Mcu.Mpu.PasswordResetFlag = true; // Выводим сообщение, что пароль сброшен
 			WriteFlag = True;
 		}
+		else
+		{
+			Mcu.Mpu.WrongPasswordFlag = true; // Выводим сообщение, что пароль введен неверно
+		}
 	}
-	else if (*Code != 0)
+	else if (*Code != 0)					// Если вводится новое значение пароля
 	{
-		*Password = *Code; *Code = 0;
+		if (!GrH->extraPassword) // Если дополнительный пароль еще не введен
+		{
+			GrH->extraPassword = *Code;
+			*Code = 0;
+		}
+		else
+		{
+			if (GrH->extraPassword == *Code)
+			{
+				*Password = *Code; *Code = 0;
+				Mcu.Mpu.EditDisableFlag = true; 	// Выводим сообщение, что введен новый пароль
+				WriteFlag = True;
+				GrH->extraPassword = 0;
+			}
+			else
+			{
+				GrH->extraPassword = 0;
+				*Code = 0;
+				Mcu.Mpu.CodesDontMatch = true; 	// Выводим сообщение, что пароли не совпадают!!
+			}
+		}
+
+	}
+	else if (*Code == 0)
+	{
+		*Code = 0; *Password = 0;
+		Mcu.Mpu.PasswordResetFlag = true; // Выводим сообщение, что пароль сброшен
 		WriteFlag = True;
 	}
 	
@@ -987,6 +1021,51 @@ void AddControl(void)
 			if (++CancelTimer >= (Uns)CANCEL_TOUT)
 			{
 				Mcu.Mpu.CancelFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.CorrPasswordFlag) //код доступа введен правильно
+		{
+			PutAddData(CORR_PASS_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.CorrPasswordFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.WrongPasswordFlag) //код доступа введен не правильно
+		{
+			PutAddData(WRONG_PASS_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.WrongPasswordFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.PasswordResetFlag) // Код доступа сброшен
+		{
+			PutAddData(PASS_RESET_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.PasswordResetFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.EditDisableFlag) // Задан новый код доступа
+		{
+			PutAddData(EDIT_DISABLE_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.EditDisableFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.CodesDontMatch) // Коды доступа не совпадают
+		{
+			PutAddData(CODE_DONT_MATCH_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.CodesDontMatch = False;
 				CancelTimer = 0;
 			}
 		}
@@ -1296,6 +1375,7 @@ void RemoteControl(void) //24 - 220 + маски,
 	switch(GrB->MuDuSetup)
 	{
 		case mdSelect:
+		case mdMuOnly:
 					if (IsMemParReady())
 					{
 						GrB->MuDuSetup = mdOff;
@@ -1869,6 +1949,11 @@ Bool OffKVOKVZ_Control (TKVOKVZoff *p)	// 10 Hz
 	if (!GrB->KvoKvzOffOnStop)
 	{
 		return 0;
+	}
+
+	if (!PowerEnable)					// Если БУР потерял питание
+	{
+		return 1;						// то возвращаем флаг размыкания
 	}
 
 	if (p->delayFlag)						// Если висит флаг задержки

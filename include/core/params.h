@@ -6,6 +6,11 @@
 #define EXPR_STR_ADDR		4
 #define MPU_BLOCKED_ADR		32
 #define CONFIRM_ADDR		34
+#define CORR_PASS_ADDR		36
+#define WRONG_PASS_ADDR		38
+#define PASS_RESET_ADDR		40
+#define EDIT_DISABLE_ADDR	42
+#define CODE_DONT_MATCH_ADDR	44
 
 #define NUM_ICONS				5
 #define CODE_ICO				0x00
@@ -359,7 +364,7 @@ const struct MENU_PARAM params[] = {
 "   H8.юбюпхх йг ", "    ",      0,  65530,      0, M_HIDE|M_RMAX(4),		//268
 "H9.рнкэйн сонп  ", "    ", 	 0,      1,  	 0, MT_DEC|M_RMAX(1),		//269
 "м10.явервхй жхйк", "    ", 	 0,  65530,  	 0, M_HIDE|M_RMAX(4),		//270
-"  H11.пегепб    ", "    ", 	 0,  65535,  	 0, MT_DEC|M_RMAX(4),		//271
+"  H11.дно.оюпнкэ", "    ", 	 0,  65535,  	 0, MT_DEC|M_RMAX(4),		//271
 "  H12.пегепб    ", "    ", 	 0,  65535,  	 0, MT_DEC|M_RMAX(4),		//272
 "H13.йнк-бн сдюп ", "    ",      0,     10,      0, M_HIDE|M_RMAX(1),		//273
 "   H14.пегепб   ", "    ", 	 0,  65535,  	 0, MT_DEC|M_RMAX(4),		//274
@@ -950,6 +955,16 @@ const struct MENU_STRING AddStr[] = {
 	//--------------------------------
 	"дкъ ондрбепфдем.",	// 34
 	" мюфлхре 'ббнд' ", // 35
+	" педюйрхпнбюмхе ",	// 36
+	"оюпюл. пюгпеьемн", // 37
+	"   мебепмши     ",	// 38
+	"  йнд днярсою   ", // 39
+	"   йнд днярсою  ",	// 40
+	"     яапньем    ", // 41
+	"сярюмнбкем мнбши",	// 42
+	"  йнд днярсою   ", // 43
+	" ббедеммше йндш ",	// 44
+	"  ме янбоюдючр! ", // 45
 };
 
 
