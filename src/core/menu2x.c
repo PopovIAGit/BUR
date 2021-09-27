@@ -822,7 +822,18 @@ static void ShowValue(MENU *p, Uns Position, Bool Edit)
 		   Str = &p->LoString[8];
 		   
 		   if (!p->EditType)
-			   DecToStr(p->Value, Str, Val->Precision, Val->RateMax, !Edit, Val->Signed);
+		   {
+			   if ((Position == REG_CODE || Position == REG_FCODE) && Edit)
+			   {
+					DecToStr(p->Value, Str, Val->Precision, Val->RateMax, !Edit, Val->Signed);
+					for (i = 0; i < 5; i++)
+					{
+						if (i != p->Rate) p->LoString[8-i] = '*';
+					}
+			   }
+			   else
+				   DecToStr(p->Value, Str, Val->Precision, Val->RateMax, !Edit, Val->Signed);
+		   }
 		   else if (!Edit)
 		   {
 			   DecToStr(p->Value, Str, Val->Precision, Val->RateMax, TRUE, Val->Signed);
