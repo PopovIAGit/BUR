@@ -7,10 +7,11 @@
 #define VERSION					142
 #define MODULE_VERSION			70
 #define MODULE_VERSION_OLD		50
-#define SUBVERSION				02
+#define SUBVERSION				03
 
 #define DEF_USER_PASS			2387	// Пароль по-умолчанию (пользовательский)
 #define DEF_FACT_PASS			43072	// Пароль по-умолчанию (заводской)
+#define DEF_CALIB_PASS			38675	// Пароль по-умолчанию (разрешение/запрещение калибровки платы ПИ)
 #define BT_AUTH_CODE_STRING		"5124"	// Строка с кодом авторизации Bluetooth
 
 #define SYSCLK				100e6		// Системная частота (кол-во операций в сек)

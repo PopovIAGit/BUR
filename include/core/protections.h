@@ -239,7 +239,7 @@
 	&Ram.GroupC.IUnTime, \
 	PRT_SCALE, 0 \
 }*/
-
+/*
 #define ISK_DEFAULT(Input, Bit) { \
 	PRT_CFG_SET(1,1,Bit,0), \
 	ToPtr(Input), \
@@ -247,7 +247,7 @@
 	ToPtr(&Ram.GroupC.ISkewLevel), \
 	&Ram.GroupC.ISkewTime, \
 	PRT_SCALE, 0 \
-}
+}*/
 
 #define OT_DEFAULT(Input, Bit)	{ \
 	PRT_CFG_SET(0,1,Bit,1), \
@@ -317,7 +317,7 @@ extern TPrtElem   PhlV;
 extern TPrtElem   PhlW;
 
 //extern TPrtElem   IUnLoad;
-extern TPrtElem   ISkew;
+//extern TPrtElem   ISkew;
 extern TPrtElem   Th;
 extern TPrtElem   Th_Err;
 extern TPrtElem   Tl;

@@ -17,7 +17,7 @@
 
 typedef struct
 {
-	Byte DiscrIn220;						// Дискретный вход 220
+	Byte DiscrIn220;					// Дискретный вход 220
 	Byte DiscrOut;						// Дискретный выход
 	Byte State;							// Состояние обмена
 	Bool Connect;						// Состояние связи

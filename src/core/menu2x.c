@@ -26,6 +26,7 @@ __inline void ShowExpressChoice(MENU *p, Byte YesOne, Byte YesTwo,
 
 
 Bool ExpNextStateRdy = false;
+extern Bool PI_CalibEnable; 			// Флаг разрешения калибровки платы ПИ
 
 
 void MENU_Update(MENU *p)
@@ -686,7 +687,7 @@ static void ChangeCoordinate(MENU *p, Char Key, Bool GroupFlag)
 			Addr++;
 			if ((Int)(Addr - Name) > MaxLen) break;
 			Addr[RsvdLen] = '\0';
-			if (strcmp(p->Rsvd.Str, Addr)) break;
+			if (strcmp(p->Rsvd.Str, Addr) && (PI_CalibEnable || (Crd->Position + Crd->Addr) != REG_TASK_PI_CALIB )) break;
 			continue;
 		}
 	}

@@ -38,7 +38,7 @@ TPrtElem I2tMid = IT_DEFAULT(&Imidpr, 1, 3);			// 2 ступень
 TPrtElem I2tMax = IT_DEFAULT(&Imidpr, 2, 3);			// 3 ступень*/
 
 //TPrtElem IUnLoad = IUL_DEFAULT(&Imidpr, 10);			// минимальная токовая (пропажа нагрузки)
-TPrtElem ISkew   = ISK_DEFAULT(&Ram.GroupH.ISkewValue, 11); 	// небаланс токов
+//TPrtElem ISkew   = ISK_DEFAULT(&Ram.GroupH.ISkewValue, 11); 	// небаланс токов
 
 TPrtElem Th = OT_DEFAULT(&Ram.GroupA.Temper, 5);		// защита от перегрева
 TPrtElem Th_Err = OTE_DEFAULT(&Ram.GroupA.Temper, 11);	// защита от перегрева
@@ -206,7 +206,7 @@ void ProtectionsEnable(void)	// 50 Гц проверка включения защит ЭД
 		
 				i2tOverload.enable 	   = !IsStopped() && (GrC->I2t != pmOff);
 	//			IUnLoad.Cfg.bit.Enable = !IsStopped() && (GrC->IUnLoad != pmOff);
-				ISkew.Cfg.bit.Enable   = !IsStopped() && (GrC->ISkew   != pmOff);
+	//			ISkew.Cfg.bit.Enable   = !IsStopped() && (GrC->ISkew   != pmOff);
 
 		break;
 		case 4: 				// включение по температуре
@@ -536,7 +536,7 @@ Bool IsDefectExist(TPrtMode Mode) // неисправность
 
 	if(GrC->Phl				< Mode) Defects.Load.all 		&=~LOAD_PHL_MASK; 	// Обрыв дв 
   //	if(GrC->IUnLoad			< Mode) Defects.Load.all 		&=~LOAD_UNL_MASK;	// Пониженный ток
-	if(GrC->ISkew			< Mode) Defects.Load.all 		&=~LOAD_ISK_MASK;	// Небаланс токов
+//	if(GrC->ISkew			< Mode) Defects.Load.all 		&=~LOAD_ISK_MASK;	// Небаланс токов
 
 	if(GrC->TemperTrack		< Mode) Defects.Dev.all 			&=~DEV_TMP_MASK;	// Перегрев, охлаждение блока - останов
 

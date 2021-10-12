@@ -86,7 +86,7 @@ TPrdElem List2[] = {
 	PrdElemInit(PrtCalc,				&PhlV,				1),	//	21
 	PrdElemInit(PrtCalc,				&PhlW,				1),	//	22
 	PrdElemInit(ProtectionI2T_Update,	&i2tOverload,		1),	//	23
-	PrdElemInit(PrtCalc,				&ISkew,				1),	//	24
+//	PrdElemInit(PrtCalc,				&ISkew,				1),	//	24
 	PrdElemInit(PrtCalc,				&Th,				1),	//	25
 	PrdElemInit(PrtCalc,				&Th_Err,			1),	//	26
 	PrdElemInit(PrtCalc,				&Tl,				1),	//	27

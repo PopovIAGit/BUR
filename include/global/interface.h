@@ -203,10 +203,17 @@ typedef struct _TGroupC
 	Uns             PhlTime;       		// 74.Время определения обрыва фаз 
 	TPrtMode        I2t;                // 75.Время-токовая защита
 	Uns				ShcTicTime;			// 76.Время определения КЗ в тиках (18 кГц)
-	Uns       	    Rsvd11[8];          // 77-84.Резерв
-	TPrtMode        ISkew;              // 85.Защита от асиметрии тока
-	Uns             ISkewLevel;         // 86.Уровень асиметрии тока
-	Uns             ISkewTime;          // 87.Время асиметрии тока 
+	Int				Upor25Close;		// 77.Значение для добавлени/убавления значения упора при 220в 25% от максМ
+	Int				Upor35Close;		// 78 Значение для добавлени/убавления значения упора при 220в 35% от максМ
+	Int				Upor50Close;		// 79 Значение для добавлени/убавления значения упора при 220в 50% от максМ
+	Int				Upor75Close;		// 80 Значение для добавлени/убавления значения упора при 220в 75% от максМ
+	Int				Upor100Close;		// 81 Значение для добавлени/убавления значения упора при 220в 100% от максМ
+	Int				Corr25TrqClose;		// 82
+	Int				Corr40TrqClose;		// 83 Параметр для корректировки индикации малых моментов (меньше 60%)
+	Int				Corr60TrqClose;		// 84 Параметр для корректировки индикации больших моментов (больше 60%)
+	Int				Corr80TrqClose;		// 85
+	Int				Corr110TrqClose;	// 86
+	Uns       	    Rsvd11;             // 87.Резерв
 	TPrtMode        ShC;        		// 88.Защита от короткого замыкания
 	Uns				ShC_Level; 			// 89 
 	Uns       	    EncoderCalcMethod;  // 90.Выбор метода обработки данных энкодера (классический метод / фильтрация скачков)
@@ -222,7 +229,7 @@ typedef struct _TGroupC
 	TPrtMode        DriveTemper;        // 99.Защита от перегрева двигателя. (дописать защиту перегрева блока в H)
 	Uns				DrvTLevel;			// 100. Уровень срабатывания защиты по перегреву двигателя	
 	Uns				DrvTInput;			// 101. 
-	Uns       	    Rsvd14;          	// 102.Резерв
+	Uns             TaskPiCalib;         // 102.Калибровка платы ПИ
 	TPrtMode        PhOrd;          	// 103.Защита от неверного чередования фаз двигателя	
 	Uns				PhOrdTime;			// 104.Время чередования фаз двигателя
 	TPrtMode        MuDuDef;        	// 105.Защита ошибки входов Му/Ду
@@ -230,17 +237,17 @@ typedef struct _TGroupC
 	Uns       	    PosSensEnable;      // C107. 197 Разрешение пуска, если висит авария "сбой датчика положения"
 	//--------------------Настройки моментов------------------------------------
 	Uns       	    Rsvd108;          	// 108.Резерв
-	Int				Upor25;				// 109.Значение для добавлени/убавления значения упора при 220в 25% от максМ
-	Int				Upor35;				// 110 Значение для добавлени/убавления значения упора при 220в 35% от максМ
-	Int				Upor50;				// 111 Значение для добавлени/убавления значения упора при 220в 50% от максМ
-	Int				Upor75;				// 112 Значение для добавлени/убавления значения упора при 220в 75% от максМ
-	Int				Upor100;			// 113 Значение для добавлени/убавления значения упора при 220в 100% от максМ
-	Int				Corr40Trq;			// 114 Параметр для корректировки индикации малых моментов (меньше 60%)
-	Int				Corr60Trq;			// 115 Параметр для корректировки индикации больших моментов (больше 60%)
-	Int				Corr80Trq;			// 116
-	Int				Corr110Trq;			// 117
-	Int				Corr25Trq;			// 118
-	Int       	    UporAddOpen;        // 119. Дополнительная корректировка лоя упора в "Открытие"
+	Int				Upor25Open;			// 109.Значение для добавлени/убавления значения упора при 220в 25% от максМ
+	Int				Upor35Open;			// 110 Значение для добавлени/убавления значения упора при 220в 35% от максМ
+	Int				Upor50Open;			// 111 Значение для добавлени/убавления значения упора при 220в 50% от максМ
+	Int				Upor75Open;			// 112 Значение для добавлени/убавления значения упора при 220в 75% от максМ
+	Int				Upor100Open;		// 113 Значение для добавлени/убавления значения упора при 220в 100% от максМ
+	Int				Corr25TrqOpen;		// 114
+	Int				Corr40TrqOpen;		// 115 Параметр для корректировки индикации малых моментов (меньше 60%)
+	Int				Corr60TrqOpen;		// 116 Параметр для корректировки индикации больших моментов (больше 60%)
+	Int				Corr80TrqOpen;		// 117
+	Int				Corr110TrqOpen;		// 118
+	Int       	    reserv119;       	// 119. Резерв
 } TGroupC;
 
 // Группа D (Адрес = 210, Количество = 20 )  	- Команды
@@ -550,6 +557,7 @@ extern TGroupT *GrT;
 #define REG_CUR_IW      GetAdr(GroupC.IW_Mpy)
 
 #define REG_CYCLE_CNT			GetAdr(GroupH.CycleCnt)
+#define REG_TASK_PI_CALIB		GetAdr(GroupC.TaskPiCalib)
 #define REG_CONTROL				GetAdr(GroupD.ControlWord)
 #define REG_COM_REG				GetAdr(GroupT.ComReg)
 #define REG_SC_FAULTS			GetAdr(GroupH.ScFaults)
@@ -658,7 +666,7 @@ extern TGroupT *GrT;
 	&Ram.GroupB.MuDuSetup, \
 	&Ram.GroupB.DuSource, \
 	&Ram.GroupC.ReverseType, \
-	True, 0, 0, 0, False, False, False, False, False, False, False, \
+	True, 0, 0, 0, False, False, False, False, False, False, False, False, False, False, False, False, \
 	True, False, 0, True, False, True,\
 	&Ram.GroupH.TuReleMode, \
 	&Ram.GroupB.TuLockSeal, \

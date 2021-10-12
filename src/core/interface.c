@@ -93,6 +93,7 @@ Uns	DigitalInputUpdate (TDigitalInput *);
 Uns PowerOffCnt = 0;
 Uns PowerOnCnt = 0;
 
+Bool PI_CalibEnable = false; 			// Флаг разрешения калибровки платы ПИ
 
 void InterfaceInit(void)
 {
@@ -175,6 +176,15 @@ void InterfaceInit(void)
 	Im.EnableReceive = Bluetooth.EnableRx;
 	Im.EnableTransmit = Bluetooth.EnableTx;
 	Im.TransmitByte = Bluetooth.TransmitByte;
+#if BUR_90
+	// Если при включении устройства параметры корректировок тока равны нулю, то выставляем значения данных параметров
+	if (!GrC->IU_Mpy && !GrC->IV_Mpy && !GrC->IW_Mpy)
+	{
+		GrC->IU_Mpy = GrC->IV_Mpy = GrC->IW_Mpy = 4332;
+		WritePar(GetAdr(GroupC.IU_Mpy), &GrC->IU_Mpy, 3);
+		GrD->SetDefaults = 1;
+	}
+#endif
 }
 
 void DisplayStart(void)
@@ -757,6 +767,22 @@ Bool WriteValue(Uns Memory, Uns Param, Uns *Value)
 	else if (Param == REG_FCODE)
 	{
 		if (!IsMemParReady()) return False;
+#if BUR_90
+		if (*Value == DEF_CALIB_PASS)			// Если в параметр C1. Код доступа введен "особый пароль"
+		{
+			if (!PI_CalibEnable)				// Разрешаем калибровку платы ПИ, если она была запрещена
+			{
+				PI_CalibEnable = true;
+				Mcu.Mpu.CalibEnableFlag = true;
+			}
+			else if (PI_CalibEnable)			// Запрещаем калибровку платы ПИ, если она была разрешена
+			{
+				PI_CalibEnable = false;
+				Mcu.Mpu.CalibDisableFlag = true;
+			}
+			return True;
+		}
+#endif
 		UpdateCode(REG_PASSW2, Value, DEF_FACT_PASS);
 		return True;
 	}
@@ -1069,9 +1095,81 @@ void AddControl(void)
 				CancelTimer = 0;
 			}
 		}
+#if BUR_90
+		else if (Mcu.Mpu.CalibEnableFlag) // Режим калибровки платы ПИ включен
+		{
+			PutAddData(CALIB_EN_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.CalibEnableFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.CalibDisableFlag) // Режим калибровки платы ПИ выключе
+		{
+			PutAddData(CALIB_DIS_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.CalibDisableFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.HiLvlSetFlag)	// Выставлен уровень логической 1 для дискретных входов
+		{
+			PutAddData(SET_LVLS_ADDR, Null);
+			Menu.LoString[8]='1';
+#if BUR_M
+			Menu.LoString[11]='2'; Menu.LoString[13]='0'; // выводим число 220
+#else
+			if (GrB->InputType == it24)	// В зависимости от типа входного сигнала выводим 220 или 24
+			{
+				Menu.LoString[11]=' '; Menu.LoString[13]='4'; // выводим число 24
+			}
+			else
+			{
+				Menu.LoString[11]='2'; Menu.LoString[13]='0'; // выводим число 220
+			}
+#endif
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.HiLvlSetFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.LowLvlSetFlag)	//  Выставлен уровень логического 0 для дискретных входов
+		{
+			PutAddData(SET_LVLS_ADDR, Null);
+			Menu.LoString[8]='0';
+#if BUR_M
+			Menu.LoString[11]='2'; Menu.LoString[13]='0'; // выводим число 220
+#else
+			if (GrB->InputType == it24)	// В зависимости от типа входного сигнала выводим 220 или 24
+			{
+				Menu.LoString[11]=' '; Menu.LoString[13]='4'; // выводим число 24
+			}
+			else
+			{
+				Menu.LoString[11]='2'; Menu.LoString[13]='0'; // выводим число 220
+			}
+#endif
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.LowLvlSetFlag = False;
+				CancelTimer = 0;
+			}
+		}
+		else if (Mcu.Mpu.DataSavedFlag) // Параметры дискретных входов записаны во flash
+		{
+			PutAddData(DATA_SAVED_ADDR, Null);
+			if (++CancelTimer >= (Uns)CANCEL_TOUT)
+			{
+				Mcu.Mpu.DataSavedFlag = False;
+				CancelTimer = 0;
+			}
+		}
+#endif	// #if BUR_90
 		else if (Mcu.Mpu.MpuBlockedFlag)	// Команда МУ заблокировано
 		{
-
 			CancelTimer++;
 			if (CancelTimer <= 20)			// 2 секунды показываем "КОМАНДА ОТМЕНЕНА"
 			{
@@ -1669,6 +1767,23 @@ void TsSignalization(void) //ТС
 		#endif
 	}
 	#endif
+
+#if BUR_90
+	// Калибровка платы ПИ
+	if (GrC->TaskPiCalib)
+	{
+		if (GrH->FaultsDev.bit.AVRcon || !PI_CalibEnable) 	// Если калибровка ПИ запрещена или отсуствует связь с ПИ...
+		{
+			Mcu.Mpu.CancelFlag = True;						// ... то выставляем флаг отмены и ничего не делаем
+		}
+		else												// если все норм, то обрабатываем
+		{
+			// Заталкиваем переменную TaskPiCalib в буффер, передаваемый в плату ПИ
+			PiData.DiscrOut2 |= (Byte)((GrC->TaskPiCalib & 0x3) << 3);
+		}
+		GrC->TaskPiCalib = 0;
+	}
+#endif
 
 }
 

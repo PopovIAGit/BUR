@@ -1138,19 +1138,24 @@ void TorqueCalc(void)	// расчет момента по кубу
 	CubCalc(Cub);	// считаем выбранный куб
 	
 #if !TORQ_TEST
-
-	if (Dmc.TorqueSetPr < 30)		  Add = GrC->Corr25Trq;
-	else if (Dmc.TorqueSetPr < 40) 	  Add = GrC->Corr40Trq;		// ƒобавил PIA 09.10.2012
-	else if (Dmc.TorqueSetPr < 60)	  Add = GrC->Corr60Trq;		// корректировка индикации момента дл€ +- изменени€ времени перехода на поверхность упора			
-	else if (Dmc.TorqueSetPr < 80)	  Add = GrC->Corr80Trq;
-	else if (Dmc.TorqueSetPr < 110)	  Add = GrC->Corr110Trq;
-
+	if(Dmc.RequestDir > 0)	// ¬ открытие
+	{
+		if (Dmc.TorqueSetPr < 30)		  Add = GrC->Corr25TrqOpen;
+		else if (Dmc.TorqueSetPr < 40) 	  Add = GrC->Corr40TrqOpen;		// ƒобавил PIA 09.10.2012
+		else if (Dmc.TorqueSetPr < 60)	  Add = GrC->Corr60TrqOpen;		// корректировка индикации момента дл€ +- изменени€ времени перехода на поверхность упора
+		else if (Dmc.TorqueSetPr < 80)	  Add = GrC->Corr80TrqOpen;
+		else if (Dmc.TorqueSetPr < 110)	  Add = GrC->Corr110TrqOpen;
+	}
+	else	// ¬ закрытие
+	{
+		if (Dmc.TorqueSetPr < 30)		  Add = GrC->Corr25TrqClose;
+		else if (Dmc.TorqueSetPr < 40) 	  Add = GrC->Corr40TrqClose;		// ƒобавил PIA 09.10.2012
+		else if (Dmc.TorqueSetPr < 60)	  Add = GrC->Corr60TrqClose;		// корректировка индикации момента дл€ +- изменени€ времени перехода на поверхность упора
+		else if (Dmc.TorqueSetPr < 80)	  Add = GrC->Corr80TrqClose;
+		else if (Dmc.TorqueSetPr < 110)	  Add = GrC->Corr110TrqClose;
+	}
 	Tmp = Cub->Output + Add;
 
-	if(Dmc.RequestDir > 0)
-	{
-		Tmp = Tmp + GrC->UporAddOpen;
-	}
 
 	if (Tmp < GrC->TrqMinPr) Tmp = GrC->TrqMinPr;	// провер€ем на вхождение в зону от
 	if (Tmp > TORQ_MAX_PR) Tmp = TORQ_MAX_PR;   // 0 до 110 %
@@ -1160,16 +1165,32 @@ void TorqueCalc(void)	// расчет момента по кубу
 	Torq.Indication = Cub->Output;	// если тест забираем без фильтра просто число
 #endif
 
-if 		(Dmc.TorqueSetPr < 30)	
-			UporAdd = GrC->Upor25;
-else if (Dmc.TorqueSetPr < 40)	
-			UporAdd = GrC->Upor35;
-else if (Dmc.TorqueSetPr < 60)	
-			UporAdd = GrC->Upor50;
-else if (Dmc.TorqueSetPr < 80)	
-			UporAdd = GrC->Upor75;
-else if	(Dmc.TorqueSetPr < 110)	
-			UporAdd = GrC->Upor100;
+	if(Dmc.RequestDir > 0)	// ¬ открытие
+	{
+		if 	(Dmc.TorqueSetPr < 30)
+			UporAdd = GrC->Upor25Open;
+		else if (Dmc.TorqueSetPr < 40)
+			UporAdd = GrC->Upor35Open;
+		else if (Dmc.TorqueSetPr < 60)
+			UporAdd = GrC->Upor50Open;
+		else if (Dmc.TorqueSetPr < 80)
+			UporAdd = GrC->Upor75Open;
+		else if	(Dmc.TorqueSetPr < 110)
+			UporAdd = GrC->Upor100Open;
+	}
+	else	// ¬ закрытие
+	{
+		if 	(Dmc.TorqueSetPr < 30)
+			UporAdd = GrC->Upor25Close;
+		else if (Dmc.TorqueSetPr < 40)
+			UporAdd = GrC->Upor35Close;
+		else if (Dmc.TorqueSetPr < 60)
+			UporAdd = GrC->Upor50Close;
+		else if (Dmc.TorqueSetPr < 80)
+			UporAdd = GrC->Upor75Close;
+		else if	(Dmc.TorqueSetPr < 110)
+			UporAdd = GrC->Upor100Close;
+	}
 
 	/*if (Dmc.RequestDir > 0)						// ≈сли направление "ќткрытие"
 		UporAdd = UporAdd + GrC->UporAddOpen;	// ƒобавл€ем дополнительную корректировку упора на открытие*/
@@ -1738,8 +1759,11 @@ void LowPowerControl(void)		// управление при провале напр€жени€ ???
 	else	// если резервное питание 
 	{
 	//	DisplayRestartFlag = true;
-		PowerOn();	// включили все
-		LowPowerReset &= ~BIT1;//убрали рессет 
+		if (!PowerEnable)
+		{
+			PowerOn();	// включили все
+			LowPowerReset &= ~BIT1;//убрали рессет
+		}
 	}
 #endif
 }

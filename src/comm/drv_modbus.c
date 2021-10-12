@@ -34,7 +34,7 @@ Uint16 EnabledTransmit=0;
 TMbPort Mb;
 
 Bool MbConnect = false;
-
+extern Bool PI_CalibEnable; 			// Флаг разрешения калибровки платы ПИ
 Uns TempMbFlag = 0;
 
 Uint16 CrcTable[256];
@@ -267,6 +267,7 @@ static void ModBusReset(TMbPort *Port)
 	Port->Frame.Timer1_5   = 0;
 	Port->Frame.Timer3_5   = 0;
 	Port->Frame.TimerConn  = 0;
+	Port->Frame.ConnFlg    = 0;
 }
 
 void ReStartReadLine(TMbPort *Port)
@@ -482,7 +483,25 @@ static Byte WriteRegs(TMbPort *Port, Uint16 *Data, Uint16 Addr, Uint16 Count)
 			return EX_ILLEGAL_DATA_VALUE;
 		if (Tmp == vcwStop) Mcu.Tu.Ready = False;
 	}
-	
+
+#if BUR_90
+	// Если в параметр C1. Код доступа введен "особый пароль"
+	if ((Addr == REG_FCODE)&&(Tmp == DEF_CALIB_PASS))
+	{
+		if (!PI_CalibEnable)				// Разрешаем калибровку платы ПИ, если она была запрещена
+		{
+			PI_CalibEnable = true;
+			Mcu.Mpu.CalibEnableFlag = true;
+		}
+		else if (PI_CalibEnable)			// Запрещаем калибровку платы ПИ, если она была разрешена
+		{
+			PI_CalibEnable = false;
+			Mcu.Mpu.CalibDisableFlag = true;
+		}
+		return 0;
+	}
+#endif
+
 	if (Nvm && !IsMemParReady()) return EX_SLAVE_DEVICE_BUSY;
 
 	memcpy(&Data[Addr], MbTmpData, Count);

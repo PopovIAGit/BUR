@@ -151,7 +151,18 @@ void PiUpdate(void)
 				PiData.DiscrIn220 = PiData.RxFrame[2];
 				#if !BUR_90
 				PiData.DiscrIn24  = PiData.RxFrame[3];
+				#else
+				if (PiData.RxFrame[0])
+				{
+					switch (PiData.RxFrame[0])
+					{
+						case 1: Mcu.Mpu.HiLvlSetFlag = true; break;
+						case 2: Mcu.Mpu.LowLvlSetFlag = true; break;
+						case 3: Mcu.Mpu.DataSavedFlag = true; break;
+					}
+				}
 				#endif
+
 				PiData.ConnTimer = 0;
 				PiData.Connect = TRUE;
 			}

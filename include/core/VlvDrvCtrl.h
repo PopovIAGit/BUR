@@ -81,6 +81,11 @@ typedef struct {
 	Bool				 PasswordResetFlag;		// Флаг того, что пароль был сброшен
 	Bool				 EditDisableFlag;		// Флаг ввода нового пароля
 	Bool				 CodesDontMatch;		// Флаг того, что пароли не совпадают
+	Bool				 CalibEnableFlag;		// Флаг того, что калибровка платы ПИ разрешена
+	Bool				 CalibDisableFlag;		// Флаг того, что калибровка платы ПИ запрещена
+	Bool				 HiLvlSetFlag;			// Флаг того, что был записан уровень логической 1 для дискретныз входов
+	Bool				 LowLvlSetFlag;			// Флаг того, что был записан уровень логического 0 для дискретныз входов
+	Bool				 DataSavedFlag;			// Флаг того, что параметры настроек дискр. входов записаны во flash
 } TMpuControl;
 
 // Структура для работы с телеуправлением
