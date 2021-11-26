@@ -267,7 +267,7 @@ void ProtectionsReset(void)	// сброс силовых защит(для возможного пуска двигател
 	
 	GrA->Faults.Proc.all &= ~PROC_RESET_MASK;	// сбросили ошибки процесса (нет движен, неправильное чередование фаз, уплотнение не достигнуто)
 #else
-	if (GrB->BurM90to60 == 1)
+	if (GrB->BurM90to60 == 1 || GrB->BreakMode != vtNone)
 	{
 		MuffFlag = 0;
 		GrA->Status.all &= ~STATUS_RESET_MASK;

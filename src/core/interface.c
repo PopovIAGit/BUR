@@ -1881,7 +1881,9 @@ void ClbControl(void)	// 200 Hz управление калибровками
 	}
 	else
 	{
-		BT_ON_OFF = 0;
+		// Разрешение bluetooth: 0 - разрешен; 1 - запрещен
+		BT_ON_OFF = (GrB->BtEnable) ? 1 : 0;
+
 		GrA->Position      = Revolution;
 	}
 

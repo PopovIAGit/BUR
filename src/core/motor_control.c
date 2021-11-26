@@ -65,7 +65,7 @@ TValveCmd SaveContGroup = vcwNone;
 Uns secflag = 0;
 Uns secpausetimer = 0;
 // ----------------------------------------	
-Int InomDefU[11]  	 = {13,11,18,52,52,47,56,110,85,148,27};					// default значения для Inom для разных приводов уфа
+Int InomDefU[12]  	 = {13,11,18,52,52,47,56,110,85,148,27,105};					// default значения для Inom для разных приводов уфа
 Int InomDefS[12]	 = {11,9,13,32,32,33,73,85,95,150,28,170};						// Сарапуль
 Int MomMaxDef[10]  	 = {10,10,40,40,80,100,400,400,1000,1000};				//					для Mmax 
 Int TransCurrDef[11] = {1000,1000,1000,1000,1000,1000,1100,1100,1100,1100,400};	//					для TransCur править
@@ -1629,6 +1629,28 @@ __inline void TorqueObsInit(void)
 					    }
 					}
 					break; //22
+				    case dt10000_D6_U2:
+				    					PFUNC_blkRead(&drive25, (Int *) (&Ram.GroupH.TqCurr), LENGTH_TRQ);
+				    					GrH->UporOnly = GrC->UporOnly;
+				    					PFUNC_blkRead(&TransCurrDef[9], (Int *) (&Ram.GroupH.TransCurr), 1);
+
+				    					#if BUR_90
+				    					GrH->PP90Reg.bit.DevOn = 0;
+				    					#endif
+
+				    					if ((GrC->Inom != InomDefU[11]) || (GrC->MaxTorque != MomMaxDef[9]))
+				    					{
+				    					    if (IsMemParReady())
+				    					    {
+				    					    	GrC->GearRatio = GearRatioDef[4];
+				    					    	GrC->Inom = InomDefU[11];
+				    					    	GrC->MaxTorque = MomMaxDef[9];
+				    					    	WritePar(GetAdr(GroupC.MaxTorque), &GrC->MaxTorque, 3);
+
+				    					    }
+				    					}
+				    					break; //22
+
 	}
 } 
 // -----------------------------------------------------------------
